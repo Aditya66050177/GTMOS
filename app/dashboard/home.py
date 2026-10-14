@@ -1,6 +1,13 @@
+import sys
+from pathlib import Path
+
+# Ensure project root is in sys.path
+root_dir = Path(__file__).resolve().parent.parent.parent
+if str(root_dir) not in sys.path:
+    sys.path.insert(0, str(root_dir))
+
 import streamlit as st
 import requests
-from pathlib import Path
 from app.db.database import SessionLocal
 from app.models import Product, ICPProfile, Account
 from app.services.icp_engine import ICPEngine
