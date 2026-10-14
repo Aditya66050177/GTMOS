@@ -1,0 +1,151 @@
+company,domain,industry,employees,country,technologies,funding,description,support_team_size
+Acme Technologies,acme.com,B2B SaaS,240,US,Zendesk;Oracle;Workday,Series B,B2B SaaS customer platform experiencing high support ticket volume and help desk overload.,20
+Nexus Cloud Systems,nexuscloud.io,Software,120,US,Intercom;Jira;AWS,Series A,Cloud infrastructure provider solving slow response time and scaling support operations.,15
+Fintech Pulse Inc,fintechpulse.com,Cloud Services,310,US,Freshdesk;Zendesk;Salesforce,Series C,Financial tech platform facing high support costs and ticket volume.,30
+Global Logistics Ltd,globallogistics.co.uk,Logistics,1200,UK,Oracle;SAP,Public,Freight forwarding and supply chain solutions.,50
+Micro Design Studio,microdesign.net,Design,8,US,Figma;Slack,Bootstrapped,Bespoke web design agency.,1
+Company 1 Healthcare,company1healthcare.co,Healthcare,9,Japan,,Bootstrapped,Regional logistics and fleet tracking software provider.,1
+Company 2 Healthcare,company2healthcare.io,Healthcare,7,Germany,,Seed,Regional logistics and fleet tracking software provider.,8
+Company 3 Manufacturing,company3manufacturing.com,Manufacturing,2107,Germany,Jira,Seed,Industrial manufacturing enterprise platform.,3
+Company 4 B2B,company4b2b.org,B2B SaaS,483,United States,Jira;Salesforce;Zendesk,Series B,Digital platform facing help desk overload and growing support ticket volume.,32
+Company 5 Software,company5software.com,Software,345,United States,Zendesk;Jira,Series C,Cloud software suite addressing high support costs and slow response time.,39
+Company 6 Healthcare,company6healthcare.net,Healthcare,4514,India,,Bootstrapped,Online learning and education services portal.,5
+Company 7 Logistics,company7logistics.co,Logistics,3,Japan,,Seed,E-commerce storefront builder for boutique retailers.,6
+Company 8 Cloud,company8cloud.org,Cloud Services,470,US,Jira;Intercom,Series A,Digital platform facing help desk overload and growing support ticket volume.,15
+Company 9 Cybersecurity,company9cybersecurity.io,Cybersecurity,532,United States,Workday;Marketo,Seed,Online learning and education services portal.,17
+Company 10 E-commerce,company10e-commerce.co,E-commerce,16,Brazil,,Seed,Industrial manufacturing enterprise platform.,2
+Company 11 Software,company11software.net,Software,320,United States,Jira;Zendesk;Salesforce,Growth,SaaS platform reducing help desk overload and high support ticket volume.,36
+Company 12 Manufacturing,company12manufacturing.co,Manufacturing,10,Germany,Zendesk,Bootstrapped,Regional logistics and fleet tracking software provider.,4
+Company 13 Logistics,company13logistics.co,Logistics,27,Australia,,Bootstrapped,Online learning and education services portal.,2
+Company 14 B2B,company14b2b.org,B2B SaaS,43,US,Freshdesk,Series A,Regional logistics and fleet tracking software provider.,7
+Company 15 Education,company15education.co,Education,5,France,Datadog,Bootstrapped,Healthtech patient engagement workflow solution.,6
+Company 16 Logistics,company16logistics.io,Logistics,3353,France,AWS,Bootstrapped,Healthtech patient engagement workflow solution.,7
+Company 17 Cloud,company17cloud.com,Cloud Services,530,US,Zendesk,Series A,Cloud software suite addressing high support costs and slow response time.,6
+Company 18 Manufacturing,company18manufacturing.io,Manufacturing,2749,Germany,Freshdesk,Seed,Healthtech patient engagement workflow solution.,2
+Company 19 Retail,company19retail.com,Retail,1594,France,Slack,Bootstrapped,E-commerce storefront builder for boutique retailers.,7
+Company 20 Cloud,company20cloud.io,Cloud Services,459,United States,Intercom;Jira,Series C,Cloud software suite addressing high support costs and slow response time.,32
+Company 21 Manufacturing,company21manufacturing.com,Manufacturing,1417,India,,Bootstrapped,Retail management software focusing on inventory automation.,8
+Company 22 E-commerce,company22e-commerce.org,E-commerce,4778,France,,Bootstrapped,E-commerce storefront builder for boutique retailers.,0
+Company 23 Software,company23software.net,Software,451,United States,Salesforce;Freshdesk;Jira,Series B,Digital platform facing help desk overload and growing support ticket volume.,19
+Company 24 B2B,company24b2b.com,B2B SaaS,49,US,Datadog;Workday,Series B,Software vendor seeking to lower support costs and improve response times.,6
+Company 25 Healthcare,company25healthcare.co,Healthcare,2726,Brazil,,Bootstrapped,Healthtech patient engagement workflow solution.,3
+Company 26 Cloud,company26cloud.net,Cloud Services,183,United States,Salesforce;Intercom,Series B,Software vendor seeking to lower support costs and improve response times.,27
+Company 27 Healthcare,company27healthcare.net,Healthcare,15,Germany,,Bootstrapped,Healthtech patient engagement workflow solution.,4
+Company 28 E-commerce,company28e-commerce.co,E-commerce,2092,Australia,Marketo,Bootstrapped,Regional logistics and fleet tracking software provider.,8
+Company 29 B2B,company29b2b.net,B2B SaaS,514,United States,Jira,Series B,Retail management software focusing on inventory automation.,11
+Company 30 Cloud,company30cloud.net,Cloud Services,42,Canada,Jira;Zendesk,Series A,SaaS platform reducing help desk overload and high support ticket volume.,15
+Company 31 Software,company31software.net,Software,337,United States,Zendesk;Jira,Series B,Cloud software suite addressing high support costs and slow response time.,32
+Company 32 E-commerce,company32e-commerce.com,E-commerce,1142,India,Zendesk,Bootstrapped,Online learning and education services portal.,3
+Company 33 Fintech,company33fintech.net,Fintech,47,Canada,Salesforce,Series A,Online learning and education services portal.,5
+Company 34 Retail,company34retail.com,Retail,2832,Japan,,Seed,Regional logistics and fleet tracking software provider.,1
+Company 35 E-commerce,company35e-commerce.org,E-commerce,4570,France,Freshdesk,Bootstrapped,Industrial manufacturing enterprise platform.,0
+Company 36 B2B,company36b2b.net,B2B SaaS,378,UK,Zendesk;Intercom,Series B,Retail management software focusing on inventory automation.,10
+Company 37 Cloud,company37cloud.net,Cloud Services,226,United States,Salesforce;Freshdesk;Jira;Zendesk,Series B,Digital platform facing help desk overload and growing support ticket volume.,33
+Company 38 Software,company38software.com,Software,316,US,Intercom;Salesforce;Jira;Zendesk,Series C,Software vendor seeking to lower support costs and improve response times.,34
+Company 39 Manufacturing,company39manufacturing.io,Manufacturing,4145,Brazil,Workday,Bootstrapped,Online learning and education services portal.,8
+Company 40 Retail,company40retail.io,Retail,2225,Japan,Datadog,Seed,Retail management software focusing on inventory automation.,4
+Company 41 Education,company41education.io,Education,3439,Brazil,AWS,Seed,Regional logistics and fleet tracking software provider.,3
+Company 42 Manufacturing,company42manufacturing.io,Manufacturing,22,Brazil,,Bootstrapped,Regional logistics and fleet tracking software provider.,4
+Company 43 B2B,company43b2b.io,B2B SaaS,293,US,Zendesk;Freshdesk;Intercom;Jira,Series C,Digital platform facing help desk overload and growing support ticket volume.,30
+Company 44 Cloud,company44cloud.co,Cloud Services,434,US,Freshdesk;Intercom,Growth,Cloud software suite addressing high support costs and slow response time.,40
+Company 45 Education,company45education.org,Education,1794,France,,Seed,E-commerce storefront builder for boutique retailers.,8
+Company 46 Logistics,company46logistics.co,Logistics,14,Brazil,AWS,Seed,Online learning and education services portal.,3
+Company 47 E-commerce,company47e-commerce.co,E-commerce,1434,Australia,,Seed,Online learning and education services portal.,5
+Company 48 B2B,company48b2b.org,B2B SaaS,246,US,Intercom;Jira;Zendesk;Freshdesk,Growth,Digital platform facing help desk overload and growing support ticket volume.,25
+Company 49 Software,company49software.net,Software,575,Canada,Marketo,Series A,Online learning and education services portal.,20
+Company 50 Cybersecurity,company50cybersecurity.org,Cybersecurity,595,Canada,AWS,Seed,Digital platform facing help desk overload and growing support ticket volume.,13
+Company 51 Software,company51software.co,Software,420,United States,Freshdesk;Intercom,Growth,SaaS platform reducing help desk overload and high support ticket volume.,27
+Company 52 Healthcare,company52healthcare.net,Healthcare,1911,Japan,,Seed,Retail management software focusing on inventory automation.,4
+Company 53 Cloud,company53cloud.io,Cloud Services,192,UK,Intercom;AWS,Seed,SaaS platform reducing help desk overload and high support ticket volume.,6
+Company 54 Logistics,company54logistics.io,Logistics,25,Germany,,Bootstrapped,Retail management software focusing on inventory automation.,2
+Company 55 Healthcare,company55healthcare.net,Healthcare,4609,Brazil,Salesforce,Bootstrapped,Healthtech patient engagement workflow solution.,1
+Company 56 B2B,company56b2b.io,B2B SaaS,344,United States,Freshdesk;Jira;Salesforce;Zendesk,Growth,SaaS platform reducing help desk overload and high support ticket volume.,33
+Company 57 Software,company57software.net,Software,457,US,Zendesk;Salesforce;Freshdesk;Intercom,Growth,Software vendor seeking to lower support costs and improve response times.,17
+Company 58 Software,company58software.co,Software,104,United States,Salesforce;Freshdesk;Jira,Series B,Cloud software suite addressing high support costs and slow response time.,28
+Company 59 Manufacturing,company59manufacturing.io,Manufacturing,4760,Brazil,Workday,Seed,Healthtech patient engagement workflow solution.,4
+Company 60 Healthcare,company60healthcare.com,Healthcare,29,Australia,Marketo,Seed,Healthtech patient engagement workflow solution.,6
+Company 61 Manufacturing,company61manufacturing.co,Manufacturing,2537,France,HubSpot,Bootstrapped,Online learning and education services portal.,4
+Company 62 Healthcare,company62healthcare.org,Healthcare,4129,France,,Seed,Regional logistics and fleet tracking software provider.,7
+Company 63 Healthcare,company63healthcare.co,Healthcare,8,Australia,Stripe,Seed,Healthtech patient engagement workflow solution.,5
+Company 64 Retail,company64retail.com,Retail,3509,Japan,Jira,Bootstrapped,Online learning and education services portal.,4
+Company 65 Manufacturing,company65manufacturing.co,Manufacturing,24,Germany,,Seed,Regional logistics and fleet tracking software provider.,7
+Company 66 Education,company66education.com,Education,10,Brazil,Freshdesk,Seed,Online learning and education services portal.,2
+Company 67 E-commerce,company67e-commerce.com,E-commerce,1246,Australia,,Bootstrapped,Regional logistics and fleet tracking software provider.,7
+Company 68 Retail,company68retail.com,Retail,15,India,,Bootstrapped,Online learning and education services portal.,7
+Company 69 B2B,company69b2b.co,B2B SaaS,126,US,Freshdesk,Series B,Cloud software suite addressing high support costs and slow response time.,18
+Company 70 E-commerce,company70e-commerce.co,E-commerce,4490,Brazil,Marketo,Bootstrapped,E-commerce storefront builder for boutique retailers.,4
+Company 71 Healthcare,company71healthcare.co,Healthcare,2528,France,,Bootstrapped,Industrial manufacturing enterprise platform.,3
+Company 72 B2B,company72b2b.net,B2B SaaS,280,United States,Jira;Freshdesk;Intercom;Zendesk,Growth,Cloud software suite addressing high support costs and slow response time.,24
+Company 73 Retail,company73retail.io,Retail,2712,Germany,,Bootstrapped,E-commerce storefront builder for boutique retailers.,1
+Company 74 E-commerce,company74e-commerce.org,E-commerce,2159,Germany,AWS,Seed,Retail management software focusing on inventory automation.,7
+Company 75 Education,company75education.com,Education,16,Brazil,,Seed,E-commerce storefront builder for boutique retailers.,5
+Company 76 Cloud,company76cloud.co,Cloud Services,441,US,Salesforce;Zendesk;Freshdesk;Intercom,Series B,Digital platform facing help desk overload and growing support ticket volume.,23
+Company 77 Retail,company77retail.net,Retail,3650,Germany,HubSpot,Bootstrapped,Regional logistics and fleet tracking software provider.,1
+Company 78 Cybersecurity,company78cybersecurity.net,Cybersecurity,598,UK,AWS,Seed,Cloud software suite addressing high support costs and slow response time.,15
+Company 79 Software,company79software.org,Software,386,US,Freshdesk;Jira;Zendesk;Salesforce,Series C,Software vendor seeking to lower support costs and improve response times.,34
+Company 80 E-commerce,company80e-commerce.co,E-commerce,1873,Australia,Workday,Bootstrapped,E-commerce storefront builder for boutique retailers.,1
+Company 81 Logistics,company81logistics.com,Logistics,912,France,,Seed,Industrial manufacturing enterprise platform.,1
+Company 82 E-commerce,company82e-commerce.co,E-commerce,3190,India,AWS,Seed,E-commerce storefront builder for boutique retailers.,3
+Company 83 B2B,company83b2b.net,B2B SaaS,492,US,Salesforce;Freshdesk,Growth,Software vendor seeking to lower support costs and improve response times.,40
+Company 84 Manufacturing,company84manufacturing.co,Manufacturing,10,Japan,Datadog,Seed,E-commerce storefront builder for boutique retailers.,5
+Company 85 Retail,company85retail.org,Retail,30,India,,Bootstrapped,Healthtech patient engagement workflow solution.,6
+Company 86 Cloud,company86cloud.co,Cloud Services,411,United States,Freshdesk;Intercom;Jira,Growth,SaaS platform reducing help desk overload and high support ticket volume.,19
+Company 87 B2B,company87b2b.net,B2B SaaS,39,Canada,Slack,Seed,Software vendor seeking to lower support costs and improve response times.,7
+Company 88 Cybersecurity,company88cybersecurity.com,Cybersecurity,587,US,HubSpot;Stripe,Series B,E-commerce storefront builder for boutique retailers.,6
+Company 89 Cloud,company89cloud.com,Cloud Services,49,United States,AWS,Series A,Software vendor seeking to lower support costs and improve response times.,14
+Company 90 B2B,company90b2b.io,B2B SaaS,43,UK,Datadog,Series A,Online learning and education services portal.,10
+Company 91 Software,company91software.com,Software,304,US,Intercom;Jira;Freshdesk;Salesforce,Growth,Digital platform facing help desk overload and growing support ticket volume.,23
+Company 92 Retail,company92retail.net,Retail,22,Australia,HubSpot,Seed,Healthtech patient engagement workflow solution.,4
+Company 93 Manufacturing,company93manufacturing.net,Manufacturing,13,France,,Seed,E-commerce storefront builder for boutique retailers.,5
+Company 94 Cloud,company94cloud.co,Cloud Services,190,United States,Jira;Zendesk,Series B,Digital platform facing help desk overload and growing support ticket volume.,24
+Company 95 E-commerce,company95e-commerce.org,E-commerce,7,Japan,,Seed,Regional logistics and fleet tracking software provider.,0
+Company 96 Software,company96software.net,Software,96,US,Salesforce;Freshdesk;Zendesk,Growth,Cloud software suite addressing high support costs and slow response time.,19
+Company 97 Manufacturing,company97manufacturing.io,Manufacturing,4747,France,Intercom,Bootstrapped,E-commerce storefront builder for boutique retailers.,1
+Company 98 Logistics,company98logistics.org,Logistics,13,Japan,Zendesk,Bootstrapped,Online learning and education services portal.,8
+Company 99 Cloud,company99cloud.io,Cloud Services,514,Canada,AWS,Series B,SaaS platform reducing help desk overload and high support ticket volume.,15
+Company 100 Logistics,company100logistics.net,Logistics,3275,India,,Bootstrapped,Industrial manufacturing enterprise platform.,0
+Company 101 Healthcare,company101healthcare.co,Healthcare,1911,Germany,HubSpot,Seed,Regional logistics and fleet tracking software provider.,8
+Company 102 E-commerce,company102e-commerce.org,E-commerce,1611,India,Jira,Bootstrapped,Retail management software focusing on inventory automation.,5
+Company 103 E-commerce,company103e-commerce.com,E-commerce,3809,Australia,,Bootstrapped,E-commerce storefront builder for boutique retailers.,4
+Company 104 Retail,company104retail.co,Retail,22,Germany,,Bootstrapped,Online learning and education services portal.,3
+Company 105 Fintech,company105fintech.io,Fintech,160,United States,Marketo,Series A,SaaS platform reducing help desk overload and high support ticket volume.,13
+Company 106 E-commerce,company106e-commerce.com,E-commerce,22,Germany,,Seed,Online learning and education services portal.,3
+Company 107 B2B,company107b2b.net,B2B SaaS,429,US,Jira;Zendesk;Salesforce,Series C,SaaS platform reducing help desk overload and high support ticket volume.,30
+Company 108 Healthcare,company108healthcare.org,Healthcare,17,India,AWS,Bootstrapped,Regional logistics and fleet tracking software provider.,0
+Company 109 Retail,company109retail.com,Retail,4816,Japan,,Bootstrapped,Retail management software focusing on inventory automation.,5
+Company 110 Cloud,company110cloud.com,Cloud Services,245,United States,Jira;Salesforce;Intercom;Freshdesk,Growth,SaaS platform reducing help desk overload and high support ticket volume.,40
+Company 111 Logistics,company111logistics.org,Logistics,2561,Brazil,Freshdesk,Seed,E-commerce storefront builder for boutique retailers.,5
+Company 112 B2B,company112b2b.com,B2B SaaS,210,UK,Salesforce;Stripe,Series A,E-commerce storefront builder for boutique retailers.,7
+Company 113 B2B,company113b2b.org,B2B SaaS,465,United States,Jira;Zendesk,Series B,Software vendor seeking to lower support costs and improve response times.,36
+Company 114 Cybersecurity,company114cybersecurity.org,Cybersecurity,357,US,Marketo,Series A,Healthtech patient engagement workflow solution.,11
+Company 115 B2B,company115b2b.net,B2B SaaS,238,UK,Slack,Series B,Healthtech patient engagement workflow solution.,5
+Company 116 Software,company116software.com,Software,223,United States,Zendesk;Intercom;Jira,Series B,Digital platform facing help desk overload and growing support ticket volume.,17
+Company 117 Cloud,company117cloud.net,Cloud Services,242,US,Freshdesk;Salesforce;Zendesk,Growth,Software vendor seeking to lower support costs and improve response times.,24
+Company 118 Education,company118education.net,Education,3,Brazil,,Bootstrapped,Healthtech patient engagement workflow solution.,0
+Company 119 Retail,company119retail.org,Retail,4421,India,Freshdesk,Seed,Healthtech patient engagement workflow solution.,1
+Company 120 Cloud,company120cloud.net,Cloud Services,319,United States,Salesforce;Zendesk;Freshdesk;Intercom,Series B,SaaS platform reducing help desk overload and high support ticket volume.,15
+Company 121 E-commerce,company121e-commerce.io,E-commerce,10,Australia,,Bootstrapped,E-commerce storefront builder for boutique retailers.,6
+Company 122 Software,company122software.org,Software,39,UK,Zendesk;AWS,Series B,Cloud software suite addressing high support costs and slow response time.,15
+Company 123 Logistics,company123logistics.net,Logistics,14,Japan,Zendesk,Seed,Online learning and education services portal.,2
+Company 124 B2B,company124b2b.io,B2B SaaS,273,US,Freshdesk;Zendesk;Intercom;Salesforce,Series C,Software vendor seeking to lower support costs and improve response times.,22
+Company 125 Cloud,company125cloud.net,Cloud Services,321,US,Intercom;Salesforce;Jira;Zendesk,Series B,Cloud software suite addressing high support costs and slow response time.,18
+Company 126 Fintech,company126fintech.co,Fintech,523,United States,AWS;Marketo,Series B,Regional logistics and fleet tracking software provider.,19
+Company 127 Education,company127education.net,Education,28,Australia,Intercom,Seed,E-commerce storefront builder for boutique retailers.,7
+Company 128 Manufacturing,company128manufacturing.com,Manufacturing,3342,Brazil,Zendesk,Seed,Retail management software focusing on inventory automation.,5
+Company 129 Healthcare,company129healthcare.co,Healthcare,4953,Brazil,Marketo,Seed,Healthtech patient engagement workflow solution.,0
+Company 130 Manufacturing,company130manufacturing.com,Manufacturing,16,Brazil,,Seed,E-commerce storefront builder for boutique retailers.,1
+Company 131 E-commerce,company131e-commerce.org,E-commerce,4386,Germany,,Seed,Online learning and education services portal.,5
+Company 132 Cloud,company132cloud.co,Cloud Services,48,US,Intercom;Datadog,Seed,Online learning and education services portal.,14
+Company 133 Manufacturing,company133manufacturing.co,Manufacturing,1958,Germany,Stripe,Bootstrapped,Regional logistics and fleet tracking software provider.,6
+Company 134 Healthcare,company134healthcare.org,Healthcare,3885,Australia,,Bootstrapped,Regional logistics and fleet tracking software provider.,8
+Company 135 Healthcare,company135healthcare.io,Healthcare,10,Australia,AWS,Bootstrapped,Industrial manufacturing enterprise platform.,3
+Company 136 B2B,company136b2b.io,B2B SaaS,388,US,Jira;Intercom;Salesforce,Series B,Digital platform facing help desk overload and growing support ticket volume.,19
+Company 137 Education,company137education.co,Education,24,France,HubSpot,Seed,Regional logistics and fleet tracking software provider.,3
+Company 138 Cybersecurity,company138cybersecurity.net,Cybersecurity,172,United States,HubSpot,Seed,Regional logistics and fleet tracking software provider.,19
+Company 139 Education,company139education.net,Education,14,Brazil,,Seed,Online learning and education services portal.,0
+Company 140 Healthcare,company140healthcare.co,Healthcare,1821,Japan,,Seed,Industrial manufacturing enterprise platform.,4
+Company 141 Software,company141software.net,Software,163,US,Salesforce;Zendesk;Intercom,Growth,SaaS platform reducing help desk overload and high support ticket volume.,27
+Company 142 B2B,company142b2b.io,B2B SaaS,41,UK,Salesforce;Workday,Seed,SaaS platform reducing help desk overload and high support ticket volume.,14
+Company 143 Retail,company143retail.co,Retail,20,India,,Bootstrapped,Online learning and education services portal.,3
+Company 144 Education,company144education.io,Education,1710,Brazil,,Bootstrapped,Online learning and education services portal.,1
+Company 145 Fintech,company145fintech.io,Fintech,564,Canada,Stripe,Series B,Healthtech patient engagement workflow solution.,12

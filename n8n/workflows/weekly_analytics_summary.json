@@ -1,0 +1,166 @@
+{
+  "name": "Weekly Analytics Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 9 * * 1"
+            }
+          ]
+        }
+      },
+      "id": "node-schedule-trigger",
+      "name": "Schedule: Every Monday 9am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:8000/analytics/funnel",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "id": "node-get-funnel",
+      "name": "GET: Analytics Funnel",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-total-accounts",
+              "name": "total_accounts",
+              "value": "={{ $json.total_accounts ?? $json.accounts_total ?? 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-priority1",
+              "name": "priority_1_count",
+              "value": "={{ $json.priority_1_count ?? $json.tier_distribution?.['Priority 1'] ?? 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-contacted",
+              "name": "contacted_count",
+              "value": "={{ $json.contacted ?? $json.stage_counts?.Contacted ?? 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-opportunities",
+              "name": "opportunities_count",
+              "value": "={{ $json.opportunities ?? $json.stage_counts?.Opportunity ?? 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-won",
+              "name": "won_count",
+              "value": "={{ $json.won ?? $json.stage_counts?.Won ?? 'N/A' }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-summary",
+              "name": "summary_text",
+              "value": "=GTMOS Weekly Report ({{ $now.toISOString().substring(0,10) }}): Total accounts={{ $json.total_accounts ?? 'N/A' }}, Contacted={{ $json.stage_counts?.Contacted ?? 'N/A' }}, Opportunities={{ $json.stage_counts?.Opportunity ?? 'N/A' }}, Won={{ $json.stage_counts?.Won ?? 'N/A' }}.",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-extract-totals",
+      "name": "Set: Extract Totals",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:8000/health",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-GTMOS-Report-Type",
+              "value": "weekly-analytics-summary"
+            },
+            {
+              "name": "X-GTMOS-Summary",
+              "value": "={{ $json.summary_text }}"
+            },
+            {
+              "name": "X-GTMOS-Generated-At",
+              "value": "={{ $now.toISOString() }}"
+            }
+          ]
+        }
+      },
+      "id": "node-send-notification",
+      "name": "GET: Send Summary Notification",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [920, 300]
+    }
+  ],
+  "connections": {
+    "Schedule: Every Monday 9am": {
+      "main": [
+        [
+          {
+            "node": "GET: Analytics Funnel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET: Analytics Funnel": {
+      "main": [
+        [
+          {
+            "node": "Set: Extract Totals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set: Extract Totals": {
+      "main": [
+        [
+          {
+            "node": "GET: Send Summary Notification",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "gtmos-weekly-analytics-summary",
+  "meta": {
+    "instanceId": "gtmos",
+    "description": "Runs every Monday at 9am. Fetches funnel analytics from GTMOS API, extracts key totals, and sends a mock summary notification via HTTP header to the health endpoint. No email dependency."
+  }
+}

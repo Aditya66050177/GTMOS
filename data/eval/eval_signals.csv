@@ -1,0 +1,61 @@
+signal_id,account_id,signal_type,raw_text,source,date,is_supported
+1,16,international_expansion,Industry report: New regional headquarters opened to support growth across Asian markets.,CrunchBase,2026-08-16,True
+2,12,funding,Industry report: The startup secured $15 million in a Series A investment from top-tier VCs.,CrunchBase,2026-09-12,True
+3,14,relevant_technology,The company operates in the traditional retail sector with physical store locations.,Social,2026-06-09,False
+4,18,product_launch,Industry report: Press release confirms the company released a major platform update introducing three new features.,CrunchBase,2026-08-21,True
+5,16,relevant_technology,The organization relies on spreadsheets for most of its internal reporting.,Unknown,2026-05-15,False
+6,20,rapid_growth,"Headcount expanded from 50 to 150 employees in just 18 months, scaling operations rapidly.",JobPosting,2026-09-22,True
+7,12,rapid_growth,The company rebranded its logo and updated its website color scheme.,Social,2026-06-25,False
+8,1,rapid_growth,"Customer base grew from 200 to 800 clients, showing exceptional expansion momentum.",Press Release,2026-10-05,True
+9,6,support_hiring,Industry report: HR announcements confirm the company is expanding its customer success headcount significantly.,TechCrunch,2026-09-10,True
+10,7,relevant_technology,Tech stack review shows Freshdesk is their primary helpdesk platform.,TechCrunch,2026-09-15,True
+11,19,executive_change,The company's marketing team produced a new brand video.,Blog,2026-06-10,False
+12,6,funding,The team held their annual company picnic last weekend.,Social,2026-07-09,False
+13,3,support_hiring,The company announced a new product line targeting enterprise clients.,Social,2026-06-14,False
+14,12,international_expansion,Press release: the company is expanding globally with launches in EMEA and APAC.,LinkedIn,2026-09-13,True
+15,18,executive_change,LinkedIn announcement: a new VP of Customer Experience joined from Salesforce.,Press Release,2026-10-09,True
+16,6,relevant_technology,Job postings confirm the team runs Intercom alongside Jira for issue tracking workflows.,TechCrunch,2026-09-30,True
+17,9,relevant_technology,Sources confirm: Job postings confirm the team runs Intercom alongside Jira for issue tracking workflows.,JobPosting,2026-10-05,True
+18,13,international_expansion,New regional headquarters opened to support growth across Asian markets.,JobPosting,2026-09-26,True
+19,5,relevant_technology,The company uses Zendesk for customer support and Salesforce for CRM integration.,TechCrunch,2026-10-04,True
+20,11,product_launch,Employee satisfaction scores reached an all-time high according to internal surveys.,Social,2026-07-02,False
+21,7,funding,The company raised $45 million in a Series B funding round led by Accel Partners.,JobPosting,2026-08-19,True
+22,17,international_expansion,The company focuses exclusively on its hometown market with no plans for growth.,Social,2026-05-30,False
+23,7,funding,New office space opened in the downtown area.,Social,2026-05-30,False
+24,2,rapid_growth,"Recent update: The company reported 200% growth in ARR over the past 12 months, doubling its customer base.",Press Release,2026-09-24,True
+25,8,relevant_technology,Recent update: The company uses Zendesk for customer support and Salesforce for CRM integration.,TechCrunch,2026-08-25,True
+26,19,executive_change,Executive hire: new CTO hired to lead the engineering and product organization.,JobPosting,2026-09-20,True
+27,1,support_hiring,The company is actively recruiting customer support specialists and hiring for their growing support team.,TechCrunch,2026-09-25,True
+28,19,rapid_growth,"The company reported 200% growth in ARR over the past 12 months, doubling its customer base.",TechCrunch,2026-09-08,True
+29,18,international_expansion,The board approved a cost-cutting initiative focused on domestic operations.,Social,2026-06-07,False
+30,4,support_hiring,Revenue grew by 30% last year according to the annual report.,Unknown,2026-06-14,False
+31,1,executive_change,Sources confirm: LinkedIn announcement: a new VP of Customer Experience joined from Salesforce.,CrunchBase,2026-09-05,True
+32,14,international_expansion,Recent update: The company announced international expansion into European markets with two new offices.,CrunchBase,2026-09-15,True
+33,5,support_hiring,The CEO gave a keynote on digital transformation strategy.,Social,2026-05-18,False
+34,11,funding,Sources confirm: Investment announcement: $20M round closed to accelerate go-to-market expansion.,CrunchBase,2026-08-31,True
+35,4,rapid_growth,"Industry report: Customer base grew from 200 to 800 clients, showing exceptional expansion momentum.",CrunchBase,2026-08-13,True
+36,17,product_launch,Sources confirm: New product release: the team introduced an automated ticketing system to the market.,Press Release,2026-08-17,True
+37,10,relevant_technology,Industry report: Tech stack review shows Freshdesk is their primary helpdesk platform.,Press Release,2026-09-13,True
+38,14,product_launch,New product release: the team introduced an automated ticketing system to the market.,JobPosting,2026-08-23,True
+39,17,executive_change,The company appointed a new CEO with a background in enterprise SaaS growth.,JobPosting,2026-09-15,True
+40,8,funding,Investment announcement: $20M round closed to accelerate go-to-market expansion.,CrunchBase,2026-08-28,True
+41,11,international_expansion,The company announced international expansion into European markets with two new offices.,JobPosting,2026-09-05,True
+42,9,funding,The startup secured $15 million in a Series A investment from top-tier VCs.,CrunchBase,2026-09-04,True
+43,20,executive_change,Quarterly earnings call discussed routine operational metrics.,Blog,2026-05-13,False
+44,10,funding,Recent update: The company raised $45 million in a Series B funding round led by Accel Partners.,JobPosting,2026-09-19,True
+45,20,executive_change,Recent update: The company appointed a new CEO with a background in enterprise SaaS growth.,JobPosting,2026-08-16,True
+46,13,rapid_growth,The CFO gave a presentation about budget planning for the upcoming fiscal year.,Blog,2026-06-19,False
+47,13,product_launch,The company announced the launch of its new AI-powered customer portal last month.,TechCrunch,2026-09-11,True
+48,16,product_launch,Recent update: The company announced the launch of its new AI-powered customer portal last month.,TechCrunch,2026-08-22,True
+49,2,support_hiring,Job postings show they are recruiting 10 new support team members this quarter.,CrunchBase,2026-08-19,True
+50,9,product_launch,The company hired a new head of human resources.,Blog,2026-06-26,False
+51,3,support_hiring,HR announcements confirm the company is expanding its customer success headcount significantly.,LinkedIn,2026-09-10,True
+52,15,relevant_technology,Manufacturing operations are handled by legacy ERP systems.,Internal,2026-06-01,False
+53,10,product_launch,The annual sales conference was held in Las Vegas this year.,Blog,2026-05-23,False
+54,5,support_hiring,Sources confirm: Job postings show they are recruiting 10 new support team members this quarter.,LinkedIn,2026-08-12,True
+55,2,executive_change,Industry report: Executive hire: new CTO hired to lead the engineering and product organization.,CrunchBase,2026-08-19,True
+56,15,product_launch,Press release confirms the company released a major platform update introducing three new features.,Press Release,2026-09-11,True
+57,3,rapid_growth,"Sources confirm: Headcount expanded from 50 to 150 employees in just 18 months, scaling operations rapidly.",Press Release,2026-09-18,True
+58,4,support_hiring,Recent update: The company is actively recruiting customer support specialists and hiring for their growing support team.,TechCrunch,2026-09-04,True
+59,15,international_expansion,Sources confirm: Press release: the company is expanding globally with launches in EMEA and APAC.,LinkedIn,2026-08-26,True
+60,8,funding,The company celebrated its 10th anniversary milestone.,Social,2026-06-21,False

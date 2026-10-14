@@ -1,0 +1,73 @@
+company,name,role,email,linkedin_url
+Acme Technologies,Sarah Chen,VP of Customer Support,sarah.chen@acmetechnologies.com,https://linkedin.com/in/sarah-chen-cx
+Acme Technologies,David Miller,Chief Revenue Officer,david.miller@acmetechnologies.com,https://linkedin.com/in/david-miller-cro
+Fintech Pulse Inc,Elena Rostova,Head of Customer Experience,elena.rostova@fintechpulse.com,https://linkedin.com/in/elena-rostova-fintech
+Nexus Cloud Systems,Marcus Vance,VP of Customer Support,marcus.vance@nexuscloud.io,https://linkedin.com/in/marcus-vance-nexus
+Global Logistics Ltd,Sarah Martinez,Chief Revenue Officer,sarah.martinez@globallogistics.co.uk,https://linkedin.com/in/sarah-martinez
+Micro Design Studio,Jessica Johnson,Director of Support Operations,jessica.johnson@microdesign.net,https://linkedin.com/in/jessica-johnson
+Company 1 Healthcare,Robert Martinez,VP Sales,robert.martinez@company1healthcare.co,https://linkedin.com/in/robert-martinez
+Company 2 Healthcare,Lisa Taylor,VP of Customer Support,lisa.taylor@company2healthcare.io,https://linkedin.com/in/lisa-taylor
+Company 3 Manufacturing,Michael Miller,Head of Customer Experience,michael.miller@company3manufacturing.com,https://linkedin.com/in/michael-miller
+Company 4 B2B,Daniel Miller,Director of Support Operations,daniel.miller@company4b2b.org,https://linkedin.com/in/daniel-miller
+Company 5 Software,Jessica Anderson,VP Sales,jessica.anderson@company5software.com,https://linkedin.com/in/jessica-anderson
+Company 5 Software,Alex Robinson,Customer Success Lead,alex.robinson@company5software.com,https://linkedin.com/in/alex-robinson
+Company 6 Healthcare,Carlos Robinson,Head of Customer Experience,carlos.robinson@company6healthcare.net,https://linkedin.com/in/carlos-robinson
+Company 7 Logistics,Emily Davis,Head of Customer Experience,emily.davis@company7logistics.co,https://linkedin.com/in/emily-davis
+Company 7 Logistics,Jessica Robinson,Chief Revenue Officer,jessica.robinson@company7logistics.co,https://linkedin.com/in/jessica-robinson
+Company 8 Cloud,Michael Taylor,VP of Customer Support,michael.taylor@company8cloud.org,https://linkedin.com/in/michael-taylor
+Company 9 Cybersecurity,Priya Wilson,VP Sales,priya.wilson@company9cybersecurity.io,https://linkedin.com/in/priya-wilson
+Company 9 Cybersecurity,Alex Robinson,VP of Customer Support,alex.robinson@company9cybersecurity.io,https://linkedin.com/in/alex-robinson
+Company 10 E-commerce,Daniel Smith,Head of Product,daniel.smith@company10e-commerce.co,https://linkedin.com/in/daniel-smith
+Company 10 E-commerce,Michael Patel,Chief Revenue Officer,michael.patel@company10e-commerce.co,https://linkedin.com/in/michael-patel
+Company 11 Software,Lisa Miller,Director of Support Operations,lisa.miller@company11software.net,https://linkedin.com/in/lisa-miller
+Company 11 Software,Michael Chen,Director of Support Operations,michael.chen@company11software.net,https://linkedin.com/in/michael-chen
+Company 12 Manufacturing,Carlos Davis,VP of Customer Support,carlos.davis@company12manufacturing.co,https://linkedin.com/in/carlos-davis
+Company 13 Logistics,Priya Smith,Head of Product,priya.smith@company13logistics.co,https://linkedin.com/in/priya-smith
+Company 14 B2B,Rachel Kim,Customer Success Lead,rachel.kim@company14b2b.org,https://linkedin.com/in/rachel-kim
+Company 14 B2B,Emily Johnson,Chief Revenue Officer,emily.johnson@company14b2b.org,https://linkedin.com/in/emily-johnson
+Company 15 Education,Jessica Kim,Chief Revenue Officer,jessica.kim@company15education.co,https://linkedin.com/in/jessica-kim
+Company 15 Education,Elena Lewis,Director of Support Operations,elena.lewis@company15education.co,https://linkedin.com/in/elena-lewis
+Company 16 Logistics,Lisa Kim,Head of Customer Experience,lisa.kim@company16logistics.io,https://linkedin.com/in/lisa-kim
+Company 17 Cloud,David Anderson,Head of Product,david.anderson@company17cloud.com,https://linkedin.com/in/david-anderson
+Company 18 Manufacturing,Marcus Kim,Director of Support Operations,marcus.kim@company18manufacturing.io,https://linkedin.com/in/marcus-kim
+Company 18 Manufacturing,Daniel Miller,Director of Support Operations,daniel.miller@company18manufacturing.io,https://linkedin.com/in/daniel-miller
+Company 19 Retail,Priya Robinson,Customer Success Lead,priya.robinson@company19retail.com,https://linkedin.com/in/priya-robinson
+Company 19 Retail,Sarah Miller,Customer Success Lead,sarah.miller@company19retail.com,https://linkedin.com/in/sarah-miller
+Company 20 Cloud,Carlos Wilson,Head of Product,carlos.wilson@company20cloud.io,https://linkedin.com/in/carlos-wilson
+Company 21 Manufacturing,Michael Miller,VP Sales,michael.miller@company21manufacturing.com,https://linkedin.com/in/michael-miller
+Company 21 Manufacturing,Marcus Martinez,Chief Revenue Officer,marcus.martinez@company21manufacturing.com,https://linkedin.com/in/marcus-martinez
+Company 22 E-commerce,Robert Anderson,Head of Product,robert.anderson@company22e-commerce.org,https://linkedin.com/in/robert-anderson
+Company 23 Software,David Davis,Head of Customer Experience,david.davis@company23software.net,https://linkedin.com/in/david-davis
+Company 23 Software,Jessica Martinez,VP Sales,jessica.martinez@company23software.net,https://linkedin.com/in/jessica-martinez
+Company 24 B2B,Elena Garcia,Head of Product,elena.garcia@company24b2b.com,https://linkedin.com/in/elena-garcia
+Company 24 B2B,Marcus Garcia,Head of Product,marcus.garcia@company24b2b.com,https://linkedin.com/in/marcus-garcia
+Company 25 Healthcare,Jessica Johnson,VP Sales,jessica.johnson@company25healthcare.co,https://linkedin.com/in/jessica-johnson
+Company 25 Healthcare,Rachel Smith,Customer Success Lead,rachel.smith@company25healthcare.co,https://linkedin.com/in/rachel-smith
+Company 26 Cloud,Priya Smith,Head of Customer Experience,priya.smith@company26cloud.net,https://linkedin.com/in/priya-smith
+Company 27 Healthcare,Carlos Kim,Head of Product,carlos.kim@company27healthcare.net,https://linkedin.com/in/carlos-kim
+Company 28 E-commerce,James Taylor,VP Sales,james.taylor@company28e-commerce.co,https://linkedin.com/in/james-taylor
+Company 29 B2B,Daniel Davis,VP Sales,daniel.davis@company29b2b.net,https://linkedin.com/in/daniel-davis
+Company 29 B2B,Priya Chen,Director of Support Operations,priya.chen@company29b2b.net,https://linkedin.com/in/priya-chen
+Company 30 Cloud,Robert Lewis,VP Sales,robert.lewis@company30cloud.net,https://linkedin.com/in/robert-lewis
+Company 31 Software,Carlos Kim,Chief Revenue Officer,carlos.kim@company31software.net,https://linkedin.com/in/carlos-kim
+Company 31 Software,Michael Davis,Head of Product,michael.davis@company31software.net,https://linkedin.com/in/michael-davis
+Company 32 E-commerce,Rachel Chen,Director of Support Operations,rachel.chen@company32e-commerce.com,https://linkedin.com/in/rachel-chen
+Company 33 Fintech,Daniel Robinson,Head of Customer Experience,daniel.robinson@company33fintech.net,https://linkedin.com/in/daniel-robinson
+Company 33 Fintech,Daniel Lewis,VP of Customer Support,daniel.lewis@company33fintech.net,https://linkedin.com/in/daniel-lewis
+Company 34 Retail,Priya Kim,VP Sales,priya.kim@company34retail.com,https://linkedin.com/in/priya-kim
+Company 34 Retail,Lisa Miller,Head of Customer Experience,lisa.miller@company34retail.com,https://linkedin.com/in/lisa-miller
+Company 35 E-commerce,Carlos Johnson,VP Sales,carlos.johnson@company35e-commerce.org,https://linkedin.com/in/carlos-johnson
+Company 35 E-commerce,Carlos Lewis,VP Sales,carlos.lewis@company35e-commerce.org,https://linkedin.com/in/carlos-lewis
+Company 36 B2B,Lisa Wilson,Head of Product,lisa.wilson@company36b2b.net,https://linkedin.com/in/lisa-wilson
+Company 37 Cloud,Michael Lewis,Chief Revenue Officer,michael.lewis@company37cloud.net,https://linkedin.com/in/michael-lewis
+Company 38 Software,Jessica Chen,Head of Customer Experience,jessica.chen@company38software.com,https://linkedin.com/in/jessica-chen
+Company 38 Software,Marcus Garcia,VP of Customer Support,marcus.garcia@company38software.com,https://linkedin.com/in/marcus-garcia
+Company 39 Manufacturing,Elena Anderson,Customer Success Lead,elena.anderson@company39manufacturing.io,https://linkedin.com/in/elena-anderson
+Company 40 Retail,Carlos Patel,Customer Success Lead,carlos.patel@company40retail.io,https://linkedin.com/in/carlos-patel
+Company 41 Education,David Kim,Head of Product,david.kim@company41education.io,https://linkedin.com/in/david-kim
+Company 42 Manufacturing,Alex Patel,Customer Success Lead,alex.patel@company42manufacturing.io,https://linkedin.com/in/alex-patel
+Company 43 B2B,Jessica Lewis,VP Sales,jessica.lewis@company43b2b.io,https://linkedin.com/in/jessica-lewis
+Company 43 B2B,Carlos Martinez,Director of Support Operations,carlos.martinez@company43b2b.io,https://linkedin.com/in/carlos-martinez
+Company 44 Cloud,Elena Davis,Head of Product,elena.davis@company44cloud.co,https://linkedin.com/in/elena-davis
+Company 45 Education,Rachel Lewis,VP Sales,rachel.lewis@company45education.org,https://linkedin.com/in/rachel-lewis
+Company 45 Education,Rachel Smith,Head of Customer Experience,rachel.smith@company45education.org,https://linkedin.com/in/rachel-smith

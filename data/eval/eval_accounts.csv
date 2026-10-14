@@ -1,0 +1,101 @@
+account_id,name,industry,country,employee_count,description,technology_stack,support_team_size,funding,expected_tier
+1,Apex Support Solutions,Software,US,380,Apex Support Solutions is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Salesforce,22,Series B,Priority 2
+2,ClearDesk AI,Cloud Services,US,425,ClearDesk AI is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Salesforce,33,Series C,Priority 1
+3,SupportScale Inc,B2B SaaS,US,95,SupportScale Inc is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Salesforce,22,Growth,Priority 2
+4,Helix CX Platform,Cloud Services,United States,365,Helix CX Platform is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Salesforce,37,Growth,Priority 1
+5,PulseDesk Technologies,Software,US,275,PulseDesk Technologies is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,39,Series B,Priority 2
+6,Orbit Customer Success,B2B SaaS,US,410,Orbit Customer Success is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Freshdesk|Salesforce,39,Series C,Priority 2
+7,Nimbus Help Platform,Software,US,125,Nimbus Help Platform is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Salesforce,26,Series C,Priority 2
+8,Relay Support Ops,Cloud Services,Canada,365,Relay Support Ops is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Jira,32,Series B,Priority 1
+9,Beacon CX Systems,Cloud Services,United States,260,Beacon CX Systems is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Salesforce,43,Series C,Priority 1
+10,Clarity Desk AI,B2B SaaS,United States,350,Clarity Desk AI is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,22,Series C,Priority 1
+11,Summit SaaS Corp,B2B SaaS,Canada,110,Summit SaaS Corp is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,23,Series C,Priority 2
+12,Vortex Support Tech,Software,US,380,Vortex Support Tech is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Jira,36,Series C,Priority 2
+13,Echo Customer Platform,Cloud Services,United States,410,Echo Customer Platform is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Intercom,20,Growth,Priority 1
+14,Zenith Help Desk,Software,Canada,425,Zenith Help Desk is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,44,Growth,Priority 2
+15,Atlas CX Solutions,Software,US,410,Atlas CX Solutions is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,22,Series B,Priority 2
+16,Nova Support Systems,B2B SaaS,US,455,Nova Support Systems is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Jira,44,Growth,Priority 2
+17,Crest B2B Software,Software,Canada,410,Crest B2B Software is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Jira,43,Growth,Priority 2
+18,Spark Desk Technologies,B2B SaaS,United States,290,Spark Desk Technologies is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,32,Growth,Priority 2
+19,Wave CX Inc,Cloud Services,Canada,200,Wave CX Inc is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Intercom,26,Series B,Priority 1
+20,Ridge Support Solutions,Software,US,140,Ridge Support Solutions is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,39,Series B,Priority 2
+21,Core Help Platform,Cloud Services,US,125,Core Help Platform is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,40,Growth,Priority 2
+22,Peak SaaS Inc,Software,United States,275,Peak SaaS Inc is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,29,Growth,Priority 2
+23,Flux Customer Operations,B2B SaaS,United States,200,Flux Customer Operations is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,38,Series B,Priority 1
+24,Prism B2B Systems,Cloud Services,Canada,395,Prism B2B Systems is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,18,Series C,Priority 1
+25,Tide Support Tech,Cloud Services,United States,275,Tide Support Tech is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,23,Growth,Priority 2
+26,Arch CX Platform,B2B SaaS,United States,440,Arch CX Platform is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Salesforce,24,Growth,Priority 1
+27,Blaze Help Desk,Software,US,320,Blaze Help Desk is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,32,Growth,Priority 2
+28,Drift Support Inc,Software,Canada,80,Drift Support Inc is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Intercom|Jira,15,Series B,Priority 2
+29,Glow SaaS Solutions,B2B SaaS,United States,245,Glow SaaS Solutions is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Zendesk|Jira,17,Series B,Priority 2
+30,Halo Customer Success,Cloud Services,US,425,Halo Customer Success is a B2B platform that automates customer support workflows and reduces ticket resolution time.,Freshdesk|Salesforce,19,Growth,Priority 1
+31,Crestwood E-Commerce,Cloud Services,Canada,950,Crestwood E-Commerce provides digital services and cloud-based tooling for mid-market clients.,Zendesk,13,Bootstrap,Priority 3
+32,Valley Cloud Services,Cloud Services,Canada,525,Valley Cloud Services provides digital services and cloud-based tooling for mid-market clients.,Zendesk,11,Series B,Priority 3
+33,Horizon SaaS Group,Fintech,US,900,Horizon SaaS Group provides digital services and cloud-based tooling for mid-market clients.,Zendesk,8,Seed,Priority 3
+34,Meridian Tech Solutions,E-commerce,Germany,300,Meridian Tech Solutions provides digital services and cloud-based tooling for mid-market clients.,Intercom,13,Seed,Priority 3
+35,Pinnacle Software Co,E-commerce,US,550,Pinnacle Software Co provides digital services and cloud-based tooling for mid-market clients.,Salesforce,8,Series A,Priority 3
+36,Starlight Cloud Inc,E-commerce,Germany,250,Starlight Cloud Inc provides digital services and cloud-based tooling for mid-market clients.,Intercom,8,Series B,Priority 3
+37,Westbrook Digital,EdTech,United Kingdom,975,Westbrook Digital provides digital services and cloud-based tooling for mid-market clients.,Jira,16,Bootstrap,Priority 3
+38,Fairview CRM Tech,Fintech,United Kingdom,575,Fairview CRM Tech provides digital services and cloud-based tooling for mid-market clients.,Freshdesk,6,Series A,Priority 3
+39,Lakeside Platform Corp,Fintech,Australia,875,Lakeside Platform Corp provides digital services and cloud-based tooling for mid-market clients.,Intercom,12,Series A,Priority 3
+40,Maple Grove Software,Fintech,Canada,350,Maple Grove Software provides digital services and cloud-based tooling for mid-market clients.,Salesforce,17,Series A,Priority 3
+41,Ironwood Cloud Group,Cloud Services,Germany,575,Ironwood Cloud Group provides digital services and cloud-based tooling for mid-market clients.,Jira,12,Seed,Priority 3
+42,Cedarbrook SaaS,Software,Australia,875,Cedarbrook SaaS provides digital services and cloud-based tooling for mid-market clients.,Jira,8,Series A,Priority 3
+43,Thornfield Tech,E-commerce,US,900,Thornfield Tech provides digital services and cloud-based tooling for mid-market clients.,Zendesk,15,Series A,Priority 3
+44,Ashwood Digital Co,Cloud Services,Australia,325,Ashwood Digital Co provides digital services and cloud-based tooling for mid-market clients.,Jira,12,Bootstrap,Priority 3
+45,Brookside Cloud,E-commerce,United Kingdom,525,Brookside Cloud provides digital services and cloud-based tooling for mid-market clients.,Freshdesk,11,Series A,Priority 3
+46,Elmwood Software Inc,Fintech,Canada,800,Elmwood Software Inc provides digital services and cloud-based tooling for mid-market clients.,Intercom,11,Bootstrap,Priority 3
+47,Fireside B2B Group,Software,United Kingdom,425,Fireside B2B Group provides digital services and cloud-based tooling for mid-market clients.,Jira,5,Series A,Priority 3
+48,Greenhill Platform,E-commerce,Germany,700,Greenhill Platform provides digital services and cloud-based tooling for mid-market clients.,Salesforce,12,Seed,Priority 3
+49,Hayfield Digital Tech,E-commerce,United Kingdom,275,Hayfield Digital Tech provides digital services and cloud-based tooling for mid-market clients.,Zendesk,6,Series A,Priority 3
+50,Ivy League Software,E-commerce,Germany,575,Ivy League Software provides digital services and cloud-based tooling for mid-market clients.,Freshdesk,8,Series A,Priority 3
+51,Juniper Cloud Corp,EdTech,Germany,325,Juniper Cloud Corp provides digital services and cloud-based tooling for mid-market clients.,Freshdesk,13,Series B,Priority 3
+52,Kingsley SaaS Systems,Software,United Kingdom,600,Kingsley SaaS Systems provides digital services and cloud-based tooling for mid-market clients.,Jira,9,Bootstrap,Priority 3
+53,Larkspur Digital Inc,Software,Australia,400,Larkspur Digital Inc provides digital services and cloud-based tooling for mid-market clients.,,10,Series A,Priority 3
+54,Maplewood Cloud,EdTech,Germany,200,Maplewood Cloud provides digital services and cloud-based tooling for mid-market clients.,Freshdesk,6,Series A,Priority 3
+55,Northbrook Software,Software,United Kingdom,525,Northbrook Software provides digital services and cloud-based tooling for mid-market clients.,Zendesk,19,Series B,Priority 3
+56,Oakdale Tech Group,Software,Canada,300,Oakdale Tech Group provides digital services and cloud-based tooling for mid-market clients.,Jira,7,Bootstrap,Priority 3
+57,Parkside Digital,EdTech,US,675,Parkside Digital provides digital services and cloud-based tooling for mid-market clients.,Zendesk,15,Series B,Priority 3
+58,Queensbury Cloud,Software,US,350,Queensbury Cloud provides digital services and cloud-based tooling for mid-market clients.,Jira,19,Series A,Priority 3
+59,Riverside Software,Software,Germany,425,Riverside Software provides digital services and cloud-based tooling for mid-market clients.,Intercom,8,Series B,Priority 3
+60,Silverwood Tech,Software,Germany,525,Silverwood Tech provides digital services and cloud-based tooling for mid-market clients.,,12,Series B,Priority 3
+61,Timberline Digital,Fintech,Canada,275,Timberline Digital provides digital services and cloud-based tooling for mid-market clients.,Salesforce,5,Series A,Priority 3
+62,Upland Cloud Inc,Software,United Kingdom,725,Upland Cloud Inc provides digital services and cloud-based tooling for mid-market clients.,Jira,16,Bootstrap,Priority 3
+63,Valleyview Software,E-commerce,US,875,Valleyview Software provides digital services and cloud-based tooling for mid-market clients.,Zendesk,6,Seed,Priority 3
+64,Windermere Tech,EdTech,Germany,250,Windermere Tech provides digital services and cloud-based tooling for mid-market clients.,Intercom,7,Bootstrap,Priority 3
+65,Yellowstone Digital,Software,Canada,400,Yellowstone Digital provides digital services and cloud-based tooling for mid-market clients.,Salesforce,19,Series A,Priority 3
+66,GovTech Solutions LLC,Agriculture,Canada,29,GovTech Solutions LLC operates in Agriculture and serves its traditional market.,,5,Bootstrap,Low
+67,MediCare Systems Inc,Real Estate,Canada,3200,MediCare Systems Inc operates in Real Estate and serves its traditional market.,,3,None,Low
+68,Hardware Direct Corp,Agriculture,China,433,Hardware Direct Corp operates in Agriculture and serves its traditional market.,,1,Bootstrap,Low
+69,Steel Mills United,Healthcare,Iran,29,Steel Mills United operates in Healthcare and serves its traditional market.,,1,None,Low
+70,Pharma Research Group,Media,Canada,11,Pharma Research Group operates in Media and serves its traditional market.,,5,Bootstrap,Low
+71,National Infrastructure Co,Non-Profit,US,5400,National Infrastructure Co operates in Non-Profit and serves its traditional market.,,0,Grant,Low
+72,Defense Systems Ltd,Legal Services,Russia,496,Defense Systems Ltd operates in Legal Services and serves its traditional market.,,1,Bootstrap,Low
+73,Agriculture Tech Corp,Oil & Gas,Iran,27,Agriculture Tech Corp operates in Oil & Gas and serves its traditional market.,,2,Bootstrap,Low
+74,Mining Operations Group,Media,US,8,Mining Operations Group operates in Media and serves its traditional market.,,1,Grant,Low
+75,Oil Field Services Inc,Government,Canada,6200,Oil Field Services Inc operates in Government and serves its traditional market.,,2,Grant,Low
+76,Retail Giant Corp,Retail,Brazil,378,Retail Giant Corp operates in Retail and serves its traditional market.,,5,None,Low
+77,Auto Parts Supplier,Government,Russia,11,Auto Parts Supplier operates in Government and serves its traditional market.,,2,Bootstrap,Low
+78,Food Processing Inc,Healthcare,Canada,19,Food Processing Inc operates in Healthcare and serves its traditional market.,,0,None,Low
+79,Logistics Heavy Freight,Non-Profit,Canada,7400,Logistics Heavy Freight operates in Non-Profit and serves its traditional market.,,2,Grant,Low
+80,Construction Materials Co,Government,Brazil,360,Construction Materials Co operates in Government and serves its traditional market.,,3,None,Low
+81,Nuclear Energy Systems,Healthcare,North Korea,7,Nuclear Energy Systems operates in Healthcare and serves its traditional market.,,5,Grant,Low
+82,Water Treatment Corp,Real Estate,United States,1,Water Treatment Corp operates in Real Estate and serves its traditional market.,,5,None,Low
+83,Textile Manufacturing,Retail,Canada,4400,Textile Manufacturing operates in Retail and serves its traditional market.,,0,None,Low
+84,Print Media House,Oil & Gas,Brazil,219,Print Media House operates in Oil & Gas and serves its traditional market.,,5,Bootstrap,Low
+85,Newspaper Corp Inc,Real Estate,North Korea,24,Newspaper Corp Inc operates in Real Estate and serves its traditional market.,,2,None,Low
+86,Television Broadcast Co,Retail,Canada,14,Television Broadcast Co operates in Retail and serves its traditional market.,,5,Grant,Low
+87,Radio Networks Ltd,Agriculture,US,9000,Radio Networks Ltd operates in Agriculture and serves its traditional market.,,3,None,Low
+88,Real Estate Holdings,Non-Profit,India,244,Real Estate Holdings operates in Non-Profit and serves its traditional market.,,1,None,Low
+89,Property Management Co,Retail,North Korea,19,Property Management Co operates in Retail and serves its traditional market.,,4,Bootstrap,Low
+90,Insurance Agency Group,Agriculture,Canada,10,Insurance Agency Group operates in Agriculture and serves its traditional market.,,3,None,Low
+91,Legal Services Corp,Oil & Gas,United States,9600,Legal Services Corp operates in Oil & Gas and serves its traditional market.,,3,Grant,Low
+92,Accounting Firm LLC,Agriculture,India,276,Accounting Firm LLC operates in Agriculture and serves its traditional market.,,4,Grant,Low
+93,Dental Practice Group,Non-Profit,Mexico,26,Dental Practice Group operates in Non-Profit and serves its traditional market.,,1,None,Low
+94,Hospital Systems Inc,Real Estate,Canada,3,Hospital Systems Inc operates in Real Estate and serves its traditional market.,,5,None,Low
+95,Educational Institute,Government,Canada,9800,Educational Institute operates in Government and serves its traditional market.,,1,None,Low
+96,K12 School District,Agriculture,China,208,K12 School District operates in Agriculture and serves its traditional market.,,1,Bootstrap,Low
+97,Government Agency,Legal Services,China,2,Government Agency operates in Legal Services and serves its traditional market.,,4,Bootstrap,Low
+98,Municipality Services,Media,Canada,15,Municipality Services operates in Media and serves its traditional market.,,4,Bootstrap,Low
+99,Non-Profit Foundation,Retail,Canada,6800,Non-Profit Foundation operates in Retail and serves its traditional market.,,1,Bootstrap,Low
+100,Religious Organization,Healthcare,India,385,Religious Organization operates in Healthcare and serves its traditional market.,,0,Grant,Low

@@ -1,0 +1,49 @@
+name: GTMOS Test Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    env:
+      LLM_MODE: mock
+      DATABASE_URL: sqlite:///./gtmos_test.db
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run full test suite in mock mode
+        run: python -m pytest -v --tb=short
+
+      - name: Run evaluation suite in mock mode
+        run: python -m app.ai.run_eval --mode mock
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gtmos-test-results
+          path: |
+            docs/evaluation.md
+            docs/eval_results/

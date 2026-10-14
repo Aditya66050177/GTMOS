@@ -1,0 +1,196 @@
+{
+  "name": "Research and Score New Account",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "new-account",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "node-webhook-trigger",
+      "name": "Webhook: New Account",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [260, 300],
+      "webhookId": "gtmos-new-account"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://localhost:8000/accounts/{{ $json.body.account_id }}/score",
+        "options": {
+          "allowUnauthorizedCerts": false
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        }
+      },
+      "id": "node-score-account",
+      "name": "POST: Score Account",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [480, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-tier-priority1",
+              "leftValue": "={{ $json.tier }}",
+              "rightValue": "Priority 1",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "node-check-tier",
+      "name": "IF: Is Priority 1?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://localhost:8000/health",
+        "options": {},
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-GTMOS-Notification",
+              "value": "Priority 1 account scored — immediate outreach recommended"
+            },
+            {
+              "name": "X-GTMOS-Account-Id",
+              "value": "={{ $('Webhook: New Account').item.json.body.account_id }}"
+            }
+          ]
+        }
+      },
+      "id": "node-notify-priority1",
+      "name": "GET: Notify Priority 1",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [920, 200]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "assign-output-message",
+              "name": "output_message",
+              "value": "=Account {{ $('Webhook: New Account').item.json.body.account_id }} scored. Tier: {{ $('POST: Score Account').item.json.tier }}. Total: {{ $('POST: Score Account').item.json.total_score }}.",
+              "type": "string"
+            },
+            {
+              "id": "assign-account-id",
+              "name": "account_id",
+              "value": "={{ $('Webhook: New Account').item.json.body.account_id }}",
+              "type": "number"
+            },
+            {
+              "id": "assign-tier",
+              "name": "tier",
+              "value": "={{ $('POST: Score Account').item.json.tier }}",
+              "type": "string"
+            },
+            {
+              "id": "assign-total",
+              "name": "total_score",
+              "value": "={{ $('POST: Score Account').item.json.total_score }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "node-set-output",
+      "name": "Set: Output Message",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3,
+      "position": [920, 400]
+    }
+  ],
+  "connections": {
+    "Webhook: New Account": {
+      "main": [
+        [
+          {
+            "node": "POST: Score Account",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "POST: Score Account": {
+      "main": [
+        [
+          {
+            "node": "IF: Is Priority 1?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IF: Is Priority 1?": {
+      "main": [
+        [
+          {
+            "node": "GET: Notify Priority 1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Set: Output Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GET: Notify Priority 1": {
+      "main": [
+        [
+          {
+            "node": "Set: Output Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "gtmos-research-and-score",
+  "meta": {
+    "instanceId": "gtmos",
+    "description": "Webhook-triggered workflow. POST to /webhook/new-account with body {account_id: 123}. Scores the account via GTMOS API, checks if Priority 1 tier, and sends a mock notification header to /health."
+  }
+}

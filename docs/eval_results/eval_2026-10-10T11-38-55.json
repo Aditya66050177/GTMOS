@@ -1,0 +1,166 @@
+{
+  "version": "1.0",
+  "mode": "mock",
+  "timestamp": "2026-10-10T11:38:55.155429+00:00",
+  "scoring": {
+    "accuracy": 0.57,
+    "correct": 57,
+    "total_evaluated": 100,
+    "per_tier_precision": {
+      "Priority 1": 0.3667,
+      "Priority 2": 0.0,
+      "Priority 3": 1.0,
+      "Low": 0.614
+    },
+    "per_tier_recall": {
+      "Priority 1": 1.0,
+      "Priority 2": 0.0,
+      "Priority 3": 0.3143,
+      "Low": 1.0
+    },
+    "per_tier_f1": {
+      "Priority 1": 0.5366,
+      "Priority 2": 0.0,
+      "Priority 3": 0.4783,
+      "Low": 0.7608
+    },
+    "confusion_matrix": {
+      "Priority 1": {
+        "Priority 1": 11,
+        "Priority 2": 0,
+        "Priority 3": 0,
+        "Low": 0
+      },
+      "Priority 2": {
+        "Priority 1": 19,
+        "Priority 2": 0,
+        "Priority 3": 0,
+        "Low": 0
+      },
+      "Priority 3": {
+        "Priority 1": 0,
+        "Priority 2": 2,
+        "Priority 3": 11,
+        "Low": 22
+      },
+      "Low": {
+        "Priority 1": 0,
+        "Priority 2": 0,
+        "Priority 3": 0,
+        "Low": 35
+      }
+    },
+    "tier_counts": {
+      "Priority 1": {
+        "actual": 11,
+        "predicted": 30,
+        "tp": 11,
+        "fp": 19,
+        "fn": 0
+      },
+      "Priority 2": {
+        "actual": 19,
+        "predicted": 2,
+        "tp": 0,
+        "fp": 2,
+        "fn": 19
+      },
+      "Priority 3": {
+        "actual": 35,
+        "predicted": 11,
+        "tp": 11,
+        "fp": 0,
+        "fn": 24
+      },
+      "Low": {
+        "actual": 35,
+        "predicted": 57,
+        "tp": 35,
+        "fp": 22,
+        "fn": 0
+      }
+    }
+  },
+  "signals": {
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "true_positives": 42,
+    "false_positives": 0,
+    "false_negatives": 0,
+    "true_negatives": 18,
+    "total_evaluated": 60,
+    "unsupported_claim_rate": 0.0,
+    "per_type_metrics": {
+      "international_expansion": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 2
+      },
+      "funding": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3
+      },
+      "relevant_technology": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3
+      },
+      "product_launch": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3
+      },
+      "rapid_growth": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 2
+      },
+      "support_hiring": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 3
+      },
+      "executive_change": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "tn": 2
+      }
+    }
+  },
+  "consistency": {
+    "is_deterministic": true,
+    "inconsistent_accounts": [],
+    "total_accounts": 100,
+    "total_runs": 5
+  }
+}
