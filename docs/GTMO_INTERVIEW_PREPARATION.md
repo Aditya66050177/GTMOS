@@ -73,7 +73,10 @@ over-promotes. That's the first calibration target.
 
 **11. How do you stop the AI from inventing a signal?**
 Code checks that the quoted evidence appears in the research note; if not, the signal is
-rejected and logged as "unsupported" with 0 points. The model proposes; code verifies.
+rejected and logged as "unsupported" with 0 points. The model proposes; code verifies. Be
+honest that the check is partial: for longer quotes it accepts a match on the first or last
+three words, so a live model could slip a partly paraphrased claim through. Making it
+whole-quote is a cheap fix I'd do before a pilot.
 
 **12. Your signal precision is 100%. Isn't that suspicious?**
 Yes, and I say so. It's measured with a simplified keyword matcher on 60 short synthetic

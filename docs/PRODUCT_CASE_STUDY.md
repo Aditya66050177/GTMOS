@@ -18,8 +18,8 @@ to talk to them now?* GTMOS keeps them apart:
 
 - **Fit (out of 80)** comes from fixed rules: industry and pain points, company size,
   technology and geography.
-- **Intent (out of 20)** comes only from buying signals that are quoted word for word from
-  research notes, weighted, decayed by age, and reduced by disqualifier penalties.
+- **Intent (out of 20)** comes only from buying signals whose quoted evidence is checked
+  against the research notes, weighted, decayed by age, and reduced by disqualifier penalties.
 - A fixed rule table turns tier plus intent into a next action:
   **CONTACT · PRIORITIZE · NURTURE · RESEARCH · DEPRIORITIZE**.
 - Every number can be traced: each account page shows the rule behind each fit point, each
@@ -184,7 +184,10 @@ silently dropped.
 **Implementation.**
 - `ResearchEngine.extract_signals_from_text` (`app/services/research_engine.py`) asks the
   language model for structured signals, validates them with Pydantic, and rejects any whose
-  quote isn't in the text.
+  quote isn't in the text. The check is case-insensitive and partial: a quote of more than
+  three words passes if the whole quote, its first three words or its last three words
+  appear in the note. The offline extractor always returns whole sentences, so in the demo
+  every accepted quote is verbatim; a live model could pass a partly paraphrased quote.
 - Each note is stored with provenance (a `research_note` activity holding the text, source,
   date, dataset and resulting signal ids). Each rejection is stored as a `rejected_signal`
   activity with its category: **negated**, **unsupported** or **ambiguous**.
@@ -206,8 +209,8 @@ the formula with real numbers, and a check that recomputed intent equals the sto
   accepts "reportedly" or "may" sentences that match a signal rule.
 - Strength and confidence are fixed per signal type, not measured.
 
-**Unsolved.** Evaluating a live model's extraction on real notes; claim-level source
-tracing inside drafts.
+**Unsolved.** Evaluating a live model's extraction on real notes; a stricter, whole-quote
+evidence check; claim-level source tracing inside drafts.
 
 ## 9. Human-in-the-loop outreach
 

@@ -146,7 +146,8 @@ non-GET request returns **403** before reaching a route.
 
 - **Extraction** (`research_engine.extract_signals_from_text`): the LLM returns
   `SignalListSchema` (signals and rejected claims). Code rejects any signal whose quote is
-  absent from the note. Verified signals become `Signal` rows; rejections become
+  absent from the note (case-insensitive; for quotes over three words, the whole quote, its
+  first three words or its last three words must appear, so the check is partial). Verified signals become `Signal` rows; rejections become
   `rejected_signal` activities with `points: 0`. Re-ingesting an identical note records
   nothing new.
 - **Offline stand-in** (`app/ai/mock_signals.py`): splits sentences, skips negated or hearsay

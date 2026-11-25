@@ -51,7 +51,8 @@ contrast, and that the two scores aren't fully independent, because disqualifier
 **On the slide:** one signal shown as source sentence (quote highlighted) →
 `20 × 0.8 × 0.9 × 1.0 = 14.4 pts`, next to a rejected claim: "hiring freeze → negated, 0 pts"
 
-**Speaker notes:** A signal only counts if its quote is actually in the research note. Each
+**Speaker notes:** A signal only counts if its quote is found in the research note (the check matches the
+whole quote or its opening or closing words, so it isn't yet strict). Each
 one shows weight, strength, confidence and recency decay, so you can do the arithmetic
 yourself. Claims the system refuses (negated, rumoured, speculative) are kept and shown with
 zero points, not hidden. That's how Acme's "hiring" rumour, contradicted by a hiring freeze,

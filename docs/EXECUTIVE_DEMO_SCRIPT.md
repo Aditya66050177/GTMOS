@@ -100,8 +100,9 @@ rejected** in the guide.
 **Business question:** *Can I trust why this account is ranked here?*
 
 **Likely follow-ups:**
-- *"What if the AI hallucinates a signal?"* The quote must appear in the note, or the signal
-  is rejected and logged.
+- *"What if the AI hallucinates a signal?"* The quote is checked against the note, and if it
+  isn't found the signal is rejected and logged. The check is partial (the whole quote, or its
+  first or last three words), so a stricter check is on the list.
 - *"Who extracts signals in this demo?"* An offline, rule-based stand-in for the language
   model, so the public demo costs nothing and is reproducible. It has gaps: it still accepts
   "reportedly" claims.
