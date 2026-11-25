@@ -192,8 +192,9 @@ py -3.11 -m venv .venv
 Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass -Force
 .\.venv\Scripts\Activate.ps1
 
-# 2. Install dependencies
-pip install -r requirements.txt
+# 2. Install dependencies (runtime + Streamlit + test tools)
+pip install -r requirements-dev.txt
+#    requirements.txt alone is the slim runtime set that Vercel installs
 
 # 3. Initialize SQLite DB tables (optional manual step)
 python -m app.db.init_db

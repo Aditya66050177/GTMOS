@@ -10,7 +10,26 @@ itself is also blocked on GitHub access and on one dependency question I could n
 
 ---
 
-## 1. Repository state
+## Status update — after Phase B Task 1 (public-demo security) and Task 2 (dependency split)
+
+| Blocker | Status | How it was resolved / what remains |
+|---|---|---|
+| P0-1 visitors can change shared data | **Fixed** | `app/api/public.py`: shared data opened read-only; write allowlist (403 otherwise); allowed edits go to per-browser sandboxes. Tests: `tests/test_public_demo.py` |
+| P0-2 PII stored and shown | **Fixed** | Contact creation is blocked in the public API (403) |
+| P0-3 unbounded inputs | **Fixed** | 16 KB body cap (413) plus `max_length` on every request schema (422) |
+| P0-4 no rate limiting / reset abuse | **Fixed, best effort** | Per-IP limits (429 + `Retry-After`) and a separate reset limit. Reset only deletes the caller's sandbox, which is cheap. **Counters are per instance**, not global: add a Vercel firewall rule too |
+| P0-5 synthetic people look real | **Fixed** | `scripts/fictionalize_demo_data.py`: `.example` domains, obviously fictional names, `linkedin.example` URLs. Only identity fields changed; scores unchanged (Acme still 69.5) |
+| P0-6 dependency bundle size | **Mitigated** | Root `requirements.txt` is runtime-only and pinned (159 MB installed on 3.12). Dev tools are in `requirements-dev.txt`. Vercel's exact behaviour still unverified (docs unreachable from here) |
+| P0-7 code not on GitHub | **Open** | Needs GitHub access and your go-ahead to push |
+| P1-5 error leakage | **Fixed** | Generic 500/503 bodies; details go to logs; invalid research dates return 422 |
+| P1-8 unpinned dependencies | **Fixed** | Exact pins, tested on Python 3.11, 3.12 and 3.13 |
+
+Remaining before the first deploy: P0-7, and checking the first Vercel build log for
+which requirements file and Python version it used.
+
+---
+
+## 1. Repository state (at audit time)
 
 | Item | Finding |
 |---|---|

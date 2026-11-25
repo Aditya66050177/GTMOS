@@ -39,8 +39,8 @@ synthetic demo workspace from `data/*.csv` (about 3 seconds). Consequences:
 
 ```powershell
 # Terminal 1 — API (from the project root, venv active)
-pip install -r requirements.txt
-uvicorn api.index:app --reload --port 8000
+pip install -r requirements-dev.txt
+uvicorn api.index:app --reload --port 8000   # the guarded public API, as deployed
 
 # Terminal 2 — frontend
 cd web
@@ -53,10 +53,61 @@ with the same proxy.
 
 ## Things to know
 
-- Python dependencies for the function come from `api/requirements.txt` (no Streamlit,
-  so the bundle stays small). If a deploy log shows Vercel installing the root
-  `requirements.txt` instead and the function exceeds the size limit, move Streamlit,
-  pytest and friends into a `requirements-dev.txt`.
+- Python dependencies for the function come from the root `requirements.txt`, which
+  holds runtime packages only (about 160 MB installed, measured on Python 3.12).
+  Streamlit and test tools live in `requirements-dev.txt`, so whichever file Vercel
+  picks up, the bundle stays small.
 - The Streamlit dashboard (`app/dashboard/`) is still the internal tool for local use.
   Streamlit can't run on Vercel; the React app replaces it for the public site.
 - Interactive API docs are served at `/api/docs`.
+
+## Public demo safeguards
+
+The deployed API is built by `app/api/public.py`, not the full local API. Read
+DEPLOYMENT_READINESS.md for why. In short:
+
+| Safeguard | Behaviour | Limit |
+|---|---|---|
+| Read-only shared data | Shared demo data is opened with SQLite `mode=ro` | Rebuilt on each cold start |
+| Write allowlist | Only draft, edit, approve, reject, log-as-sent, playground, analyst and reset are allowed. Everything else returns **403** | Defined in `WRITE_POLICY` |
+| Per-visitor sandbox | Allowed edits go to a private copy of the database keyed by a random `X-Demo-Session` id from the browser | At most `DEMO_MAX_SANDBOXES` (200), each expires after `DEMO_SANDBOX_TTL_SECONDS` (2 h) |
+| Reset | Deletes only the caller's sandbox; never rebuilds shared data | `DEMO_RESET_LIMIT_PER_MINUTE` (5) |
+| Body cap | Bodies over `DEMO_MAX_BODY_BYTES` (16 KB) get **413**, with or without `Content-Length` | |
+| Rate limits | Per client IP: `DEMO_RATE_LIMIT_PER_MINUTE` (120) for all requests, `DEMO_WRITE_LIMIT_PER_MINUTE` (30) for writes; over the limit gets **429** + `Retry-After` | **Per instance only** |
+| Offline LLM | `LLM_MODE` is forced to `mock` | Live Gemini is never reachable from the public site |
+
+**Not global.** Rate-limit counters and sandboxes live in each serverless
+instance's memory and `/tmp`. Vercel can run several instances, so an abuser
+spread across them gets more than the limit, and a visitor whose next request
+lands on another instance sees the shared data instead of their own edits.
+For real protection, also add a rate-limit rule in Vercel's firewall settings
+(check the plan you're on), and move to managed Postgres before pilots.
+
+**Not authentication.** The `X-Demo-Session` id only keeps visitors' demo edits
+apart. It is random, carries no personal data, and must never guard real customer data.
+
+## Environment variables
+
+| Variable | Default | Public demo | Notes |
+|---|---|---|---|
+| `DATABASE_URL` | `sqlite:///./gtmos.db` | leave unset | On Vercel `api/index.py` uses `sqlite:////tmp/gtmos.db` |
+| `LLM_MODE` | `mock` | ignored, always `mock` | Only the local full API can use `live` |
+| `LLM_API_KEY` | empty | **do not set** | Secret. Only for local live-mode testing |
+| `LLM_PROVIDER` / `LLM_MODEL` | `gemini` / `gemini-3.8-flash` | ignored | Model name unverified; confirm before using live mode |
+| `DEMO_MAX_BODY_BYTES` | `16384` | optional | |
+| `DEMO_RATE_LIMIT_PER_MINUTE` | `120` | optional | per instance |
+| `DEMO_WRITE_LIMIT_PER_MINUTE` | `30` | optional | per instance |
+| `DEMO_RESET_LIMIT_PER_MINUTE` | `5` | optional | per instance |
+| `DEMO_MAX_SANDBOXES` | `200` | optional | ~0.5 MB of `/tmp` each |
+| `DEMO_SANDBOX_TTL_SECONDS` | `7200` | optional | |
+| `DEMO_SANDBOX_DIR` | next to the template DB | optional | |
+
+## Smoke test after deploying
+
+```powershell
+python scripts/smoke_test.py https://<your-app>.vercel.app --frontend
+```
+
+It checks health, the data endpoints, the Acme score, that writes are blocked,
+that oversized bodies are rejected, and that an approval stays in a sandbox. It
+exits non-zero on any failure.
