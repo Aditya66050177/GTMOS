@@ -28,6 +28,11 @@ def _best(rows: List[Dict[str, Any]], key: str) -> Dict[str, Any] | None:
 
 def build_mock_explanation(prompt: str) -> Dict[str, str]:
     func, data = _parse(prompt)
+    return {"explanation": describe(func, data) + " (Numbers come straight from the analytics engine.)"}
+
+
+def describe(func: str, data: Dict[str, Any]) -> str:
+    """Deterministic one-paragraph description of an analytics result, using only its numbers."""
 
     if func == "get_funnel_summary" and "totals" in data:
         t = data["totals"]
@@ -64,4 +69,4 @@ def build_mock_explanation(prompt: str) -> Dict[str, str]:
     else:
         text = "This question can't be answered with the current analytics data."
 
-    return {"explanation": text + " (Numbers come straight from the analytics engine.)"}
+    return text

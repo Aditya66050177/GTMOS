@@ -18,7 +18,12 @@ class StageConversion(BaseModel):
     to_count: int
     conversion_rate_pct: float
 
+SIMULATED_PIPELINE_LABEL = ("Simulated pipeline: stages and activities come from a seeded 40-day simulation "
+                            "on synthetic accounts. They are not real sales outcomes.")
+
+
 class FunnelAnalyticsResponse(BaseModel):
+    data_label: str = SIMULATED_PIPELINE_LABEL
     totals: FunnelTotals
     stage_counts: Dict[str, int]
     conversions: List[StageConversion]
@@ -35,6 +40,7 @@ class WeeklyTrendPoint(BaseModel):
     won: int
 
 class TrendsAnalyticsResponse(BaseModel):
+    data_label: str = SIMULATED_PIPELINE_LABEL
     weekly_trends: List[WeeklyTrendPoint]
 
 class AnalystQueryIntentSchema(BaseModel):
@@ -49,3 +55,7 @@ class AnalystAskResponse(BaseModel):
     function_called: str
     explanation: str
     data: Any
+    observations: List[str] = Field(default_factory=list, description="Statements read directly off the returned data")
+    hypotheses: List[str] = Field(default_factory=list, description="Labelled interpretations, not established facts")
+    data_label: Optional[str] = None
+    generated_by: str = "Predefined query; the model only chose which query to run"

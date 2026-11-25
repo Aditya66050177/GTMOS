@@ -100,6 +100,19 @@ class LLMService:
             if "user question:" in q_text:
                 q_text = q_text.split("user question:", 1)[1]
 
+            if any(k in q_text for k in ["investigate", "this week", "high fit", "weak intent", "verify", "look into next"]):
+                return {"function_name": "get_investigate_next", "parameters": {}}
+            if any(k in q_text for k in ["nurture"]):
+                return {"function_name": "get_nurture_accounts", "parameters": {}}
+            if any(k in q_text for k in ["stuck", "stall", "bottleneck", "weakness", "weakest"]):
+                return {"function_name": "get_stuck_opportunities", "parameters": {}}
+            if ("signal" in q_text and any(k in q_text for k in ["tier", "priority", "appear", "across"])) or \
+                    "evidence of buying intent" in q_text or "strong evidence" in q_text:
+                return {"function_name": "get_signal_tier_matrix", "parameters": {}}
+            if any(k in q_text for k in ["worth pursuing", "pursue", "strongest accounts", "who should we contact",
+                                          "call first", "best accounts"]):
+                return {"function_name": "get_worth_pursuing", "parameters": {}}
+
             if any(k in q_text for k in ["conversion", "drop off", "stage to stage", "contacted to replied", "replied to meeting"]):
                 return {"function_name": "get_conversion_rates", "parameters": {}}
             elif any(k in q_text for k in ["trend", "weekly", "week", "timeline", "trajectory", "over time", "declin", "meeting"]):

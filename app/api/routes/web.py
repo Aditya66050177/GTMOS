@@ -18,7 +18,9 @@ from app.core.config import settings
 from app.core.timeutil import utc_now
 from app.db.database import get_db
 from app.models import Account, Activity, Contact, Draft, ICPProfile, Product, Score, Signal
+from app.schemas.executive import ExecutiveAnswer, ExecutiveQuestionRef
 from app.schemas.explain import AccountExplanation, ComparisonOut, FeaturedComparisonOut
+from app.services import executive_analytics
 from app.services.explainability import compare_accounts, explain_account, featured_comparisons
 from app.services.recommendation_engine import RecommendationEngine
 from app.services.scoring_engine import AccountData, ICPData, ScoringEngine
@@ -276,6 +278,25 @@ def featured(db: Session = Depends(get_db)) -> List[FeaturedComparisonOut]:
     """Suggested comparisons, chosen by the stated selection rules from current data."""
     _product(db)
     return featured_comparisons(db)
+
+
+# --------------------------------------------------------------------------- #
+# Executive questions (read-only, deterministic)                               #
+# --------------------------------------------------------------------------- #
+
+@router.get("/executive", response_model=List[ExecutiveQuestionRef])
+def executive_questions() -> List[ExecutiveQuestionRef]:
+    """The five executive questions this API can answer."""
+    return executive_analytics.question_list()
+
+
+@router.get("/executive/{question_id}", response_model=ExecutiveAnswer)
+def executive_answer(question_id: str, db: Session = Depends(get_db)) -> ExecutiveAnswer:
+    """Observations (from the database) and labelled hypotheses for one executive question."""
+    result = executive_analytics.answer(db, question_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Unknown question. See /web/executive for the list.")
+    return result
 
 
 # --------------------------------------------------------------------------- #
