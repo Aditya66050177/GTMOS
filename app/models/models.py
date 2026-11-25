@@ -2,6 +2,7 @@ from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, Float, DateTime, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from app.db.database import Base
+from app.core.timeutil import utc_now
 
 class Product(Base):
     __tablename__ = "products"
@@ -12,7 +13,7 @@ class Product(Base):
     target_market = Column(JSON, nullable=True)
     geography = Column(JSON, nullable=True)
     price_range = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     icp_profiles = relationship("ICPProfile", back_populates="product", cascade="all, delete-orphan")
     scores = relationship("Score", back_populates="product", cascade="all, delete-orphan")
@@ -50,7 +51,7 @@ class Account(Base):
     funding = Column(String, nullable=True)
     support_team_size = Column(Integer, nullable=True)
     stage = Column(String, default="Research")
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     signals = relationship("Signal", back_populates="account", cascade="all, delete-orphan")
     scores = relationship("Score", back_populates="account", cascade="all, delete-orphan")
@@ -69,7 +70,7 @@ class Signal(Base):
     description = Column(Text, nullable=True)
     strength = Column(Float, nullable=True)
     source = Column(String, nullable=True)
-    detected_at = Column(DateTime, default=datetime.utcnow)
+    detected_at = Column(DateTime, default=utc_now)
     confidence = Column(Float, nullable=True)
     evidence = Column(JSON, nullable=True)
 
@@ -90,7 +91,7 @@ class Score(Base):
     total_score = Column(Float, nullable=True)
     tier = Column(String, nullable=True)
     reasoning = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
 
     account = relationship("Account", back_populates="scores")
     product = relationship("Product", back_populates="scores")
@@ -119,7 +120,7 @@ class Activity(Base):
     contact_id = Column(Integer, ForeignKey("contacts.id"), nullable=True)
     activity_type = Column(String, nullable=True)
     status = Column(String, nullable=True)
-    timestamp = Column(DateTime, default=datetime.utcnow)
+    timestamp = Column(DateTime, default=utc_now)
     activity_metadata = Column("metadata", JSON, nullable=True)
 
     account = relationship("Account", back_populates="activities")
@@ -134,7 +135,7 @@ class Opportunity(Base):
     stage = Column(String, nullable=True)
     deal_value = Column(Float, nullable=True)
     probability = Column(Float, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
     closed_at = Column(DateTime, nullable=True)
 
     account = relationship("Account", back_populates="opportunities")
@@ -150,7 +151,7 @@ class Draft(Base):
     original_body = Column(Text, nullable=True)
     status = Column(String, default="pending")
     evidence_ids = Column(JSON, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=utc_now)
     reviewed_at = Column(DateTime, nullable=True)
 
     account = relationship("Account", back_populates="drafts")

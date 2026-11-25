@@ -12,6 +12,7 @@ from app.db.database import SessionLocal
 from app.models import Draft, Account, Activity, Signal, Score, Opportunity
 from app.services.crm_service import CRMService
 from app.schemas.crm import PipelineStage, FORWARD_STAGE_ORDER
+from app.core.timeutil import utc_now
 
 st.title("📊 CRM Pipeline & Outreach Review")
 
@@ -153,7 +154,7 @@ with SessionLocal() as db:
                             if st.button("✅ Approve", key=f"app_{d.id}", type="primary"):
                                 d.body = edited_body
                                 d.status = "approved"
-                                d.reviewed_at = datetime.utcnow()
+                                d.reviewed_at = utc_now()
                                 activity = Activity(
                                     account_id=d.account_id,
                                     contact_id=d.contact_id,
@@ -170,7 +171,7 @@ with SessionLocal() as db:
                             if st.button("❌ Reject", key=f"rej_{d.id}"):
                                 d.body = edited_body
                                 d.status = "rejected"
-                                d.reviewed_at = datetime.utcnow()
+                                d.reviewed_at = utc_now()
                                 db.commit()
                                 st.warning(f"Draft #{d.id} rejected.")
                                 st.rerun()

@@ -12,6 +12,7 @@ from app.models import Product, ICPProfile, Account, Signal, Draft, Score
 from app.services.personalization import PersonalizationEngine
 from app.schemas.draft import PersonalizationOutputSchema
 from app.ai.llm import LLMService
+from app.core.timeutil import utc_now
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_db():
@@ -90,7 +91,7 @@ def test_valid_draft_grounded_in_evidence(db):
         strength=0.9,
         source="Job Board",
         evidence="expanding support team",
-        detected_at=datetime.utcnow()
+        detected_at=utc_now()
     )
     sig2 = Signal(
         account_id=a.id,
@@ -98,7 +99,7 @@ def test_valid_draft_grounded_in_evidence(db):
         strength=0.8,
         source="TechCrunch",
         evidence="Series A funding",
-        detected_at=datetime.utcnow()
+        detected_at=utc_now()
     )
     db.add_all([sig1, sig2])
     db.commit()

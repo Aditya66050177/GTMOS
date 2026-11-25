@@ -9,6 +9,7 @@ from app.schemas.draft import PersonalizationOutputSchema
 from app.services.recommendation_engine import RecommendationEngine, RecommendationResult
 from app.ai.llm import LLMService
 from app.ai.prompts import GENERATE_DRAFT_PROMPT
+from app.core.timeutil import utc_now
 
 logger = logging.getLogger(__name__)
 
@@ -88,7 +89,11 @@ class PersonalizationEngine:
         # Get evidence-backed signals
         signals = (
             db.query(Signal)
-            .filter(Signal.account_id == account.id, Signal.strength > 0)
+            .filter(
+                Signal.account_id == account.id,
+                Signal.strength > 0,
+                Signal.source != "Internal CRM",  # disqualifiers are not outreach evidence
+            )
             .order_by(Signal.detected_at.desc())
             .limit(3)
             .all()
@@ -139,8 +144,8 @@ class PersonalizationEngine:
             logger.warning(f"Draft validation attempt {attempt + 1} failed: {reason}. Retrying...")
             last_error = reason
             if attempt == attempts - 1:
-                # If still invalid after retry, sanitize or raise
                 logger.error(f"Failed to generate verified draft after {attempts} attempts: {last_error}")
+                raise ValueError(f"Draft rejected by fact-check guardrail: {last_error}")
 
         if not output:
             raise RuntimeError("Failed to generate outreach draft.")
@@ -153,7 +158,7 @@ class PersonalizationEngine:
             original_body=output.message_draft,
             status="pending",
             evidence_ids=evidence_ids,
-            created_at=datetime.utcnow()
+            created_at=utc_now()
         )
         db.add(draft)
         db.commit()

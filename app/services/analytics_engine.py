@@ -14,6 +14,7 @@ from app.schemas.analytics import (
     TrendsAnalyticsResponse
 )
 from app.services.recommendation_engine import RecommendationEngine
+from app.core.timeutil import utc_now
 
 logger = logging.getLogger(__name__)
 
@@ -218,7 +219,7 @@ class AnalyticsEngine:
 
         data = []
         for act in activities:
-            ts = act.timestamp or datetime.utcnow()
+            ts = act.timestamp or utc_now()
             week_label = ts.strftime("%Y-W%W")
             data.append({
                 "week": week_label,

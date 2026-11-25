@@ -17,8 +17,17 @@ def generate_signals_csv():
         "Micro Design Studio"
     ]
     
+    # Every note must name a real account, or ingestion silently drops it.
+    accounts_path = Path(__file__).parent.parent / "data" / "accounts.csv"
+    with open(accounts_path, encoding="utf-8", newline="") as f:
+        account_rows = list(csv.DictReader(f))
+    hiring_account = next(r["company"] for r in account_rows if r["company"].startswith("Company") and r["industry"] == "B2B SaaS")
+    named = set(accounts) | {hiring_account}
+    pool = sorted(r["company"] for r in account_rows if r["company"] not in named)
+
     signals = []
-    now = datetime.utcnow()
+    # Fixed reference date keeps the file reproducible; the demo seeder re-anchors dates to today.
+    now = datetime(2026, 10, 2, 14, 7, 33)
 
     # 1. Tricky case: Vague text (should NOT extract a signal if strictly following facts)
     signals.append({
@@ -62,15 +71,14 @@ def generate_signals_csv():
 
     # 6. Clear signal: Hiring support
     signals.append({
-        "account": "Company 42 Cloud",
+        "account": hiring_account,
         "raw_text": "We are hiring 50 new support staff to handle our increasing customer base.",
         "source": "Job Board",
         "date": (now - timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
     })
 
     # Generate more random ones for the rest
-    for i in range(1, 61):
-        acc = f"Company {i} Software"
+    for acc in random.sample(pool, 60):
         text = random.choice([
             "Announced a new Series B funding round of $50M.",
             "Expanding their customer support team rapidly to meet demand.",

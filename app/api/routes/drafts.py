@@ -6,6 +6,7 @@ from datetime import datetime
 from app.db.database import get_db
 from app.models import Draft, Account, Activity
 from app.schemas.draft import DraftResponse, DraftUpdateRequest
+from app.core.timeutil import utc_now
 
 router = APIRouter(prefix="/drafts", tags=["Drafts & Outreach Review"])
 
@@ -67,7 +68,7 @@ def approve_draft(id: int, db: Session = Depends(get_db)):
         )
 
     draft.status = "approved"
-    draft.reviewed_at = datetime.utcnow()
+    draft.reviewed_at = utc_now()
 
     # Create outreach_approved Activity
     activity = Activity(
@@ -95,7 +96,7 @@ def reject_draft(id: int, db: Session = Depends(get_db)):
         )
 
     draft.status = "rejected"
-    draft.reviewed_at = datetime.utcnow()
+    draft.reviewed_at = utc_now()
     db.commit()
     db.refresh(draft)
 

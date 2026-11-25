@@ -1,13 +1,18 @@
 import csv
 from pathlib import Path
 from typing import Optional
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.models import Account
+from app.core.timeutil import utc_now
 
 class ResearchEngine:
     """
     Engine for importing and managing account datasets.
     """
+    def __init__(self, llm_service=None):
+        self._llm = llm_service
+
     def load_accounts_from_csv(self, db: Session, csv_path: Optional[Path] = None) -> int:
         """
         Idempotently loads account records from CSV into the database.
@@ -88,11 +93,11 @@ class ResearchEngine:
         from app.models import Signal, Activity
         from app.ai.prompts import EXTRACT_SIGNALS_PROMPT
         import logging
-        from datetime import datetime
+        from datetime import datetime, timezone
 
         logger = logging.getLogger(__name__)
 
-        llm = LLMService()
+        llm = self._llm or LLMService()
         prompt = EXTRACT_SIGNALS_PROMPT.format(
             raw_text=raw_text,
             source=source,
@@ -129,8 +134,20 @@ class ResearchEngine:
             
             try:
                 parsed_date = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+                if parsed_date.tzinfo is not None:
+                    parsed_date = parsed_date.astimezone(timezone.utc).replace(tzinfo=None)
             except ValueError:
-                parsed_date = datetime.utcnow()
+                parsed_date = utc_now()
+
+            # evidence is a JSON column, so compare it in Python rather than SQL.
+            same_slot = db.query(Signal).filter_by(
+                account_id=account.id,
+                signal_type=sig.type,
+                source=source,
+                detected_at=parsed_date,
+            ).all()
+            if any(existing.evidence == sig.evidence for existing in same_slot):
+                continue
 
             new_sig = Signal(
                 account_id=account.id,
@@ -148,30 +165,66 @@ class ResearchEngine:
         db.commit()
         return valid_signals
 
-    def extract_signals_from_csv(self, db: Session, csv_path: Optional[Path] = None) -> int:
+    def extract_signals_from_csv(
+        self,
+        db: Session,
+        csv_path: Optional[Path] = None,
+        anchor_to_today: bool = False,
+    ) -> int:
+        """Extract signals from the research-notes CSV.
+
+        With anchor_to_today=True, every note date is shifted by whole days so the
+        newest note lands on today while relative ages stay the same. That keeps a
+        long-running demo from silently decaying its synthetic signals to zero.
+        """
         if csv_path is None:
             csv_path = Path(__file__).parent.parent.parent / "data" / "signals.csv"
 
         if not csv_path.exists():
             raise FileNotFoundError(f"Signals CSV file not found at {csv_path}")
 
-        extracted_count = 0
         with open(csv_path, mode="r", encoding="utf-8", newline="") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                account_name = row.get("account", "").strip()
-                raw_text = row.get("raw_text", "").strip()
-                source = row.get("source", "").strip()
-                date_str = row.get("date", "").strip()
+            rows = list(csv.DictReader(f))
 
-                if not account_name or not raw_text:
-                    continue
+        shift = _days_to_today(rows) if anchor_to_today else timedelta(0)
+        accounts_by_name = {a.name: a for a in db.query(Account).all()}
 
-                account = db.query(Account).filter_by(name=account_name).first()
-                if not account:
-                    continue
+        extracted_count = 0
+        for row in rows:
+            account_name = row.get("account", "").strip()
+            raw_text = row.get("raw_text", "").strip()
+            source = row.get("source", "").strip()
+            date_str = _shift_iso(row.get("date", "").strip(), shift)
 
-                valid_sigs = self.extract_signals_from_text(db, account, raw_text, source, date_str)
-                extracted_count += len(valid_sigs)
+            account = accounts_by_name.get(account_name)
+            if not account or not raw_text:
+                continue
+
+            valid_sigs = self.extract_signals_from_text(db, account, raw_text, source, date_str)
+            extracted_count += len(valid_sigs)
 
         return extracted_count
+
+
+def _parse_iso(date_str: str) -> Optional[datetime]:
+    try:
+        parsed = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is not None:
+        parsed = parsed.astimezone(timezone.utc).replace(tzinfo=None)
+    return parsed
+
+
+def _days_to_today(rows: list) -> timedelta:
+    dates = [d for d in (_parse_iso(r.get("date", "").strip()) for r in rows) if d]
+    if not dates:
+        return timedelta(0)
+    return timedelta(days=(utc_now().date() - max(dates).date()).days)
+
+
+def _shift_iso(date_str: str, shift: timedelta) -> str:
+    parsed = _parse_iso(date_str)
+    if parsed is None or not shift:
+        return date_str
+    return (parsed + shift).isoformat() + "Z"

@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 # Force UTF-8 stdout for Windows consoles
-if sys.stdout.encoding != 'utf-8':
+if getattr(sys.stdout, 'encoding', 'utf-8') != 'utf-8' and hasattr(sys.stdout, 'buffer'):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -22,6 +22,10 @@ from app.services.research_engine import ResearchEngine
 from app.services.scoring_engine import ScoringEngine
 from app.services.crm_service import CRMService
 from app.schemas.crm import PipelineStage
+from app.core.timeutil import utc_now
+
+FRESH_ACCOUNTS = 6
+
 
 def seed_activity():
     random.seed(42)
@@ -50,7 +54,8 @@ def seed_activity():
     # 2. Ensure accounts exist
     re = ResearchEngine()
     re.load_accounts_from_csv(db)
-    re.extract_signals_from_csv(db)
+    if db.query(Signal).count() == 0:
+        re.extract_signals_from_csv(db, anchor_to_today=True)
 
     # 3. Ensure contacts are loaded
     crm = CRMService()
@@ -71,7 +76,7 @@ def seed_activity():
         .all()
     )
 
-    now = datetime.utcnow()
+    now = utc_now()
     total_activities = 0
 
     # Reset all accounts to Research first
@@ -85,9 +90,18 @@ def seed_activity():
     ])).delete()
     db.commit()
 
+    # Hold back the strongest fresh-intent accounts: they were surfaced this week
+    # and have not been worked yet, so they are what the review queue drafts for.
+    fresh_pool = [
+        (acc, sc) for acc, sc in scored_accounts
+        if sc.tier in ("Priority 1", "Priority 2") and (sc.intent_score or 0) > 0
+    ][:FRESH_ACCOUNTS]
+    fresh_ids = {acc.id for acc, _ in fresh_pool}
+    worked_accounts = [(acc, sc) for acc, sc in scored_accounts if acc.id not in fresh_ids]
+
     # Partition accounts by priority: higher scoring accounts advance further
     # Top 75 accounts get outreach
-    contacted_pool = scored_accounts[:75]
+    contacted_pool = worked_accounts[:75]
     # 32 of them reply
     replied_pool = contacted_pool[:32]
     # 15 book a meeting
