@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import List, Optional
+from typing import List, Literal, Optional
 from datetime import datetime
 
 class SignalSchema(BaseModel):
@@ -13,5 +13,17 @@ class SignalSchema(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+RejectionCategory = Literal["negated", "unsupported", "ambiguous"]
+
+
+class RejectedClaimSchema(BaseModel):
+    """A sentence that talks about a buying signal but must not count as one."""
+    sentence: str = Field(..., description="Exact sentence from the raw text")
+    category: RejectionCategory = Field(..., description="negated: contradicted; unsupported: hearsay or not in the source; ambiguous: speculative")
+    reason: str = Field(..., description="Short, specific reason")
+    claimed_type: Optional[str] = Field(None, description="Signal type the sentence seemed to claim")
+
+
 class SignalListSchema(BaseModel):
     signals: List[SignalSchema]
+    rejected: List[RejectedClaimSchema] = Field(default_factory=list)

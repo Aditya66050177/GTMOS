@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Any, Dict, Iterable, List, Optional
 
@@ -69,17 +70,53 @@ def _field(sig: Any, name: str, default: Any = None) -> Any:
     return getattr(sig, name, default)
 
 
+# Recency decay thresholds (days). A signal older than AGING_AFTER_DAYS counts half;
+# older than EXPIRED_AFTER_DAYS it counts nothing.
+AGING_AFTER_DAYS = 90
+EXPIRED_AFTER_DAYS = 180
+AGING_DECAY = 0.5
+INTENT_MAX = 20.0
+
+
 def recency_decay(days_old: int) -> float:
-    if days_old > 180:
+    if days_old > EXPIRED_AFTER_DAYS:
         return 0.0
-    if days_old > 90:
-        return 0.5
+    if days_old > AGING_AFTER_DAYS:
+        return AGING_DECAY
     return 1.0
 
 
-def score_signals(signals: Iterable[Any], now: Optional[datetime] = None) -> float:
-    """Pure intent score /20: keep the newest signal per type, weight, decay, clamp."""
+def recency_status(days_old: int) -> str:
+    """Name for the decay band a signal falls in: current, aging or expired."""
+    if days_old > EXPIRED_AFTER_DAYS:
+        return "expired"
+    if days_old > AGING_AFTER_DAYS:
+        return "aging"
+    return "current"
+
+
+@dataclass(frozen=True)
+class SignalContribution:
+    """How one signal row affects intent. `points` is exactly what score_signals adds."""
+    signal: Any
+    signal_type: str
+    counted: bool            # False if an older duplicate of the same type was superseded
+    weight: float
+    strength: float
+    confidence: float
+    days_old: int
+    decay: float
+    points: float
+
+
+def signal_contributions(signals: Iterable[Any], now: Optional[datetime] = None) -> List[SignalContribution]:
+    """Per-signal breakdown of the intent formula: weight x strength x confidence x decay.
+
+    Only the newest signal of each type counts (ties keep the first seen); older
+    duplicates are returned with counted=False and zero points.
+    """
     now = now or utc_now()
+    signals = list(signals)
     best: Dict[str, Any] = {}
     for sig in signals:
         stype = _field(sig, "signal_type")
@@ -91,20 +128,27 @@ def score_signals(signals: Iterable[Any], now: Optional[datetime] = None) -> flo
         if new_at and cur_at and new_at > cur_at:
             best[stype] = sig
 
-    raw_score = 0.0
-    for sig in best.values():
-        weight = SIGNAL_WEIGHTS.get(_field(sig, "signal_type"), 0.0)
-        if weight == 0.0:
-            continue
+    out: List[SignalContribution] = []
+    for sig in signals:
+        stype = _field(sig, "signal_type")
+        weight = SIGNAL_WEIGHTS.get(stype, 0.0)
         detected_at = _field(sig, "detected_at")
         days_old = (now - detected_at).days if detected_at else 0
         strength = _field(sig, "strength")
         confidence = _field(sig, "confidence")
         strength = 1.0 if strength is None else strength
         confidence = 1.0 if confidence is None else confidence
-        raw_score += weight * strength * confidence * recency_decay(days_old)
+        decay = recency_decay(days_old)
+        counted = best.get(stype) is sig
+        points = weight * strength * confidence * decay if counted and weight != 0.0 else 0.0
+        out.append(SignalContribution(sig, stype, counted, weight, strength, confidence, days_old, decay, points))
+    return out
 
-    return min(20.0, max(0.0, raw_score))
+
+def score_signals(signals: Iterable[Any], now: Optional[datetime] = None) -> float:
+    """Pure intent score /20: keep the newest signal per type, weight, decay, clamp."""
+    raw_score = sum(c.points for c in signal_contributions(signals, now))
+    return min(INTENT_MAX, max(0.0, raw_score))
 
 
 class SignalEngine:

@@ -84,16 +84,30 @@ class ResearchEngine:
         db.commit()
         return loaded_count
 
-    def extract_signals_from_text(self, db: Session, account: Account, raw_text: str, source: str, date_str: str) -> list:
+    def extract_signals_from_text(
+        self,
+        db: Session,
+        account: Account,
+        raw_text: str,
+        source: str,
+        date_str: str,
+        dataset: str = "manual",
+        label: Optional[str] = None,
+    ) -> list:
         """
         Uses LLM to extract signals from raw text and validates the evidence constraint.
+
+        Also records provenance as activities (they never affect scores):
+        * ``research_note``: the full note, its source/date, dataset and resulting signal ids.
+        * ``rejected_signal``: every claim that must not count (negated, hearsay,
+          speculative, or quoted evidence not found in the note), with zero points.
+        Re-ingesting an identical note records nothing new.
         """
         from app.ai.llm import LLMService
         from app.schemas.signal import SignalListSchema
         from app.models import Signal, Activity
         from app.ai.prompts import EXTRACT_SIGNALS_PROMPT
         import logging
-        from datetime import datetime, timezone
 
         logger = logging.getLogger(__name__)
 
@@ -107,6 +121,42 @@ class ResearchEngine:
         extracted = llm.generate_structured(prompt, SignalListSchema)
         valid_signals = []
         raw_text_lower = raw_text.lower()
+
+        parsed_date = _parse_iso(date_str) or utc_now()
+        note_meta = {"raw_text": raw_text, "source": source, "date": parsed_date.isoformat(),
+                     "dataset": dataset, "label": label}
+        already_recorded = any(
+            (act.activity_metadata or {}).get("raw_text") == raw_text
+            and (act.activity_metadata or {}).get("source") == source
+            and (act.activity_metadata or {}).get("date") == note_meta["date"]
+            for act in db.query(Activity).filter_by(account_id=account.id, activity_type="research_note").all()
+        )
+        note_activity = None
+        if not already_recorded:
+            note_activity = Activity(account_id=account.id, activity_type="research_note",
+                                     status="ingested", activity_metadata=dict(note_meta, signal_ids=[]))
+            db.add(note_activity)
+            db.flush()
+
+        def record_rejection(sentence: str, category: str, reason: str, claimed_type: Optional[str]) -> None:
+            if already_recorded:
+                return
+            db.add(Activity(
+                account_id=account.id,
+                activity_type="rejected_signal",
+                status="rejected",
+                activity_metadata={
+                    "sentence": sentence, "category": category, "reason": reason,
+                    "claimed_type": claimed_type, "source": source, "date": note_meta["date"],
+                    "dataset": dataset, "note_activity_id": note_activity.id if note_activity else None,
+                    "points": 0.0,
+                    # kept for older readers of this activity type
+                    "type": claimed_type, "evidence": sentence,
+                },
+            ))
+
+        for rej in extracted.rejected:
+            record_rejection(rej.sentence, rej.category, rej.reason, rej.claimed_type)
 
         for sig in extracted.signals:
             evidence_lower = sig.evidence.lower()
@@ -124,20 +174,9 @@ class ResearchEngine:
 
             if rejected:
                 logger.warning(f"Rejected unsupported claim for {account.name}: {sig.type}. Evidence not found: {sig.evidence}")
-                db.add(Activity(
-                    account_id=account.id,
-                    activity_type="rejected_signal",
-                    status="rejected",
-                    activity_metadata={"type": sig.type, "evidence": sig.evidence, "source": source}
-                ))
+                record_rejection(sig.evidence, "unsupported",
+                                 "Quoted evidence was not found in the source text", sig.type)
                 continue
-            
-            try:
-                parsed_date = datetime.fromisoformat(date_str.replace("Z", "+00:00"))
-                if parsed_date.tzinfo is not None:
-                    parsed_date = parsed_date.astimezone(timezone.utc).replace(tzinfo=None)
-            except ValueError:
-                parsed_date = utc_now()
 
             # evidence is a JSON column, so compare it in Python rather than SQL.
             same_slot = db.query(Signal).filter_by(
@@ -161,7 +200,10 @@ class ResearchEngine:
             )
             db.add(new_sig)
             valid_signals.append(new_sig)
-            
+
+        if note_activity is not None:
+            db.flush()
+            note_activity.activity_metadata = dict(note_meta, signal_ids=[s.id for s in valid_signals])
         db.commit()
         return valid_signals
 
@@ -170,12 +212,15 @@ class ResearchEngine:
         db: Session,
         csv_path: Optional[Path] = None,
         anchor_to_today: bool = False,
+        shift: Optional[timedelta] = None,
+        dataset: str = "baseline",
     ) -> int:
-        """Extract signals from the research-notes CSV.
+        """Extract signals from a research-notes CSV.
 
-        With anchor_to_today=True, every note date is shifted by whole days so the
-        newest note lands on today while relative ages stay the same. That keeps a
-        long-running demo from silently decaying its synthetic signals to zero.
+        With anchor_to_today=True, note dates are shifted so the newest note lands on
+        the current moment while every relative age stays exact. Pass ``shift`` to
+        reuse one dataset's shift for another (demo additions use the baseline's).
+        An optional ``label`` column is stored with each note's provenance.
         """
         if csv_path is None:
             csv_path = Path(__file__).parent.parent.parent / "data" / "signals.csv"
@@ -183,10 +228,9 @@ class ResearchEngine:
         if not csv_path.exists():
             raise FileNotFoundError(f"Signals CSV file not found at {csv_path}")
 
-        with open(csv_path, mode="r", encoding="utf-8", newline="") as f:
-            rows = list(csv.DictReader(f))
-
-        shift = _days_to_today(rows) if anchor_to_today else timedelta(0)
+        rows = read_notes(csv_path)
+        if shift is None:
+            shift = anchor_shift(rows) if anchor_to_today else timedelta(0)
         accounts_by_name = {a.name: a for a in db.query(Account).all()}
 
         extracted_count = 0
@@ -200,10 +244,18 @@ class ResearchEngine:
             if not account or not raw_text:
                 continue
 
-            valid_sigs = self.extract_signals_from_text(db, account, raw_text, source, date_str)
+            valid_sigs = self.extract_signals_from_text(
+                db, account, raw_text, source, date_str,
+                dataset=dataset, label=(row.get("label") or "").strip() or None,
+            )
             extracted_count += len(valid_sigs)
 
         return extracted_count
+
+
+def read_notes(csv_path: Path) -> list:
+    with open(csv_path, mode="r", encoding="utf-8", newline="") as f:
+        return list(csv.DictReader(f))
 
 
 def _parse_iso(date_str: str) -> Optional[datetime]:
@@ -216,11 +268,17 @@ def _parse_iso(date_str: str) -> Optional[datetime]:
     return parsed
 
 
-def _days_to_today(rows: list) -> timedelta:
+def anchor_shift(rows: list) -> timedelta:
+    """Exact offset that moves the newest note to now.
+
+    Exact (not whole days) so every note's age in days equals its age in the CSV,
+    whatever the time of day. Whole-day shifts made a note dated 181 days back read
+    as 180 or 181 days old depending on the clock, flipping its recency decay.
+    """
     dates = [d for d in (_parse_iso(r.get("date", "").strip()) for r in rows) if d]
     if not dates:
         return timedelta(0)
-    return timedelta(days=(utc_now().date() - max(dates).date()).days)
+    return utc_now() - max(dates)
 
 
 def _shift_iso(date_str: str, shift: timedelta) -> str:

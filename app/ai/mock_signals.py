@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 _SENTENCE_SPLIT = re.compile(r"(?<=[.!?])\s+")
 
 NEGATION_CUES = (
-    " not ", "n't ", " no ", "no plans", "freeze", "rumor", "rumour", "denied",
+    " not ", "n't ", " no ", "no plans", "freeze", "frozen", "rumor", "rumour", "denied",
     "paused", "cancel", "layoff", "laid off", "halted", "postponed",
 )
 
@@ -37,9 +37,60 @@ RULES: List[tuple] = [
 _SUPPORT_CONTEXT = ("support", "customer success", "help desk", "service team")
 
 
+# Cues that explicitly contradict a claim (a stated "no").
+_NEGATED_CUES = (" not ", "n't ", " no ", "no plans", "freeze", "frozen", "denied", "paused", "cancel",
+                 "layoff", "laid off", "halted", "postponed")
+# Cues that mark a claim as hearsay rather than a confirmed fact. Only cues that
+# NEGATION_CUES also rejects belong here; this list labels rejections, it never
+# decides them. ("reportedly" is NOT rejected by the extractor: a known gap.)
+_UNSUPPORTED_CUES = ("rumor", "rumour")
+# Hedges: the sentence talks about a topic without committing to anything.
+_HEDGE_CUES = ("might", " may ", "could", "looking into", "considering", "exploring", "possibly", "perhaps")
+# Broad topic words, used only to decide whether a skipped sentence was a claim at all.
+_TOPICS = (
+    ("support_hiring", ("hiring", "hire", "recruit", "headcount")),
+    ("funding", ("fund", "raise", "raising", "series", "investment", "investor")),
+    ("product_launch", ("launch", "release", "unveil")),
+    ("international_expansion", ("expand", "expansion", "international", "global", "new office")),
+    ("executive_change", ("ceo", "cro", "chief", "vp ", "appoint")),
+    ("rapid_growth", ("growth", "grow", "scaling", "scale")),
+)
+
+
 def _is_negated(sentence_lower: str) -> bool:
     padded = f" {sentence_lower} "
     return any(cue in padded for cue in NEGATION_CUES)
+
+
+def _found(cues: tuple, sentence_lower: str) -> List[str]:
+    padded = f" {sentence_lower} "
+    return [c.strip() for c in cues if c in padded]
+
+
+def _topic(sentence_lower: str) -> str | None:
+    for topic, words in _TOPICS:
+        if any(w in sentence_lower for w in words):
+            return topic
+    return None
+
+
+def _classify_skipped(sentence: str, lower: str) -> Dict[str, Any] | None:
+    """Explain why a sentence that NEGATION_CUES excluded is not a signal.
+
+    The accept/reject decision itself is unchanged (it is `_is_negated`); this only
+    names the reason so the rejection can be stored instead of silently dropped.
+    """
+    negated, hearsay = _found(_NEGATED_CUES, lower), _found(_UNSUPPORTED_CUES, lower)
+    if negated:
+        reason = f"Contradicted by: {', '.join(repr(c) for c in negated)}"
+        if hearsay:
+            reason = f"Hearsay ({', '.join(repr(c) for c in hearsay)}) contradicted by: {', '.join(repr(c) for c in negated)}"
+        category = "negated"
+    else:
+        category = "unsupported"
+        reason = f"Hearsay, not a confirmed fact: {', '.join(repr(c) for c in hearsay)}"
+    return {"sentence": sentence.rstrip("."), "category": category, "reason": reason,
+            "claimed_type": _topic(lower), "cues": negated + hearsay}
 
 
 def _matches(rule_type: str, sentence_lower: str, triggers: tuple) -> bool:
@@ -52,17 +103,30 @@ def _matches(rule_type: str, sentence_lower: str, triggers: tuple) -> bool:
     return True
 
 
-def extract_mock_signals(raw_text: str, source: str = "Research Note") -> List[Dict[str, Any]]:
-    """Return schema-shaped signal dicts, each quoting its source sentence."""
+def analyze_note(raw_text: str, source: str = "Research Note") -> Dict[str, List[Dict[str, Any]]]:
+    """Split a research note into accepted signals and rejected claims.
+
+    Accepted signals quote their sentence. Rejected claims are sentences that talk
+    about a buying-signal topic but are negated, hearsay, or hedged ("ambiguous").
+    Sentences with no signal topic at all are not claims and are not recorded.
+    """
     signals: List[Dict[str, Any]] = []
+    rejected: List[Dict[str, Any]] = []
     seen_types: set = set()
     for sentence in _SENTENCE_SPLIT.split(raw_text.strip()):
         sentence = sentence.strip()
         lower = sentence.lower()
-        if not sentence or _is_negated(lower):
+        if not sentence:
             continue
+        if _is_negated(lower):
+            rejected.append(_classify_skipped(sentence, lower))
+            continue
+        matched_any = False
         for rule_type, description, strength, confidence, triggers in RULES:
-            if rule_type in seen_types or not _matches(rule_type, lower, triggers):
+            if not _matches(rule_type, lower, triggers):
+                continue
+            matched_any = True
+            if rule_type in seen_types:
                 continue
             seen_types.add(rule_type)
             signals.append({
@@ -74,7 +138,19 @@ def extract_mock_signals(raw_text: str, source: str = "Research Note") -> List[D
                 "confidence": confidence,
                 "evidence": sentence.rstrip("."),
             })
-    return signals
+        hedges, topic = _found(_HEDGE_CUES, lower), _topic(lower)
+        if not matched_any and topic and hedges:
+            rejected.append({
+                "sentence": sentence.rstrip("."), "category": "ambiguous",
+                "reason": f"Speculative wording ({', '.join(repr(h) for h in hedges)}); no concrete event stated",
+                "claimed_type": topic, "cues": hedges,
+            })
+    return {"signals": signals, "rejected": rejected}
+
+
+def extract_mock_signals(raw_text: str, source: str = "Research Note") -> List[Dict[str, Any]]:
+    """Return schema-shaped signal dicts, each quoting its source sentence."""
+    return analyze_note(raw_text, source)["signals"]
 
 
 def raw_text_from_prompt(prompt: str) -> str:

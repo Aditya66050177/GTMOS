@@ -9,15 +9,17 @@ from __future__ import annotations
 from collections import Counter
 from typing import Annotated, Any, Dict, List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
-from app.ai.mock_signals import extract_mock_signals
+from app.ai.mock_signals import analyze_note
 from app.core.config import settings
 from app.core.timeutil import utc_now
 from app.db.database import get_db
 from app.models import Account, Activity, Contact, Draft, ICPProfile, Product, Score, Signal
+from app.schemas.explain import AccountExplanation, ComparisonOut, FeaturedComparisonOut
+from app.services.explainability import compare_accounts, explain_account, featured_comparisons
 from app.services.recommendation_engine import RecommendationEngine
 from app.services.scoring_engine import AccountData, ICPData, ScoringEngine
 from app.services.signal_engine import NEGATIVE_SOURCE, derive_negative_signals, score_signals
@@ -238,6 +240,45 @@ def account_detail(account_id: int, db: Session = Depends(get_db)) -> Dict[str, 
 
 
 # --------------------------------------------------------------------------- #
+# Explainability (read-only)                                                   #
+# --------------------------------------------------------------------------- #
+
+@router.get("/accounts/{account_id}/explain", response_model=AccountExplanation)
+def explain(account_id: int, db: Session = Depends(get_db)) -> AccountExplanation:
+    """Fit vs intent, per-signal contributions, rejected evidence and the exact rule behind the action."""
+    _product(db)
+    result = explain_account(db, account_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail=f"Account {account_id} not found or not scored.")
+    return result
+
+
+@router.get("/compare", response_model=ComparisonOut)
+def compare(
+    ids: str = Query(..., max_length=60, description="2 to 4 comma-separated account ids, e.g. 36,37"),
+    db: Session = Depends(get_db),
+) -> ComparisonOut:
+    try:
+        parsed = [int(x) for x in ids.split(",") if x.strip()]
+    except ValueError:
+        raise HTTPException(status_code=422, detail="ids must be comma-separated integers.")
+    if not 2 <= len(parsed) <= 4 or len(set(parsed)) != len(parsed):
+        raise HTTPException(status_code=422, detail="Compare 2 to 4 distinct accounts.")
+    _product(db)
+    result = compare_accounts(db, parsed)
+    if result is None:
+        raise HTTPException(status_code=404, detail="One or more accounts were not found or not scored.")
+    return result
+
+
+@router.get("/comparisons/featured", response_model=List[FeaturedComparisonOut])
+def featured(db: Session = Depends(get_db)) -> List[FeaturedComparisonOut]:
+    """Suggested comparisons, chosen by the stated selection rules from current data."""
+    _product(db)
+    return featured_comparisons(db)
+
+
+# --------------------------------------------------------------------------- #
 # Review queue                                                                 #
 # --------------------------------------------------------------------------- #
 
@@ -276,7 +317,8 @@ def playground(req: PlaygroundRequest, db: Session = Depends(get_db)) -> Dict[st
 
     now = utc_now()
     note = req.research_note.strip()
-    extracted = extract_mock_signals(note, source="Your research note") if note else []
+    analysis = analyze_note(note, source="Your research note") if note else {"signals": [], "rejected": []}
+    extracted = analysis["signals"]
     accepted = [s for s in extracted if s["evidence"].lower() in note.lower()]
     positives = [
         {
@@ -336,6 +378,12 @@ def playground(req: PlaygroundRequest, db: Session = Depends(get_db)) -> Dict[st
         "recommendation": _rec_dict(rec),
         "signals": [_out(p, False) for p in positives] + [_out(n, True) for n in negatives],
         "note_had_text": bool(note),
+        # Claims that were read but not counted (negated, hearsay, speculative). Always 0 points.
+        "rejected": [
+            {"sentence": r["sentence"], "category": r["category"], "reason": r["reason"],
+             "claimed_type": r["claimed_type"], "points": 0.0}
+            for r in analysis["rejected"]
+        ],
     }
 
 

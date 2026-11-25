@@ -9,6 +9,7 @@ import contextlib
 import io
 import logging
 import threading
+from pathlib import Path
 
 from app.db.database import Base, SessionLocal, engine
 import app.models  # noqa: F401  (registers every table on Base.metadata)
@@ -28,15 +29,24 @@ DEMO_PRODUCT = {
 }
 DRAFTS_TO_SEED = 6
 
+# Synthetic research notes added for the demo's fit-vs-intent comparison. Kept in a
+# separate file so the baseline dataset (data/signals.csv) stays untouched; every
+# row carries a "SYNTHETIC DEMO ADDITION" label that is stored with its provenance.
+DEMO_ADDITIONS_CSV = Path(__file__).resolve().parent.parent.parent / "data" / "signals_demo_additions.csv"
+BASELINE_SIGNALS_CSV = Path(__file__).resolve().parent.parent.parent / "data" / "signals.csv"
 
-def reset_demo_database(quiet: bool = True) -> dict:
-    """Drop every table and rebuild the full demo workspace. Returns a short summary."""
+
+def reset_demo_database(quiet: bool = True, include_demo_additions: bool = True) -> dict:
+    """Drop every table and rebuild the full demo workspace. Returns a short summary.
+
+    include_demo_additions=False rebuilds the original baseline dataset only.
+    """
     with _seed_lock:
         Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
         sink = io.StringIO()
         with contextlib.redirect_stdout(sink) if quiet else contextlib.nullcontext():
-            return _build()
+            return _build(include_demo_additions)
 
 
 def ensure_demo_database() -> bool:
@@ -53,11 +63,11 @@ def ensure_demo_database() -> bool:
                 return False
         sink = io.StringIO()
         with contextlib.redirect_stdout(sink):
-            _build()
+            _build(include_demo_additions=True)
     return True
 
 
-def _build() -> dict:
+def _build(include_demo_additions: bool = True) -> dict:
     from app.ai.llm import LLMService
     from app.models import Account, Draft, Product, Score
     from app.services.crm_service import CRMService
@@ -76,7 +86,11 @@ def _build() -> dict:
 
         research = ResearchEngine(llm_service=LLMService(mode="mock"))
         research.load_accounts_from_csv(db)
-        research.extract_signals_from_csv(db, anchor_to_today=True)
+        from app.services.research_engine import anchor_shift, read_notes
+        shift = anchor_shift(read_notes(BASELINE_SIGNALS_CSV))
+        research.extract_signals_from_csv(db, BASELINE_SIGNALS_CSV, shift=shift, dataset="baseline")
+        if include_demo_additions and DEMO_ADDITIONS_CSV.exists():
+            research.extract_signals_from_csv(db, DEMO_ADDITIONS_CSV, shift=shift, dataset="demo_addition")
 
         scorer = ScoringEngine()
         for account in db.query(Account).all():
@@ -93,7 +107,8 @@ def _build() -> dict:
         accounts = db.query(Account).count()
         scores = db.query(Score).filter_by(product_id=product_id).count()
 
-    return {"accounts": accounts, "scores": scores, "drafts": drafts}
+    return {"accounts": accounts, "scores": scores, "drafts": drafts,
+            "dataset": "baseline + demo additions" if include_demo_additions else "baseline"}
 
 
 def _seed_review_queue(db, product_id: int, engine_: "object") -> int:

@@ -74,6 +74,8 @@ def test_playground_negated_note_gives_no_intent(client):
     res = client.post("/web/playground", json=body).json()
     assert res["score"]["intent_score"] == 0.0
     assert res["signals"] == []
+    assert {r["category"] for r in res["rejected"]} == {"negated"}
+    assert all(r["points"] == 0.0 for r in res["rejected"])
 
 
 def test_playground_bad_fit_is_deprioritized(client):

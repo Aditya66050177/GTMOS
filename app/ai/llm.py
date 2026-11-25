@@ -81,8 +81,15 @@ class LLMService:
             }
 
         if schema.__name__ == "SignalListSchema":
-            from app.ai.mock_signals import extract_mock_signals, raw_text_from_prompt
-            return {"signals": extract_mock_signals(raw_text_from_prompt(prompt))}
+            from app.ai.mock_signals import analyze_note, raw_text_from_prompt
+            result = analyze_note(raw_text_from_prompt(prompt))
+            return {
+                "signals": result["signals"],
+                "rejected": [
+                    {k: r[k] for k in ("sentence", "category", "reason", "claimed_type")}
+                    for r in result["rejected"]
+                ],
+            }
 
         if schema.__name__ == "PersonalizationOutputSchema":
             from app.ai.mock_drafts import build_mock_draft

@@ -20,6 +20,8 @@ Extract buying signals from the following raw research text for the account.
 HARD RULE: You MUST ONLY extract facts that are explicitly stated in the `raw_text`. 
 You MUST provide the exact supporting text from the `raw_text` in the `evidence` field for each signal. Do not hallucinate or infer beyond the text. If there is no clear signal, return an empty list.
 
+Do NOT extract a signal from a sentence that is negated ("not hiring", "hiring freeze"), hearsay ("rumors suggest", "reportedly") or speculative ("might", "looking into"). Instead list it under `rejected` with the exact sentence, a category (negated, unsupported or ambiguous), a short reason, and the signal type it seemed to claim. Sentences unrelated to buying signals need not be listed.
+
 Valid Signal Types: support_hiring, funding, product_launch, international_expansion, relevant_technology, rapid_growth, executive_change, too_small, wrong_industry, wrong_geography, no_use_case.
 
 Raw Research Text:
