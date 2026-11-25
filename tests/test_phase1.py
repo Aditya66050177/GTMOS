@@ -54,7 +54,7 @@ def test_research_engine_csv_ingestion(db_session):
 
     acme = db_session.query(Account).filter_by(name="Acme Technologies").first()
     assert acme is not None
-    assert acme.domain == "acme.com"
+    assert acme.domain == "acme-technologies.example"
     assert acme.employee_count == 240
     assert acme.industry == "B2B SaaS"
 

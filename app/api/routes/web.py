@@ -7,7 +7,7 @@ engines, and the playground computes without writing to the database.
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any, Dict, List, Optional
+from typing import Annotated, Any, Dict, List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
@@ -263,7 +263,7 @@ class PlaygroundRequest(BaseModel):
     employee_count: int = Field(..., ge=1, le=1_000_000)
     country: str = Field(..., max_length=60)
     description: str = Field("", max_length=300)
-    technology_stack: List[str] = Field(default_factory=list, max_length=15)
+    technology_stack: List[Annotated[str, Field(max_length=40)]] = Field(default_factory=list, max_length=15)
     research_note: str = Field("", max_length=1200)
 
 

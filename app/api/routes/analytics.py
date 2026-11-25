@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional
@@ -12,6 +14,7 @@ from app.schemas.analytics import (
 from app.services.analytics_engine import AnalyticsEngine
 from app.services.analyst_service import AnalystService
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/analytics", tags=["GTM Analytics & AI Analyst"])
 
 @router.get("/funnel", response_model=FunnelAnalyticsResponse)
@@ -34,4 +37,5 @@ def ask_analyst(payload: AnalystAskRequest, db: Session = Depends(get_db)):
         response = analyst.ask(db=db, question=payload.question)
         return response
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error analyzing query: {str(e)}")
+        logger.exception("Analyst query failed")
+        raise HTTPException(status_code=500, detail="The analyst could not answer that question.")

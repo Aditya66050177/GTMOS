@@ -42,7 +42,7 @@ class AnalystQueryIntentSchema(BaseModel):
     parameters: Dict[str, Any] = Field(default_factory=dict, description="Parameters to pass to the function")
 
 class AnalystAskRequest(BaseModel):
-    question: str = Field(..., description="Natural language question about GTM analytics")
+    question: str = Field(..., min_length=1, max_length=300, description="Natural language question about GTM analytics")
 
 class AnalystAskResponse(BaseModel):
     question: str

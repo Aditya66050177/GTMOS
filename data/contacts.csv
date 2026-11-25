@@ -1,73 +1,73 @@
 company,name,role,email,linkedin_url
-Acme Technologies,Sarah Chen,VP of Customer Support,sarah.chen@acmetechnologies.com,https://linkedin.com/in/sarah-chen-cx
-Acme Technologies,David Miller,Chief Revenue Officer,david.miller@acmetechnologies.com,https://linkedin.com/in/david-miller-cro
-Fintech Pulse Inc,Elena Rostova,Head of Customer Experience,elena.rostova@fintechpulse.com,https://linkedin.com/in/elena-rostova-fintech
-Nexus Cloud Systems,Marcus Vance,VP of Customer Support,marcus.vance@nexuscloud.io,https://linkedin.com/in/marcus-vance-nexus
-Global Logistics Ltd,Sarah Martinez,Chief Revenue Officer,sarah.martinez@globallogistics.co.uk,https://linkedin.com/in/sarah-martinez
-Micro Design Studio,Jessica Johnson,Director of Support Operations,jessica.johnson@microdesign.net,https://linkedin.com/in/jessica-johnson
-Company 1 Healthcare,Robert Martinez,VP Sales,robert.martinez@company1healthcare.co,https://linkedin.com/in/robert-martinez
-Company 2 Healthcare,Lisa Taylor,VP of Customer Support,lisa.taylor@company2healthcare.io,https://linkedin.com/in/lisa-taylor
-Company 3 Manufacturing,Michael Miller,Head of Customer Experience,michael.miller@company3manufacturing.com,https://linkedin.com/in/michael-miller
-Company 4 B2B,Daniel Miller,Director of Support Operations,daniel.miller@company4b2b.org,https://linkedin.com/in/daniel-miller
-Company 5 Software,Jessica Anderson,VP Sales,jessica.anderson@company5software.com,https://linkedin.com/in/jessica-anderson
-Company 5 Software,Alex Robinson,Customer Success Lead,alex.robinson@company5software.com,https://linkedin.com/in/alex-robinson
-Company 6 Healthcare,Carlos Robinson,Head of Customer Experience,carlos.robinson@company6healthcare.net,https://linkedin.com/in/carlos-robinson
-Company 7 Logistics,Emily Davis,Head of Customer Experience,emily.davis@company7logistics.co,https://linkedin.com/in/emily-davis
-Company 7 Logistics,Jessica Robinson,Chief Revenue Officer,jessica.robinson@company7logistics.co,https://linkedin.com/in/jessica-robinson
-Company 8 Cloud,Michael Taylor,VP of Customer Support,michael.taylor@company8cloud.org,https://linkedin.com/in/michael-taylor
-Company 9 Cybersecurity,Priya Wilson,VP Sales,priya.wilson@company9cybersecurity.io,https://linkedin.com/in/priya-wilson
-Company 9 Cybersecurity,Alex Robinson,VP of Customer Support,alex.robinson@company9cybersecurity.io,https://linkedin.com/in/alex-robinson
-Company 10 E-commerce,Daniel Smith,Head of Product,daniel.smith@company10e-commerce.co,https://linkedin.com/in/daniel-smith
-Company 10 E-commerce,Michael Patel,Chief Revenue Officer,michael.patel@company10e-commerce.co,https://linkedin.com/in/michael-patel
-Company 11 Software,Lisa Miller,Director of Support Operations,lisa.miller@company11software.net,https://linkedin.com/in/lisa-miller
-Company 11 Software,Michael Chen,Director of Support Operations,michael.chen@company11software.net,https://linkedin.com/in/michael-chen
-Company 12 Manufacturing,Carlos Davis,VP of Customer Support,carlos.davis@company12manufacturing.co,https://linkedin.com/in/carlos-davis
-Company 13 Logistics,Priya Smith,Head of Product,priya.smith@company13logistics.co,https://linkedin.com/in/priya-smith
-Company 14 B2B,Rachel Kim,Customer Success Lead,rachel.kim@company14b2b.org,https://linkedin.com/in/rachel-kim
-Company 14 B2B,Emily Johnson,Chief Revenue Officer,emily.johnson@company14b2b.org,https://linkedin.com/in/emily-johnson
-Company 15 Education,Jessica Kim,Chief Revenue Officer,jessica.kim@company15education.co,https://linkedin.com/in/jessica-kim
-Company 15 Education,Elena Lewis,Director of Support Operations,elena.lewis@company15education.co,https://linkedin.com/in/elena-lewis
-Company 16 Logistics,Lisa Kim,Head of Customer Experience,lisa.kim@company16logistics.io,https://linkedin.com/in/lisa-kim
-Company 17 Cloud,David Anderson,Head of Product,david.anderson@company17cloud.com,https://linkedin.com/in/david-anderson
-Company 18 Manufacturing,Marcus Kim,Director of Support Operations,marcus.kim@company18manufacturing.io,https://linkedin.com/in/marcus-kim
-Company 18 Manufacturing,Daniel Miller,Director of Support Operations,daniel.miller@company18manufacturing.io,https://linkedin.com/in/daniel-miller
-Company 19 Retail,Priya Robinson,Customer Success Lead,priya.robinson@company19retail.com,https://linkedin.com/in/priya-robinson
-Company 19 Retail,Sarah Miller,Customer Success Lead,sarah.miller@company19retail.com,https://linkedin.com/in/sarah-miller
-Company 20 Cloud,Carlos Wilson,Head of Product,carlos.wilson@company20cloud.io,https://linkedin.com/in/carlos-wilson
-Company 21 Manufacturing,Michael Miller,VP Sales,michael.miller@company21manufacturing.com,https://linkedin.com/in/michael-miller
-Company 21 Manufacturing,Marcus Martinez,Chief Revenue Officer,marcus.martinez@company21manufacturing.com,https://linkedin.com/in/marcus-martinez
-Company 22 E-commerce,Robert Anderson,Head of Product,robert.anderson@company22e-commerce.org,https://linkedin.com/in/robert-anderson
-Company 23 Software,David Davis,Head of Customer Experience,david.davis@company23software.net,https://linkedin.com/in/david-davis
-Company 23 Software,Jessica Martinez,VP Sales,jessica.martinez@company23software.net,https://linkedin.com/in/jessica-martinez
-Company 24 B2B,Elena Garcia,Head of Product,elena.garcia@company24b2b.com,https://linkedin.com/in/elena-garcia
-Company 24 B2B,Marcus Garcia,Head of Product,marcus.garcia@company24b2b.com,https://linkedin.com/in/marcus-garcia
-Company 25 Healthcare,Jessica Johnson,VP Sales,jessica.johnson@company25healthcare.co,https://linkedin.com/in/jessica-johnson
-Company 25 Healthcare,Rachel Smith,Customer Success Lead,rachel.smith@company25healthcare.co,https://linkedin.com/in/rachel-smith
-Company 26 Cloud,Priya Smith,Head of Customer Experience,priya.smith@company26cloud.net,https://linkedin.com/in/priya-smith
-Company 27 Healthcare,Carlos Kim,Head of Product,carlos.kim@company27healthcare.net,https://linkedin.com/in/carlos-kim
-Company 28 E-commerce,James Taylor,VP Sales,james.taylor@company28e-commerce.co,https://linkedin.com/in/james-taylor
-Company 29 B2B,Daniel Davis,VP Sales,daniel.davis@company29b2b.net,https://linkedin.com/in/daniel-davis
-Company 29 B2B,Priya Chen,Director of Support Operations,priya.chen@company29b2b.net,https://linkedin.com/in/priya-chen
-Company 30 Cloud,Robert Lewis,VP Sales,robert.lewis@company30cloud.net,https://linkedin.com/in/robert-lewis
-Company 31 Software,Carlos Kim,Chief Revenue Officer,carlos.kim@company31software.net,https://linkedin.com/in/carlos-kim
-Company 31 Software,Michael Davis,Head of Product,michael.davis@company31software.net,https://linkedin.com/in/michael-davis
-Company 32 E-commerce,Rachel Chen,Director of Support Operations,rachel.chen@company32e-commerce.com,https://linkedin.com/in/rachel-chen
-Company 33 Fintech,Daniel Robinson,Head of Customer Experience,daniel.robinson@company33fintech.net,https://linkedin.com/in/daniel-robinson
-Company 33 Fintech,Daniel Lewis,VP of Customer Support,daniel.lewis@company33fintech.net,https://linkedin.com/in/daniel-lewis
-Company 34 Retail,Priya Kim,VP Sales,priya.kim@company34retail.com,https://linkedin.com/in/priya-kim
-Company 34 Retail,Lisa Miller,Head of Customer Experience,lisa.miller@company34retail.com,https://linkedin.com/in/lisa-miller
-Company 35 E-commerce,Carlos Johnson,VP Sales,carlos.johnson@company35e-commerce.org,https://linkedin.com/in/carlos-johnson
-Company 35 E-commerce,Carlos Lewis,VP Sales,carlos.lewis@company35e-commerce.org,https://linkedin.com/in/carlos-lewis
-Company 36 B2B,Lisa Wilson,Head of Product,lisa.wilson@company36b2b.net,https://linkedin.com/in/lisa-wilson
-Company 37 Cloud,Michael Lewis,Chief Revenue Officer,michael.lewis@company37cloud.net,https://linkedin.com/in/michael-lewis
-Company 38 Software,Jessica Chen,Head of Customer Experience,jessica.chen@company38software.com,https://linkedin.com/in/jessica-chen
-Company 38 Software,Marcus Garcia,VP of Customer Support,marcus.garcia@company38software.com,https://linkedin.com/in/marcus-garcia
-Company 39 Manufacturing,Elena Anderson,Customer Success Lead,elena.anderson@company39manufacturing.io,https://linkedin.com/in/elena-anderson
-Company 40 Retail,Carlos Patel,Customer Success Lead,carlos.patel@company40retail.io,https://linkedin.com/in/carlos-patel
-Company 41 Education,David Kim,Head of Product,david.kim@company41education.io,https://linkedin.com/in/david-kim
-Company 42 Manufacturing,Alex Patel,Customer Success Lead,alex.patel@company42manufacturing.io,https://linkedin.com/in/alex-patel
-Company 43 B2B,Jessica Lewis,VP Sales,jessica.lewis@company43b2b.io,https://linkedin.com/in/jessica-lewis
-Company 43 B2B,Carlos Martinez,Director of Support Operations,carlos.martinez@company43b2b.io,https://linkedin.com/in/carlos-martinez
-Company 44 Cloud,Elena Davis,Head of Product,elena.davis@company44cloud.co,https://linkedin.com/in/elena-davis
-Company 45 Education,Rachel Lewis,VP Sales,rachel.lewis@company45education.org,https://linkedin.com/in/rachel-lewis
-Company 45 Education,Rachel Smith,Head of Customer Experience,rachel.smith@company45education.org,https://linkedin.com/in/rachel-smith
+Acme Technologies,Ada Placeholder,VP of Customer Support,ada.placeholder@acme-technologies.example,https://linkedin.example/in/ada-placeholder-0
+Acme Technologies,Blake Sampleton,Chief Revenue Officer,blake.sampleton@acme-technologies.example,https://linkedin.example/in/blake-sampleton-1
+Fintech Pulse Inc,Casey Demoson,Head of Customer Experience,casey.demoson@fintech-pulse-inc.example,https://linkedin.example/in/casey-demoson-2
+Nexus Cloud Systems,Dana Testwell,VP of Customer Support,dana.testwell@nexus-cloud-systems.example,https://linkedin.example/in/dana-testwell-3
+Global Logistics Ltd,Ellis Mockford,Chief Revenue Officer,ellis.mockford@global-logistics-ltd.example,https://linkedin.example/in/ellis-mockford-4
+Micro Design Studio,Frankie Fakely,Director of Support Operations,frankie.fakely@micro-design-studio.example,https://linkedin.example/in/frankie-fakely-5
+Company 1 Healthcare,Gray Exampleby,VP Sales,gray.exampleby@company-1-healthcare.example,https://linkedin.example/in/gray-exampleby-6
+Company 2 Healthcare,Harper Prototyp,VP of Customer Support,harper.prototyp@company-2-healthcare.example,https://linkedin.example/in/harper-prototyp-7
+Company 3 Manufacturing,Indy Stubbs-Fictional,Head of Customer Experience,indy.stubbs.fictional@company-3-manufacturing.example,https://linkedin.example/in/indy-stubbs-fictional-8
+Company 4 B2B,Jules Notreal,Director of Support Operations,jules.notreal@company-4-b2b.example,https://linkedin.example/in/jules-notreal-9
+Company 5 Software,Kai Dummington,VP Sales,kai.dummington@company-5-software.example,https://linkedin.example/in/kai-dummington-10
+Company 5 Software,Lane Pretendo,Customer Success Lead,lane.pretendo@company-5-software.example,https://linkedin.example/in/lane-pretendo-11
+Company 6 Healthcare,Morgan Placeholder,Head of Customer Experience,morgan.placeholder@company-6-healthcare.example,https://linkedin.example/in/morgan-placeholder-12
+Company 7 Logistics,Noor Sampleton,Head of Customer Experience,noor.sampleton@company-7-logistics.example,https://linkedin.example/in/noor-sampleton-13
+Company 7 Logistics,Oakley Demoson,Chief Revenue Officer,oakley.demoson@company-7-logistics.example,https://linkedin.example/in/oakley-demoson-14
+Company 8 Cloud,Parker Testwell,VP of Customer Support,parker.testwell@company-8-cloud.example,https://linkedin.example/in/parker-testwell-15
+Company 9 Cybersecurity,Ada Fakely,VP Sales,ada.fakely@company-9-cybersecurity.example,https://linkedin.example/in/ada-fakely-16
+Company 9 Cybersecurity,Blake Exampleby,VP of Customer Support,blake.exampleby@company-9-cybersecurity.example,https://linkedin.example/in/blake-exampleby-17
+Company 10 E-commerce,Casey Prototyp,Head of Product,casey.prototyp@company-10-e-commerce.example,https://linkedin.example/in/casey-prototyp-18
+Company 10 E-commerce,Dana Stubbs-Fictional,Chief Revenue Officer,dana.stubbs.fictional@company-10-e-commerce.example,https://linkedin.example/in/dana-stubbs-fictional-19
+Company 11 Software,Ellis Notreal,Director of Support Operations,ellis.notreal@company-11-software.example,https://linkedin.example/in/ellis-notreal-20
+Company 11 Software,Frankie Dummington,Director of Support Operations,frankie.dummington@company-11-software.example,https://linkedin.example/in/frankie-dummington-21
+Company 12 Manufacturing,Gray Pretendo,VP of Customer Support,gray.pretendo@company-12-manufacturing.example,https://linkedin.example/in/gray-pretendo-22
+Company 13 Logistics,Harper Placeholder,Head of Product,harper.placeholder@company-13-logistics.example,https://linkedin.example/in/harper-placeholder-23
+Company 14 B2B,Indy Sampleton,Customer Success Lead,indy.sampleton@company-14-b2b.example,https://linkedin.example/in/indy-sampleton-24
+Company 14 B2B,Jules Demoson,Chief Revenue Officer,jules.demoson@company-14-b2b.example,https://linkedin.example/in/jules-demoson-25
+Company 15 Education,Kai Testwell,Chief Revenue Officer,kai.testwell@company-15-education.example,https://linkedin.example/in/kai-testwell-26
+Company 15 Education,Lane Mockford,Director of Support Operations,lane.mockford@company-15-education.example,https://linkedin.example/in/lane-mockford-27
+Company 16 Logistics,Morgan Fakely,Head of Customer Experience,morgan.fakely@company-16-logistics.example,https://linkedin.example/in/morgan-fakely-28
+Company 17 Cloud,Noor Exampleby,Head of Product,noor.exampleby@company-17-cloud.example,https://linkedin.example/in/noor-exampleby-29
+Company 18 Manufacturing,Oakley Prototyp,Director of Support Operations,oakley.prototyp@company-18-manufacturing.example,https://linkedin.example/in/oakley-prototyp-30
+Company 18 Manufacturing,Parker Stubbs-Fictional,Director of Support Operations,parker.stubbs.fictional@company-18-manufacturing.example,https://linkedin.example/in/parker-stubbs-fictional-31
+Company 19 Retail,Ada Dummington,Customer Success Lead,ada.dummington@company-19-retail.example,https://linkedin.example/in/ada-dummington-32
+Company 19 Retail,Blake Pretendo,Customer Success Lead,blake.pretendo@company-19-retail.example,https://linkedin.example/in/blake-pretendo-33
+Company 20 Cloud,Casey Placeholder,Head of Product,casey.placeholder@company-20-cloud.example,https://linkedin.example/in/casey-placeholder-34
+Company 21 Manufacturing,Dana Sampleton,VP Sales,dana.sampleton@company-21-manufacturing.example,https://linkedin.example/in/dana-sampleton-35
+Company 21 Manufacturing,Ellis Demoson,Chief Revenue Officer,ellis.demoson@company-21-manufacturing.example,https://linkedin.example/in/ellis-demoson-36
+Company 22 E-commerce,Frankie Testwell,Head of Product,frankie.testwell@company-22-e-commerce.example,https://linkedin.example/in/frankie-testwell-37
+Company 23 Software,Gray Mockford,Head of Customer Experience,gray.mockford@company-23-software.example,https://linkedin.example/in/gray-mockford-38
+Company 23 Software,Harper Fakely,VP Sales,harper.fakely@company-23-software.example,https://linkedin.example/in/harper-fakely-39
+Company 24 B2B,Indy Exampleby,Head of Product,indy.exampleby@company-24-b2b.example,https://linkedin.example/in/indy-exampleby-40
+Company 24 B2B,Jules Prototyp,Head of Product,jules.prototyp@company-24-b2b.example,https://linkedin.example/in/jules-prototyp-41
+Company 25 Healthcare,Kai Stubbs-Fictional,VP Sales,kai.stubbs.fictional@company-25-healthcare.example,https://linkedin.example/in/kai-stubbs-fictional-42
+Company 25 Healthcare,Lane Notreal,Customer Success Lead,lane.notreal@company-25-healthcare.example,https://linkedin.example/in/lane-notreal-43
+Company 26 Cloud,Morgan Dummington,Head of Customer Experience,morgan.dummington@company-26-cloud.example,https://linkedin.example/in/morgan-dummington-44
+Company 27 Healthcare,Noor Pretendo,Head of Product,noor.pretendo@company-27-healthcare.example,https://linkedin.example/in/noor-pretendo-45
+Company 28 E-commerce,Oakley Placeholder,VP Sales,oakley.placeholder@company-28-e-commerce.example,https://linkedin.example/in/oakley-placeholder-46
+Company 29 B2B,Parker Sampleton,VP Sales,parker.sampleton@company-29-b2b.example,https://linkedin.example/in/parker-sampleton-47
+Company 29 B2B,Ada Testwell,Director of Support Operations,ada.testwell@company-29-b2b.example,https://linkedin.example/in/ada-testwell-48
+Company 30 Cloud,Blake Mockford,VP Sales,blake.mockford@company-30-cloud.example,https://linkedin.example/in/blake-mockford-49
+Company 31 Software,Casey Fakely,Chief Revenue Officer,casey.fakely@company-31-software.example,https://linkedin.example/in/casey-fakely-50
+Company 31 Software,Dana Exampleby,Head of Product,dana.exampleby@company-31-software.example,https://linkedin.example/in/dana-exampleby-51
+Company 32 E-commerce,Ellis Prototyp,Director of Support Operations,ellis.prototyp@company-32-e-commerce.example,https://linkedin.example/in/ellis-prototyp-52
+Company 33 Fintech,Frankie Stubbs-Fictional,Head of Customer Experience,frankie.stubbs.fictional@company-33-fintech.example,https://linkedin.example/in/frankie-stubbs-fictional-53
+Company 33 Fintech,Gray Notreal,VP of Customer Support,gray.notreal@company-33-fintech.example,https://linkedin.example/in/gray-notreal-54
+Company 34 Retail,Harper Dummington,VP Sales,harper.dummington@company-34-retail.example,https://linkedin.example/in/harper-dummington-55
+Company 34 Retail,Indy Pretendo,Head of Customer Experience,indy.pretendo@company-34-retail.example,https://linkedin.example/in/indy-pretendo-56
+Company 35 E-commerce,Jules Placeholder,VP Sales,jules.placeholder@company-35-e-commerce.example,https://linkedin.example/in/jules-placeholder-57
+Company 35 E-commerce,Kai Sampleton,VP Sales,kai.sampleton@company-35-e-commerce.example,https://linkedin.example/in/kai-sampleton-58
+Company 36 B2B,Lane Demoson,Head of Product,lane.demoson@company-36-b2b.example,https://linkedin.example/in/lane-demoson-59
+Company 37 Cloud,Morgan Testwell,Chief Revenue Officer,morgan.testwell@company-37-cloud.example,https://linkedin.example/in/morgan-testwell-60
+Company 38 Software,Noor Mockford,Head of Customer Experience,noor.mockford@company-38-software.example,https://linkedin.example/in/noor-mockford-61
+Company 38 Software,Oakley Fakely,VP of Customer Support,oakley.fakely@company-38-software.example,https://linkedin.example/in/oakley-fakely-62
+Company 39 Manufacturing,Parker Exampleby,Customer Success Lead,parker.exampleby@company-39-manufacturing.example,https://linkedin.example/in/parker-exampleby-63
+Company 40 Retail,Ada Stubbs-Fictional,Customer Success Lead,ada.stubbs.fictional@company-40-retail.example,https://linkedin.example/in/ada-stubbs-fictional-64
+Company 41 Education,Blake Notreal,Head of Product,blake.notreal@company-41-education.example,https://linkedin.example/in/blake-notreal-65
+Company 42 Manufacturing,Casey Dummington,Customer Success Lead,casey.dummington@company-42-manufacturing.example,https://linkedin.example/in/casey-dummington-66
+Company 43 B2B,Dana Pretendo,VP Sales,dana.pretendo@company-43-b2b.example,https://linkedin.example/in/dana-pretendo-67
+Company 43 B2B,Ellis Placeholder,Director of Support Operations,ellis.placeholder@company-43-b2b.example,https://linkedin.example/in/ellis-placeholder-68
+Company 44 Cloud,Frankie Sampleton,Head of Product,frankie.sampleton@company-44-cloud.example,https://linkedin.example/in/frankie-sampleton-69
+Company 45 Education,Gray Demoson,VP Sales,gray.demoson@company-45-education.example,https://linkedin.example/in/gray-demoson-70
+Company 45 Education,Harper Testwell,Head of Customer Experience,harper.testwell@company-45-education.example,https://linkedin.example/in/harper-testwell-71

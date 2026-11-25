@@ -183,3 +183,8 @@ def generate_accounts_csv():
 
 if __name__ == "__main__":
     generate_accounts_csv()
+    # Replace identity fields with clearly fictional, non-resolving values (.example).
+    import sys
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from scripts.fictionalize_demo_data import fictionalize
+    fictionalize()

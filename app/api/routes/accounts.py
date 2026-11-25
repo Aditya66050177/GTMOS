@@ -1,3 +1,5 @@
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -9,6 +11,7 @@ from app.schemas.scoring import ScoreResult
 from app.services.scoring_engine import ScoringEngine
 from app.services.research_engine import ResearchEngine
 
+logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/accounts", tags=["Accounts"])
 
 @router.get("", response_model=List[AccountResponse])
@@ -150,7 +153,8 @@ def personalize_account(
     except ValueError as ve:
         raise HTTPException(status_code=400, detail=str(ve))
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Personalization error: {str(e)}")
+        logger.exception("Personalization failed for account %s", id)
+        raise HTTPException(status_code=500, detail="Could not generate a draft for this account.")
 
     return DraftResponse(
         id=draft.id,

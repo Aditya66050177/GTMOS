@@ -23,7 +23,7 @@ export default function AppShell() {
   useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
 
   async function reset() {
-    if (!window.confirm("Reset the sandbox? Every approval and stage change made here will be undone.")) return;
+    if (!window.confirm("Reset your sandbox? Every draft, approval and edit you made will be undone.")) return;
     setResetting(true);
     try { await api.reset(); setVersion((v) => v + 1); } finally { setResetting(false); }
   }
@@ -49,10 +49,10 @@ export default function AppShell() {
     <div className="space-y-3 text-xs text-mist-500">
       <div className="rounded-xl border border-ink-700 bg-ink-850 p-3 leading-relaxed">
         <div className="mb-1 font-semibold text-mist-300">Public sandbox</div>
-        Synthetic data, offline AI mode. Changes are shared with other visitors and reset on their own.
+        Synthetic data, offline AI mode. Your edits stay private to this browser and expire after about two hours.
       </div>
       <button onClick={reset} disabled={resetting} className="btn-ghost w-full">
-        <RotateCcw className={`h-4 w-4 ${resetting ? "animate-spin" : ""}`} /> {resetting ? "Resetting…" : "Reset sandbox"}
+        <RotateCcw className={`h-4 w-4 ${resetting ? "animate-spin" : ""}`} /> {resetting ? "Resetting…" : "Reset my sandbox"}
       </button>
       <a href={SITE.repoUrl} target="_blank" rel="noreferrer" className="flex items-center gap-2 px-1 hover:text-mist-100">
         <Github className="h-4 w-4" /> Source on GitHub

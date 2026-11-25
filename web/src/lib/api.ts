@@ -117,10 +117,34 @@ export interface PipelineResp {
 
 export class ApiError extends Error {}
 
+// A random, per-browser id that keeps this visitor's demo edits in a private
+// sandbox on the server. It identifies nothing about the person.
+const SESSION_KEY = "gtmos-demo-session";
+let memorySession: string | null = null;
+
+function newSessionId(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export function demoSessionId(): string {
+  try {
+    const stored = window.localStorage.getItem(SESSION_KEY);
+    if (stored && /^[a-f0-9]{32}$/.test(stored)) return stored;
+    const fresh = newSessionId();
+    window.localStorage.setItem(SESSION_KEY, fresh);
+    return fresh;
+  } catch {
+    memorySession ??= newSessionId();
+    return memorySession;
+  }
+}
+
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`/api${path}`, {
-    headers: { "Content-Type": "application/json" },
     ...init,
+    headers: { "Content-Type": "application/json", "X-Demo-Session": demoSessionId() },
   });
   if (!res.ok) {
     let detail = `${res.status} ${res.statusText}`;
@@ -142,7 +166,7 @@ export const api = {
   account: (id: number) => request<AccountDetail>(`/web/accounts/${id}`),
   drafts: () => request<DraftItem[]>("/web/drafts"),
   playground: (input: PlaygroundInput) => post<PlaygroundResult>("/web/playground", input),
-  reset: () => post<{ status: string }>("/web/reset"),
+  reset: () => post<{ status: string; had_changes: boolean }>("/web/reset"),
   personalize: (id: number) => post<unknown>(`/accounts/${id}/personalize`),
   editDraft: (id: number, body: string) => request<unknown>(`/drafts/${id}`, { method: "PATCH", body: JSON.stringify({ body }) }),
   approveDraft: (id: number) => post<unknown>(`/drafts/${id}/approve`),
