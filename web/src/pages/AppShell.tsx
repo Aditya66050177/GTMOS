@@ -1,9 +1,10 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BarChart3, BookOpen, Columns3, FlaskConical, PlayCircle, Github, Inbox, KanbanSquare, LayoutDashboard, Menu, RotateCcw, Users, X } from "lucide-react";
+import { AlertTriangle, BarChart3, BookOpen, Columns3, FlaskConical, PlayCircle, Github, Inbox, KanbanSquare, LayoutDashboard, Menu, RotateCcw, Users, X } from "lucide-react";
 import { DataTag, Logo } from "../components/ui";
 import DemoGuide from "../components/DemoGuide";
 import { useDemo } from "../demo/DemoContext";
+import { dismissSandboxLoss, useSandboxLoss } from "../lib/sandboxStatus";
 import { api } from "../lib/api";
 import { SITE } from "../site";
 
@@ -40,6 +41,7 @@ export default function AppShell() {
   const location = useLocation();
 
   const demo = useDemo();
+  const sandboxLoss = useSandboxLoss();
 
   // Close the mobile menu on navigation; scroll to the top, or to #anchor once the
   // async content containing it has rendered (checked for up to ~3 s).
@@ -147,6 +149,22 @@ export default function AppShell() {
           <DataTag>Demo · synthetic data · simulated pipeline</DataTag>
         </div>
         <div className={`mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6 ${demo.active ? "pb-[24rem] lg:pb-6" : ""}`} key={version}>
+          {sandboxLoss && (
+            <div role="status" aria-live="polite" className="mb-4 flex flex-wrap items-start gap-3 rounded-lg border border-warn-200 bg-warn-50 px-4 py-3">
+              <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-warn-700" aria-hidden />
+              <div className="min-w-0 flex-1 text-ink-2">
+                <div className="font-semibold text-warn-700">Your earlier demo changes are no longer shown</div>
+                <p className="mt-0.5">
+                  {sandboxLoss.kind === "missing"
+                    ? "This server has no record of your temporary sandbox. It may have expired (after about two hours), or a different server answered this request."
+                    : "A new temporary sandbox was started for you because the previous one expired or is held by a different server."}
+                  {" "}Draft approvals, edits and logged outreach from before are not shown anymore. They were never permanent:
+                  demo changes live only in a temporary sandbox, nothing was sent, and shared demo data is unaffected.
+                </p>
+              </div>
+              <button className="btn-secondary py-1.5 text-xs" onClick={dismissSandboxLoss}>Dismiss</button>
+            </div>
+          )}
           <Outlet />
         </div>
       </main>

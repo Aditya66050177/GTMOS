@@ -1,3 +1,5 @@
+import { observeSandbox } from "./sandboxStatus";
+
 export type Tier = "Priority 1" | "Priority 2" | "Priority 3" | "Low";
 export type Action = "CONTACT" | "PRIORITIZE" | "NURTURE" | "RESEARCH" | "DEPRIORITIZE";
 
@@ -213,6 +215,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     ...init,
     headers: { "Content-Type": "application/json", "X-Demo-Session": demoSessionId() },
   });
+  const method = (init?.method ?? "GET").toUpperCase();
+  observeSandbox(res, { mutating: method !== "GET", intentionalReset: path === "/web/reset" && res.ok });
   if (!res.ok) {
     let detail = `${res.status} ${res.statusText}`;
     try {

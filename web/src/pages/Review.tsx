@@ -106,10 +106,10 @@ function DraftCard({ draft, onChange }: { draft: DraftItem; onChange: () => Prom
         {draft.status === "approved" && (
           <>
             <button className="btn-primary" disabled={busy} onClick={() => act(() => api.markSent(draft.account_id, draft.id))}>I sent it myself — log it</button>
-            <span className="text-xs text-ink-3">GTMOS never sends email. A person sends it, then logs it here.</span>
+            <span className="text-xs text-ink-3">GTMOS never sends email. A person sends it, then logs it here (kept in your temporary sandbox only).</span>
           </>
         )}
-        {draft.status === "sent" && <span className="text-ink-3">Logged as sent by a person. The account moved to Contacted.</span>}
+        {draft.status === "sent" && <span className="text-ink-3">Logged as sent by a person; the account moved to Contacted in your temporary sandbox.</span>}
         {draft.status === "rejected" && <span className="text-ink-3">Rejected. Nothing was sent.</span>}
         {err && <span className="w-full text-xs text-danger-700" role="alert">{err}</span>}
       </footer>
@@ -128,7 +128,7 @@ export default function ReviewPage() {
   return (
     <div>
       <PageHeader eyebrow="Human in the loop" title="Review queue"
-        description="Every AI draft lands here first. Numbers not found in the evidence were already refused by the fact-check, and nothing leaves until a person approves and sends it." />
+        description="Every AI draft lands here first. Numbers not found in the evidence were already refused by the fact-check, and nothing leaves until a person approves and sends it. In this demo, approvals and logs are kept only in your temporary sandbox." />
       <div className="segmented mb-4 overflow-x-auto" role="group" aria-label="Filter drafts by status">
         {TABS.map((t) => (
           <button key={t.key} type="button" aria-pressed={tab === t.key} onClick={() => setTab(t.key)} className="whitespace-nowrap">

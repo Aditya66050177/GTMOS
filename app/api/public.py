@@ -25,6 +25,7 @@ from __future__ import annotations
 
 import logging
 import re
+import secrets
 import shutil
 import sqlite3
 import threading
@@ -119,7 +120,9 @@ class SandboxRegistry:
         self.ttl_seconds = ttl_seconds
         self.clock = clock
         self._lock = threading.Lock()
-        self._entries: "OrderedDict[str, Tuple[Engine, sessionmaker, float]]" = OrderedDict()
+        # sid -> (engine, sessionmaker, last_seen, token). The token is random per sandbox, so a
+        # recreated sandbox for the same browser id gets a different token.
+        self._entries: "OrderedDict[str, Tuple[Engine, sessionmaker, float, str]]" = OrderedDict()
         if directory.exists():
             shutil.rmtree(directory, ignore_errors=True)
         directory.mkdir(parents=True, exist_ok=True)
@@ -128,13 +131,13 @@ class SandboxRegistry:
         return self.directory / f"{sid}.db"
 
     def _drop(self, sid: str) -> None:
-        engine, _maker, _seen = self._entries.pop(sid)
+        engine, _maker, _seen, _token = self._entries.pop(sid)
         engine.dispose()
         self._path(sid).unlink(missing_ok=True)
 
     def _expire(self) -> None:
         cutoff = self.clock() - self.ttl_seconds
-        for sid in [s for s, (_e, _m, seen) in self._entries.items() if seen < cutoff]:
+        for sid in [s for s, (_e, _m, seen, _t) in self._entries.items() if seen < cutoff]:
             self._drop(sid)
 
     def _copy_template(self, sid: str) -> Path:
@@ -152,8 +155,8 @@ class SandboxRegistry:
         with self._lock:
             self._expire()
             if sid in self._entries:
-                engine, maker, _seen = self._entries.pop(sid)
-                self._entries[sid] = (engine, maker, self.clock())
+                engine, maker, _seen, token = self._entries.pop(sid)
+                self._entries[sid] = (engine, maker, self.clock(), token)
                 return maker
             if not create:
                 return None
@@ -162,8 +165,15 @@ class SandboxRegistry:
                 self._drop(oldest)
             engine = _sqlite_engine(self._copy_template(sid), read_only=False)
             maker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-            self._entries[sid] = (engine, maker, self.clock())
+            self._entries[sid] = (engine, maker, self.clock(), secrets.token_hex(8))
             return maker
+
+    def token(self, sid: str) -> Optional[str]:
+        """Token of the live sandbox for this browser id, or None if there isn't one here."""
+        with self._lock:
+            self._expire()
+            entry = self._entries.get(sid)
+            return entry[3] if entry else None
 
     def reset(self, sid: str) -> bool:
         with self._lock:
@@ -240,13 +250,38 @@ class PublicDemoGuard:
     """Body cap → rate limits → write policy, before any route runs."""
 
     def __init__(self, app, limiter: RateLimiter, max_body: int,
-                 per_minute: int, writes_per_minute: int, resets_per_minute: int):
+                 per_minute: int, writes_per_minute: int, resets_per_minute: int,
+                 sandboxes: Optional["SandboxRegistry"] = None):
         self.app = app
+        self.sandboxes = sandboxes
         self.limiter = limiter
         self.max_body = max_body
         self.per_minute = per_minute
         self.writes_per_minute = writes_per_minute
         self.resets_per_minute = resets_per_minute
+
+    def _with_sandbox_headers(self, scope, send):
+        """Tell the browser whether its sandbox exists on this server, and which one.
+
+        Added at response start, so it reflects the state after the request ran (e.g. after a
+        reset). The browser compares the token with the one it saw when it last made an edit:
+        "none" or a different token means its temporary edits are gone.
+        """
+        if self.sandboxes is None:
+            return send
+        sid = dict(scope.get("headers", [])).get(SESSION_HEADER.encode(), b"").decode("latin-1")
+        sandboxes = self.sandboxes
+
+        async def wrapped(message):
+            if message["type"] == "http.response.start":
+                token = sandboxes.token(sid) if SESSION_ID_RE.match(sid or "") else None
+                headers = list(message.get("headers", []))
+                headers.append((b"x-demo-sandbox", b"active" if token else b"none"))
+                if token:
+                    headers.append((b"x-demo-sandbox-id", token.encode()))
+                message = {**message, "headers": headers}
+            await send(message)
+        return wrapped
 
     async def __call__(self, scope, receive, send):
         if scope["type"] != "http":
@@ -276,6 +311,7 @@ class PublicDemoGuard:
                 await _send_json(send, 429, "Too many requests. Please slow down.", {"Retry-After": str(retry)})
                 return
 
+        send = self._with_sandbox_headers(scope, send)
         if method in SAFE_METHODS:
             await self.app(scope, receive, send)
             return
@@ -375,5 +411,6 @@ def create_public_api(template: Optional[Path] = None, sandbox_dir: Optional[Pat
         per_minute=settings.DEMO_RATE_LIMIT_PER_MINUTE,
         writes_per_minute=settings.DEMO_WRITE_LIMIT_PER_MINUTE,
         resets_per_minute=settings.DEMO_RESET_LIMIT_PER_MINUTE,
+        sandboxes=sandboxes,
     )
     return api
