@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: dark; }
+html, body, #root { min-height: 100%; }
+body {
+  @apply bg-ink-950 text-mist-100 font-sans antialiased;
+  font-feature-settings: "cv11", "ss01";
+}
+::selection { background: rgba(77, 255, 174, 0.3); }
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
+  .card { @apply rounded-2xl border border-ink-700 bg-ink-900/80; }
+  .card-pad { @apply p-5 sm:p-6; }
+  .eyebrow { @apply font-mono text-[11px] uppercase tracking-[0.18em] text-signal-400; }
+  .h-display { @apply font-display font-semibold tracking-tight; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400/70 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-signal-400 text-ink-950 hover:bg-signal-300; }
+  .btn-ghost { @apply btn border border-ink-600 bg-ink-850 text-mist-100 hover:border-mist-500 hover:bg-ink-800; }
+  .btn-danger { @apply btn border border-rose-400/40 bg-rose-400/10 text-rose-400 hover:bg-rose-400/20; }
+  .chip { @apply inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium; }
+  .input { @apply w-full rounded-xl border border-ink-600 bg-ink-850 px-3 py-2.5 text-sm text-mist-100 placeholder:text-mist-500 focus:border-signal-500 focus:outline-none focus:ring-2 focus:ring-signal-500/20; }
+  .label { @apply mb-1.5 block text-xs font-medium text-mist-400; }
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+}
+
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.rise { animation: rise 0.6s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes pulse-dot { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
+.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .rise, .pulse-dot { animation: none; } }

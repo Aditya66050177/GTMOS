@@ -1,0 +1,10 @@
+# Runtime dependencies for the Vercel serverless function only.
+# Local development uses the root requirements.txt (adds Streamlit, pytest, uvicorn).
+fastapi
+sqlalchemy
+pydantic
+pydantic-settings
+pandas
+python-dotenv
+requests
+google-genai

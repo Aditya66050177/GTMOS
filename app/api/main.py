@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 
 from app.db.database import get_db
-from app.api.routes import products, accounts, drafts, pipeline, analytics
+from app.api.routes import products, accounts, drafts, pipeline, analytics, web
 
 app = FastAPI(
     title="GTMOS API",
@@ -16,6 +16,7 @@ app.include_router(accounts.router)
 app.include_router(drafts.router)
 app.include_router(pipeline.router)
 app.include_router(analytics.router)
+app.include_router(web.router)
 
 @app.get("/health")
 def health_check(db: Session = Depends(get_db)):

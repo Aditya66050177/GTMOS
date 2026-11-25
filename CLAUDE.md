@@ -45,7 +45,8 @@ gtmos/
   app/models/, app/schemas/, app/db/, app/ai/ (llm.py, prompts.py, evaluators.py)
   data/ (accounts.csv, contacts.csv, signals.csv)
   scripts/ (demo.py)
-  n8n/workflows/, tests/, docs/ (architecture.md, scoring.md, decisions.md)
+  n8n/workflows/, tests/, docs/ (architecture.md, scoring.md, decisions.md, deployment.md)
+  web/ (public React site: landing page + live demo), api/index.py (Vercel serverless entry), vercel.json
   .env.example, requirements.txt, README.md
 
 ## WORKING STYLE

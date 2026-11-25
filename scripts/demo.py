@@ -38,82 +38,19 @@ def _separator(title: str):
 def main():
     _separator("GTMOS DEMO — FULL END-TO-END RUN")
 
-    # ── Step 1: Reset database ─────────────────────────────────────────
-    print("\n[1/8] Resetting database...")
-    db_path = ROOT / "gtmos.db"
-    if db_path.exists():
-        os.remove(db_path)
-        print(f"  Removed {db_path}")
-
-    from app.db.init_db import init_db
-    init_db()
-    print("  Database initialized.")
+    print("\nRebuilding the synthetic demo workspace (mock LLM mode)...")
+    print("  product -> ICP -> 150 accounts -> research signals -> scores")
+    print("  -> 40-day pipeline history -> contacts -> review-queue drafts")
+    from app.db.demo_seed import reset_demo_database
+    t0 = time.time()
+    summary = reset_demo_database(quiet=True)
+    print(f"  Done in {time.time() - t0:.1f}s: {summary['accounts']} accounts, "
+          f"{summary['scores']} scores, {summary['drafts']} drafts awaiting review.")
 
     from app.db.database import SessionLocal
-    from app.models import Account, Product, Score, ICPProfile
-    db = SessionLocal()
-
-    # ── Step 2: Create product ─────────────────────────────────────────
-    print("\n[2/8] Creating product...")
+    from app.models import Account
     from app.models.models import Product as ProductModel
-    product = ProductModel(
-        name="AI Customer Support Assistant",
-        description="Autonomous AI platform that automates B2B customer support tickets, "
-                    "reducing resolution time and support costs for fast-growing SaaS companies.",
-        target_market=["B2B SaaS", "Software", "Cloud Services"],
-        geography=["US", "Canada", "United States"],
-        price_range="$25,000–$75,000/year",
-    )
-    db.add(product)
-    db.commit()
-    db.refresh(product)
-    print(f"  Product created: '{product.name}' (id={product.id})")
-
-    # ── Step 3: Generate ICP ──────────────────────────────────────────
-    print("\n[3/8] Generating ICP (mock mode)...")
-    from app.services.icp_engine import ICPEngine
-    from app.ai.llm import LLMService
-    icp_engine = ICPEngine(llm_service=LLMService(mode="mock"))
-    icp = icp_engine.generate_icp_for_product(db, product)
-    print(f"  ICP generated: industries={icp.industries[:2]}, "
-          f"size={icp.company_size_min}-{icp.company_size_max} employees")
-
-    # ── Step 4: Load accounts ─────────────────────────────────────────
-    print("\n[4/8] Loading 150 accounts from data/accounts.csv...")
-    from app.services.research_engine import ResearchEngine
-    re = ResearchEngine()
-    n_accounts = re.load_accounts_from_csv(db)
-    print(f"  Loaded {db.query(Account).count()} accounts.")
-
-    # ── Step 5: Extract signals ───────────────────────────────────────
-    print("\n[5/8] Extracting signals from data/signals.csv...")
-    n_signals = re.extract_signals_from_csv(db)
-    print(f"  Signal extraction complete.")
-
-    # ── Step 6: Score all accounts ────────────────────────────────────
-    print("\n[6/8] Scoring all accounts...")
-    from app.services.scoring_engine import ScoringEngine
-    se = ScoringEngine()
-    accounts = db.query(Account).all()
-    t0 = time.time()
-    for acc in accounts:
-        se.score_account(db, acc, product)
-    elapsed = time.time() - t0
-    print(f"  Scored {len(accounts)} accounts in {elapsed:.1f}s.")
-
-    # ── Step 7: Seed pipeline activity ───────────────────────────────
-    print("\n[7/8] Seeding 40-day pipeline simulation (seed=42)...")
-    db.close()  # seed_activity opens its own session
-    from scripts.seed_activity import seed_activity
-    seed_activity()
     db = SessionLocal()
-
-    # ── Step 8: Load contacts ─────────────────────────────────────────
-    print("\n[8/8] Loading contacts from data/contacts.csv...")
-    from app.services.crm_service import CRMService
-    crm = CRMService()
-    n_contacts = crm.load_contacts_from_csv(db)
-    print(f"  Loaded {n_contacts} contacts.")
 
     # ── Summary ───────────────────────────────────────────────────────
     _separator("DEMO SUMMARY")

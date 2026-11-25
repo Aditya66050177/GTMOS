@@ -1,5 +1,7 @@
 # GTMOS — AI GTM Command Center
 
+**Live demo:** _add your Vercel URL here after the first deploy_ · [Deployment guide](docs/deployment.md)
+
 > An explainable, evidence-driven Go-To-Market intelligence system that turns a product description into scored accounts, detected buying signals, recommended actions, and human-reviewed outreach — tracked through a full CRM pipeline with AI analytics.
 
 ---
@@ -67,22 +69,20 @@ Product Description
 
 ---
 
-## Worked Example — Acme Technologies
+## Worked Example — Acme Technologies (the rumour test)
 
-Acme Technologies is a B2B SaaS company (250 employees, US, Zendesk + Salesforce, Series B, support team of 18).
+Acme Technologies is a near-perfect firmographic fit: B2B SaaS, 240 employees, US, runs Zendesk. Its research notes mention "hiring" and "support team", but the sentence says the hiring was a rumour and the CEO confirmed a hiring freeze. GTMOS extracts no buying signal from negated or rumoured text, so intent stays at zero.
 
 | Component | Score | Max | Rule Applied |
 |-----------|-------|-----|--------------|
 | ICP Fit | 30 | 30 | Industry exact match (20) + pain point overlap (10) |
-| Company Fit | 20 | 20 | 250 employees inside 50–500 range |
-| Technology Fit | 15 | 15 | Zendesk + Salesforce match ICP tech requirements |
-| Buying Intent | 12 | 20 | support_hiring signal (weight 20, 0.8 confidence, 0.7 decay) |
+| Company Fit | 20 | 20 | 240 employees inside 50–500 range |
+| Technology Fit | 4.5 | 15 | Zendesk matches; Salesforce/Intercom/Jira absent |
+| Buying Intent | 0 | 20 | Hiring-freeze rumour is not a signal |
 | Geography Fit | 15 | 15 | US exact match |
-| **Total** | **~87** | **100** | **Priority 2** |
+| **Total** | **69.5** | **100** | **Priority 3 → DEPRIORITIZE** |
 
-**Recommendation:** PRIORITIZE — Priority 2 account with very high intent. Prioritize for immediate outreach.
-
-**Suggested angle:** Support team scaling and efficiency → VP of Customer Support
+Compare Fintech Pulse Inc (93.7, Priority 1 → CONTACT): a verified product launch and expansion into Europe, quoted word for word from a TechCrunch note.
 
 ---
 
@@ -134,12 +134,13 @@ Acme Technologies is a B2B SaaS company (250 employees, US, Zendesk + Salesforce
 | Layer | Technology |
 |-------|-----------|
 | API | FastAPI + Uvicorn |
-| Dashboard | Streamlit |
+| Public web app | React + Vite + Tailwind, deployed on Vercel (`web/`, `api/index.py`) |
+| Internal dashboard | Streamlit |
 | ORM | SQLAlchemy (SQLite → Postgres-ready) |
 | Validation | Pydantic v2 |
 | Analytics | Pandas + SQL |
 | LLM | Google Gemini (mock adapter for testing) |
-| Testing | pytest (163 tests, all phases) |
+| Testing | pytest (190 tests, all phases) |
 | CI | GitHub Actions |
 | Automation | n8n (no Docker required) |
 
@@ -214,6 +215,10 @@ python -m app.ai.run_eval --mode mock
 
 # 9. Ask the AI analyst questions
 python scripts/ask_three_questions.py
+
+# 10. Run the public web app locally (two terminals)
+uvicorn api.index:app --reload --port 8000
+cd web; npm install; npm run dev   # http://localhost:5173
 ```
 
 ---
@@ -226,7 +231,8 @@ python scripts/ask_three_questions.py
 - [x] **Phase 3** — Recommendation engine, personalization + guardrail, human review queue
 - [x] **Phase 4** — CRM pipeline, stage transitions, analytics engine, AI analyst
 - [x] **Phase 5** — Evaluation suite, n8n workflows, demo script, full documentation, CI
-- [x] **163 tests passing** (all phases, mock mode)
+- [x] **Web app** — public landing page + live demo (accounts, evidence, review queue, pipeline, analytics, playground), Vercel-ready
+- [x] **190 tests passing** (all phases, mock mode, isolated temp database)
 - [x] **GitHub Actions** CI runs pytest on every push
 
 ---
@@ -240,6 +246,7 @@ python scripts/ask_three_questions.py
 | Email/Slack integration via n8n | Workflows in `n8n/workflows/` |
 | Multi-product support | DB schema supports it |
 | Contact enrichment API | Extension point in `CRMService` |
+| Public web app on Vercel | Done (see docs/deployment.md) |
 | Bulk CSV import via dashboard | Planned |
 | Role-based access control | Planned |
 
@@ -253,6 +260,6 @@ Most GTM tools are black boxes: they score accounts without explaining why, send
 - **Every signal has a source** — extraction is grounded, rejected claims are logged
 - **No email is sent automatically** — humans approve, humans send
 - **Every metric is computed, not invented** — the AI analyst only cites numbers that came from the analytics engine
-- **The test suite is the contract** — 163 tests across all phases, runnable without an API key
+- **The test suite is the contract** — 190 tests across all phases, runnable without an API key
 
 > All dataset accounts, contacts, and signals are 100% synthetic demo data. No actual company data is scraped or used.

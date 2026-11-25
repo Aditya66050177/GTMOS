@@ -1,0 +1,16 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "buildCommand": "cd web && npm ci && npm run build",
+  "outputDirectory": "web/dist",
+  "installCommand": "echo 'dependencies install in buildCommand'",
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 30,
+      "excludeFiles": "{web/**,tests/**,docs/**,n8n/**,.github/**,app/dashboard/**,**/__pycache__/**,**/*.db}"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": "/api/index" },
+    { "source": "/((?!api/|assets/).*)", "destination": "/index.html" }
+  ]
+}
