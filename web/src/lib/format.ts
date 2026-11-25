@@ -16,27 +16,30 @@ export const SIGNAL_LABEL: Record<string, string> = {
 
 export const signalLabel = (t: string | null | undefined) => (t ? SIGNAL_LABEL[t] ?? t.replace(/_/g, " ") : "—");
 
+// Tiers are ordinal, so they use one hue at decreasing strength, then neutral.
 export const TIER_STYLE: Record<Tier, string> = {
-  "Priority 1": "border-signal-400/40 bg-signal-400/10 text-signal-300",
-  "Priority 2": "border-sky-400/40 bg-sky-400/10 text-sky-400",
-  "Priority 3": "border-amberx-400/40 bg-amberx-400/10 text-amberx-400",
-  Low: "border-ink-600 bg-ink-800 text-mist-400",
+  "Priority 1": "border-accent-600 bg-accent-600 text-white",
+  "Priority 2": "border-accent-100 bg-accent-50 text-accent-700",
+  "Priority 3": "border-line-strong bg-surface text-ink-2",
+  Low: "border-neutral-200 bg-neutral-100 text-ink-4",
 };
 
+// Action colours follow urgency: act now (accent) > wait (warn) > look (neutral) > drop (muted).
 export const ACTION_STYLE: Record<Action, string> = {
-  CONTACT: "bg-signal-400 text-ink-950 border-transparent",
-  PRIORITIZE: "bg-sky-400 text-ink-950 border-transparent",
-  NURTURE: "border-amberx-400/50 text-amberx-400 bg-amberx-400/10",
-  RESEARCH: "border-mist-500/50 text-mist-300 bg-ink-800",
-  DEPRIORITIZE: "border-ink-600 text-mist-500 bg-ink-850",
+  CONTACT: "border-accent-600 bg-accent-600 text-white",
+  PRIORITIZE: "border-accent-600 bg-accent-50 text-accent-700",
+  NURTURE: "border-warn-200 bg-warn-50 text-warn-700",
+  RESEARCH: "border-line-strong bg-surface text-ink-2",
+  DEPRIORITIZE: "border-neutral-200 bg-neutral-100 text-ink-4",
 };
 
-export function scoreColor(score: number): string {
-  if (score >= 90) return "#4DFFAE";
-  if (score >= 75) return "#5CC8FF";
-  if (score >= 50) return "#FFC857";
-  return "#6E788C";
-}
+// Tier distribution: sequential accent ramp, Low in neutral grey.
+export const TIER_FILL: Record<Tier, string> = {
+  "Priority 1": "#134E4A",
+  "Priority 2": "#0F766E",
+  "Priority 3": "#2DD4BF",
+  Low: "#D0D5DD",
+};
 
 export function shortDate(iso: string | null | undefined): string {
   if (!iso) return "—";

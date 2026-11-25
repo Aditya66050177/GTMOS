@@ -1,17 +1,24 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Check, Mail, Pencil, ShieldCheck, X } from "lucide-react";
+import { Check, Pencil, X } from "lucide-react";
 import { api, type DraftItem } from "../lib/api";
 import { useAsync } from "../lib/useAsync";
-import { ErrorBox, Loading, PageHeader } from "../components/ui";
+import { EmptyState, ErrorBox, Loading, PageHeader } from "../components/ui";
 import { signalLabel } from "../lib/format";
 
 const TABS: { key: DraftItem["status"]; label: string }[] = [
   { key: "pending", label: "Pending" },
   { key: "approved", label: "Approved" },
-  { key: "sent", label: "Sent" },
+  { key: "sent", label: "Logged as sent" },
   { key: "rejected", label: "Rejected" },
 ];
+
+const STATUS_STYLE: Record<DraftItem["status"], string> = {
+  pending: "border-warn-200 bg-warn-50 text-warn-700",
+  approved: "border-accent-100 bg-accent-50 text-accent-700",
+  sent: "border-line-strong bg-surface text-ink-2",
+  rejected: "border-neutral-200 bg-neutral-100 text-ink-4",
+};
 
 function DraftCard({ draft, onChange }: { draft: DraftItem; onChange: () => Promise<unknown> }) {
   const [editing, setEditing] = useState(false);
@@ -29,70 +36,72 @@ function DraftCard({ draft, onChange }: { draft: DraftItem; onChange: () => Prom
   }
 
   return (
-    <article className="card overflow-hidden">
-      <header className="flex flex-wrap items-center gap-3 border-b border-ink-800 px-5 py-4">
-        <Mail className="h-4 w-4 text-mist-400" />
-        <Link to={`/app/accounts/${draft.account_id}`} className="font-semibold hover:text-signal-300">{draft.account_name}</Link>
-        {draft.edited && <span className="chip border-amberx-400/40 bg-amberx-400/10 text-amberx-400">edited by reviewer</span>}
-        <span className="ml-auto text-xs text-mist-500">Stage: {draft.account_stage}</span>
+    <article className="panel overflow-hidden">
+      <header className="panel-head">
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+          <Link to={`/app/accounts/${draft.account_id}`} className="font-semibold text-ink hover:text-accent-700 hover:underline">{draft.account_name}</Link>
+          <span className={`badge ${STATUS_STYLE[draft.status]}`}>{draft.status === "sent" ? "logged as sent" : draft.status}</span>
+          {draft.edited && <span className="badge border-line-strong bg-surface text-ink-3">edited by reviewer</span>}
+        </div>
+        <span className="text-xs text-ink-4">Stage: {draft.account_stage}</span>
       </header>
 
-      <div className="grid gap-0 lg:grid-cols-[1.3fr_1fr]">
-        <div className="p-5">
+      <div className="grid lg:grid-cols-[1.35fr_1fr]">
+        <div className="p-4 sm:p-5">
           {editing ? (
             <>
               <label className="label" htmlFor={`d-${draft.id}`}>Edit draft</label>
-              <textarea id={`d-${draft.id}`} className="input min-h-[220px] font-mono text-[13px] leading-relaxed" value={body} onChange={(e) => setBody(e.target.value)} />
-              <div className={`mt-1 text-xs ${words > 120 ? "text-rose-400" : "text-mist-500"}`}>{words} / 120 words</div>
+              <textarea id={`d-${draft.id}`} className="input min-h-[220px] leading-relaxed" value={body} onChange={(e) => setBody(e.target.value)} />
+              <div className={`num mt-1 text-xs ${words > 120 ? "text-danger-700" : "text-ink-4"}`}>{words} / 120 words</div>
             </>
           ) : (
-            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-mist-100">{draft.body}</pre>
+            <pre className="whitespace-pre-wrap font-sans text-sm leading-relaxed text-ink">{draft.body}</pre>
           )}
           {draft.edited && !editing && (
-            <button className="mt-3 text-xs text-mist-400 underline-offset-2 hover:underline" onClick={() => setShowOriginal((v) => !v)}>
+            <button className="mt-3 text-xs font-medium text-accent-700 hover:underline" onClick={() => setShowOriginal((v) => !v)} aria-expanded={showOriginal}>
               {showOriginal ? "Hide" : "Show"} the original AI draft
             </button>
           )}
-          {showOriginal && <pre className="mt-2 whitespace-pre-wrap rounded-xl border border-ink-700 bg-ink-850 p-3 font-sans text-xs leading-relaxed text-mist-400">{draft.original_body}</pre>}
+          {showOriginal && <pre className="mt-2 whitespace-pre-wrap rounded-md border border-line bg-subtle p-3 font-sans text-xs leading-relaxed text-ink-3">{draft.original_body}</pre>}
         </div>
 
-        <aside className="border-t border-ink-800 bg-ink-850/50 p-5 lg:border-l lg:border-t-0">
-          <div className="flex items-center gap-2 text-xs font-semibold text-signal-300"><ShieldCheck className="h-4 w-4" /> Grounded in {draft.evidence.length} verified signal{draft.evidence.length === 1 ? "" : "s"}</div>
-          <ul className="mt-3 space-y-3">
+        <aside className="border-t border-line bg-subtle p-4 sm:p-5 lg:border-l lg:border-t-0">
+          <div className="eyebrow">Evidence behind this draft</div>
+          <ul className="mt-2 space-y-3">
             {draft.evidence.map((e) => (
-              <li key={e.id} className="text-sm">
-                <div className="text-xs font-medium text-mist-300">{signalLabel(e.type)} · {e.source}</div>
-                <div className="mt-0.5 text-mist-400">“{e.evidence}”</div>
+              <li key={e.id} className="border-l-[3px] border-accent-600 pl-3">
+                <div className="text-xs font-semibold text-ink-2">{signalLabel(e.type)} · {e.source}</div>
+                <div className="mt-0.5 text-ink-2">“{e.evidence}”</div>
               </li>
             ))}
-            {draft.evidence.length === 0 && <li className="text-sm text-mist-400">No signals: the draft may only use profile facts.</li>}
+            {draft.evidence.length === 0 && <li className="text-ink-3">No signals: the draft may only use profile facts.</li>}
           </ul>
         </aside>
       </div>
 
-      <footer className="flex flex-wrap items-center gap-2 border-t border-ink-800 px-5 py-4">
+      <footer className="flex flex-wrap items-center gap-2 border-t border-line px-4 py-3 sm:px-5">
         {draft.status === "pending" && !editing && (
           <>
-            <button className="btn-primary" disabled={busy} onClick={() => act(() => api.approveDraft(draft.id))}><Check className="h-4 w-4" /> Approve</button>
-            <button className="btn-ghost" disabled={busy} onClick={() => setEditing(true)}><Pencil className="h-4 w-4" /> Edit</button>
-            <button className="btn-danger" disabled={busy} onClick={() => act(() => api.rejectDraft(draft.id))}><X className="h-4 w-4" /> Reject</button>
+            <button className="btn-primary" disabled={busy} onClick={() => act(() => api.approveDraft(draft.id))}><Check className="h-4 w-4" aria-hidden /> Approve</button>
+            <button className="btn-secondary" disabled={busy} onClick={() => setEditing(true)}><Pencil className="h-4 w-4" aria-hidden /> Edit</button>
+            <button className="btn-danger" disabled={busy} onClick={() => act(() => api.rejectDraft(draft.id))}><X className="h-4 w-4" aria-hidden /> Reject</button>
           </>
         )}
         {editing && (
           <>
             <button className="btn-primary" disabled={busy || !body.trim()} onClick={() => act(async () => { await api.editDraft(draft.id, body); setEditing(false); })}>Save edit</button>
-            <button className="btn-ghost" disabled={busy} onClick={() => { setBody(draft.body); setEditing(false); }}>Cancel</button>
+            <button className="btn-secondary" disabled={busy} onClick={() => { setBody(draft.body); setEditing(false); }}>Cancel</button>
           </>
         )}
         {draft.status === "approved" && (
           <>
-            <button className="btn-primary" disabled={busy} onClick={() => act(() => api.markSent(draft.account_id, draft.id))}>I sent it — log it</button>
-            <span className="text-xs text-mist-500">GTMOS never sends email. A human sends it, then logs it here.</span>
+            <button className="btn-primary" disabled={busy} onClick={() => act(() => api.markSent(draft.account_id, draft.id))}>I sent it myself — log it</button>
+            <span className="text-xs text-ink-3">GTMOS never sends email. A person sends it, then logs it here.</span>
           </>
         )}
-        {draft.status === "sent" && <span className="text-sm text-mist-400">Logged as sent. The account moved to Contacted.</span>}
-        {draft.status === "rejected" && <span className="text-sm text-mist-400">Rejected. Nothing was sent.</span>}
-        {err && <span className="w-full text-xs text-rose-400">{err}</span>}
+        {draft.status === "sent" && <span className="text-ink-3">Logged as sent by a person. The account moved to Contacted.</span>}
+        {draft.status === "rejected" && <span className="text-ink-3">Rejected. Nothing was sent.</span>}
+        {err && <span className="w-full text-xs text-danger-700" role="alert">{err}</span>}
       </footer>
     </article>
   );
@@ -103,34 +112,26 @@ export default function ReviewPage() {
   const [tab, setTab] = useState<DraftItem["status"]>("pending");
 
   if (loading && !data) return <Loading />;
-  if (error || !data) return <ErrorBox message={error ?? "No data"} onRetry={reload} />;
+  if (error || !data) return <ErrorBox message={error ?? "No data returned."} onRetry={reload} />;
   const items = data.filter((d) => d.status === tab);
 
   return (
     <div>
-      <PageHeader eyebrow="Human in the loop" title="Review queue" />
-      <p className="-mt-3 mb-6 max-w-3xl text-sm text-mist-400">
-        Every AI draft lands here first. Numbers that aren't in the evidence were already refused by the fact-check, and
-        nothing leaves until a person approves it.
-      </p>
-      <div className="mb-5 flex gap-1 overflow-x-auto rounded-xl border border-ink-700 bg-ink-900 p-1 sm:inline-flex">
-        {TABS.map((t) => {
-          const count = data.filter((d) => d.status === t.key).length;
-          return (
-            <button key={t.key} onClick={() => setTab(t.key)}
-              className={`flex items-center gap-2 whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium ${tab === t.key ? "bg-ink-700 text-mist-100" : "text-mist-400 hover:text-mist-100"}`}>
-              {t.label} <span className="font-mono text-xs text-mist-500">{count}</span>
-            </button>
-          );
-        })}
+      <PageHeader eyebrow="Human in the loop" title="Review queue"
+        description="Every AI draft lands here first. Numbers not found in the evidence were already refused by the fact-check, and nothing leaves until a person approves and sends it." />
+      <div className="segmented mb-4 overflow-x-auto" role="group" aria-label="Filter drafts by status">
+        {TABS.map((t) => (
+          <button key={t.key} type="button" aria-pressed={tab === t.key} onClick={() => setTab(t.key)} className="whitespace-nowrap">
+            {t.label} <span className="num text-ink-4">{data.filter((d) => d.status === t.key).length}</span>
+          </button>
+        ))}
       </div>
       <div className="space-y-4">
         {items.map((d) => <DraftCard key={`${d.id}-${d.status}-${d.body.length}`} draft={d} onChange={reload} />)}
         {items.length === 0 && (
-          <div className="card card-pad text-center text-sm text-mist-400">
-            Nothing {tab} right now.{" "}
-            {tab === "pending" && <>Open a <Link className="text-signal-400 underline" to="/app/accounts?tier=Priority+2">Priority 2 account</Link> and draft one.</>}
-          </div>
+          <EmptyState title={`No ${TABS.find((t) => t.key === tab)?.label.toLowerCase()} drafts`}>
+            {tab === "pending" && <>Open a <Link className="font-medium text-accent-700 hover:underline" to="/app/accounts?tier=Priority+2">Priority 2 account</Link> and draft one from its evidence.</>}
+          </EmptyState>
         )}
       </div>
     </div>

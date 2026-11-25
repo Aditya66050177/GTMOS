@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { FlaskConical, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { api, type PlaygroundInput, type PlaygroundResult } from "../lib/api";
-import { ActionBadge, ComponentBars, EvidenceCard, PageHeader, ScoreRing, TierBadge } from "../components/ui";
+import { ActionBadge, ComponentBars, EmptyState, EvidenceCard, PageHeader, Panel, ScoreBlock, TierBadge } from "../components/ui";
 
 const PRESETS: { label: string; input: PlaygroundInput }[] = [
   {
@@ -53,69 +53,65 @@ export default function PlaygroundPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Try it" title="Scoring playground" />
-      <p className="-mt-3 mb-6 max-w-3xl text-sm text-mist-400">
-        Describe any company and paste a research note. GTMOS runs the same signal extractor, 100-point scorer and rule
-        table as the rest of the app, against the demo ICP. Nothing you enter is saved.
-      </p>
+      <PageHeader eyebrow="Try it" title="Scoring playground"
+        description="Describe any company and paste a research note. GTMOS runs the same signal extractor, 100-point scorer and rule table as the rest of the app, against the demo ICP. Nothing you enter is saved." />
 
       <div className="grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
-        <form onSubmit={run} className="card card-pad space-y-4">
-          <div className="flex flex-wrap gap-2">
+        <Panel title="Company" action={
+          <div className="flex flex-wrap justify-end gap-1">
             {PRESETS.map((p) => (
-              <button type="button" key={p.label} onClick={() => load(p.input)} className="chip border-ink-600 bg-ink-850 text-mist-300 hover:border-mist-500">{p.label}</button>
+              <button type="button" key={p.label} onClick={() => load(p.input)} className="badge border-line-strong bg-surface py-1 font-medium text-ink-2 hover:border-accent-600 hover:text-accent-700">{p.label}</button>
             ))}
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div><label className="label" htmlFor="pg-name">Company</label><input id="pg-name" className="input" value={form.name} maxLength={80} onChange={(e) => set("name", e.target.value)} /></div>
-            <div><label className="label" htmlFor="pg-ind">Industry</label><input id="pg-ind" className="input" required value={form.industry} maxLength={60} onChange={(e) => set("industry", e.target.value)} /></div>
-            <div><label className="label" htmlFor="pg-emp">Employees</label><input id="pg-emp" className="input" type="number" min={1} max={1000000} required value={form.employee_count} onChange={(e) => set("employee_count", Number(e.target.value))} /></div>
-            <div><label className="label" htmlFor="pg-geo">Country</label><input id="pg-geo" className="input" required value={form.country} maxLength={60} onChange={(e) => set("country", e.target.value)} /></div>
-          </div>
-          <div><label className="label" htmlFor="pg-desc">What they do and their pain points</label><input id="pg-desc" className="input" value={form.description} maxLength={300} onChange={(e) => set("description", e.target.value)} placeholder="High support ticket volume, slow response time…" /></div>
-          <div><label className="label" htmlFor="pg-tech">Tech stack (comma separated)</label><input id="pg-tech" className="input" value={tech} onChange={(e) => setTech(e.target.value)} placeholder="Zendesk, Salesforce" /></div>
-          <div>
-            <label className="label" htmlFor="pg-note">Research note</label>
-            <textarea id="pg-note" className="input min-h-[140px] leading-relaxed" value={form.research_note} maxLength={1200} onChange={(e) => set("research_note", e.target.value)} />
-            <div className="mt-1 text-right text-[11px] text-mist-500">{form.research_note.length} / 1200</div>
-          </div>
-          <button className="btn-primary w-full" disabled={busy}><FlaskConical className="h-4 w-4" /> {busy ? "Scoring…" : "Score this company"}</button>
-          {err && <p className="text-sm text-rose-400">{err}</p>}
-        </form>
+        }>
+          <form onSubmit={run} className="space-y-3.5">
+            <div className="grid gap-3.5 sm:grid-cols-2">
+              <div><label className="label" htmlFor="pg-name">Company name</label><input id="pg-name" className="input" value={form.name} maxLength={80} onChange={(e) => set("name", e.target.value)} /></div>
+              <div><label className="label" htmlFor="pg-ind">Industry</label><input id="pg-ind" className="input" required value={form.industry} maxLength={60} onChange={(e) => set("industry", e.target.value)} /></div>
+              <div><label className="label" htmlFor="pg-emp">Employees</label><input id="pg-emp" className="input" type="number" min={1} max={1000000} required value={form.employee_count} onChange={(e) => set("employee_count", Number(e.target.value))} /></div>
+              <div><label className="label" htmlFor="pg-geo">Country</label><input id="pg-geo" className="input" required value={form.country} maxLength={60} onChange={(e) => set("country", e.target.value)} /></div>
+            </div>
+            <div><label className="label" htmlFor="pg-desc">What they do and their pain points</label><input id="pg-desc" className="input" value={form.description} maxLength={300} onChange={(e) => set("description", e.target.value)} placeholder="High support ticket volume, slow response time…" /></div>
+            <div><label className="label" htmlFor="pg-tech">Tech stack (comma separated)</label><input id="pg-tech" className="input" value={tech} onChange={(e) => setTech(e.target.value)} placeholder="Zendesk, Salesforce" /></div>
+            <div>
+              <label className="label" htmlFor="pg-note">Research note</label>
+              <textarea id="pg-note" className="input min-h-[132px] leading-relaxed" value={form.research_note} maxLength={1200} onChange={(e) => set("research_note", e.target.value)} />
+              <div className="num mt-1 text-right text-2xs text-ink-4">{form.research_note.length} / 1200</div>
+            </div>
+            <button className="btn-primary w-full" disabled={busy}>{busy ? "Scoring…" : "Score this company"}</button>
+            {err && <p className="text-danger-700" role="alert">{err}</p>}
+          </form>
+        </Panel>
 
         <div className="space-y-4">
           {!result ? (
-            <div className="card card-pad flex min-h-[320px] flex-col items-center justify-center text-center text-sm text-mist-400">
-              <FlaskConical className="mb-3 h-8 w-8 text-mist-500" />
-              Pick a preset or describe a company, then score it.
-            </div>
+            <EmptyState title="No result yet">Pick a preset or describe a company, then score it.</EmptyState>
           ) : (
             <>
-              <div className="card card-pad">
-                <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
-                  <ScoreRing score={result.score.total_score} />
-                  <div className="flex-1">
+              <section className="panel panel-pad">
+                <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
+                  <ScoreBlock score={result.score.total_score} />
+                  <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h2 className="font-display text-xl font-semibold">{form.name || "Your company"}</h2>
+                      <h2 className="text-lg font-semibold text-ink">{form.name || "Your company"}</h2>
                       <TierBadge tier={result.score.tier} />
+                      <ActionBadge action={result.recommendation.action} />
                     </div>
-                    <div className="mt-2 flex items-center gap-2 text-sm text-mist-400">Next action <ActionBadge action={result.recommendation.action} /></div>
-                    <p className="mt-2 text-sm text-mist-300">{result.recommendation.reason}</p>
+                    <p className="mt-1.5 text-ink-2">{result.recommendation.reason}</p>
                   </div>
-                  <button className="btn-ghost self-start px-3" onClick={() => setResult(null)} aria-label="Clear result"><RotateCcw className="h-4 w-4" /></button>
+                  <button className="btn-ghost self-start px-2.5" onClick={() => setResult(null)} aria-label="Clear result"><RotateCcw className="h-4 w-4" aria-hidden /></button>
                 </div>
-                <div className="mt-6"><ComponentBars components={result.score.components} /></div>
-              </div>
-              <div className="card card-pad">
-                <h3 className="font-display text-lg font-semibold">What the extractor found</h3>
-                <div className="mt-3 space-y-3">
+                <div className="mt-5 border-t border-line pt-4"><ComponentBars components={result.score.components} /></div>
+              </section>
+              <Panel title="What the extractor found">
+                <div className="space-y-2.5">
                   {result.signals.length ? result.signals.map((s, i) => <EvidenceCard key={i} signal={s} />) : (
-                    <p className="rounded-xl border border-dashed border-ink-700 p-4 text-sm text-mist-400">
-                      {result.note_had_text ? "No verifiable buying signal in that note. Negated, hedged or rumoured claims don't count." : "Add a research note to look for buying signals."}
-                    </p>
+                    <EmptyState title="No verifiable buying signal">
+                      {result.note_had_text ? "Negated, hedged or rumoured claims don't count." : "Add a research note to look for buying signals."}
+                    </EmptyState>
                   )}
                 </div>
-              </div>
+              </Panel>
             </>
           )}
         </div>

@@ -2,37 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { color-scheme: dark; }
+:root { color-scheme: light; }
 html, body, #root { min-height: 100%; }
 body {
-  @apply bg-ink-950 text-mist-100 font-sans antialiased;
-  font-feature-settings: "cv11", "ss01";
+  @apply bg-canvas text-ink font-sans antialiased text-sm;
+  font-feature-settings: "cv11", "tnum";
 }
-::selection { background: rgba(77, 255, 174, 0.3); }
+::selection { background: #CCFBF1; }
+:focus-visible { outline: 2px solid #0F766E; outline-offset: 2px; }
+/* Grid items default to min-width:auto, which lets wide tables push a column past the
+   viewport instead of scrolling inside their own wrapper. */
+.grid > * { min-width: 0; }
 
 @layer components {
   .container-x { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
-  .card { @apply rounded-2xl border border-ink-700 bg-ink-900/80; }
-  .card-pad { @apply p-5 sm:p-6; }
-  .eyebrow { @apply font-mono text-[11px] uppercase tracking-[0.18em] text-signal-400; }
-  .h-display { @apply font-display font-semibold tracking-tight; }
-  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-signal-400/70 disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-primary { @apply btn bg-signal-400 text-ink-950 hover:bg-signal-300; }
-  .btn-ghost { @apply btn border border-ink-600 bg-ink-850 text-mist-100 hover:border-mist-500 hover:bg-ink-800; }
-  .btn-danger { @apply btn border border-rose-400/40 bg-rose-400/10 text-rose-400 hover:bg-rose-400/20; }
-  .chip { @apply inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-medium; }
-  .input { @apply w-full rounded-xl border border-ink-600 bg-ink-850 px-3 py-2.5 text-sm text-mist-100 placeholder:text-mist-500 focus:border-signal-500 focus:outline-none focus:ring-2 focus:ring-signal-500/20; }
-  .label { @apply mb-1.5 block text-xs font-medium text-mist-400; }
-  .grid-bg {
-    background-image:
-      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-    background-size: 44px 44px;
-  }
+
+  /* Surfaces */
+  .panel { @apply rounded-lg border border-line bg-surface shadow-card; }
+  .panel-pad { @apply p-4 sm:p-5; }
+  .panel-head { @apply flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5; }
+
+  /* Type */
+  .eyebrow { @apply text-2xs font-semibold uppercase tracking-wider text-ink-4; }
+  .h-page { @apply text-xl font-semibold tracking-tight text-ink sm:text-2xl; }
+  .h-section { @apply text-sm font-semibold text-ink; }
+  .muted { @apply text-ink-3; }
+  .num { @apply tabular-nums; }
+
+  /* Controls */
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-accent-600 text-white hover:bg-accent-700; }
+  .btn-secondary { @apply btn border border-line-strong bg-surface text-ink-2 hover:bg-subtle; }
+  .btn-danger { @apply btn border border-danger-200 bg-surface text-danger-700 hover:bg-danger-50; }
+  .btn-ghost { @apply btn text-ink-3 hover:bg-neutral-100 hover:text-ink; }
+  .input { @apply w-full rounded-md border border-line-input bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-4 focus:border-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-100; }
+  .label { @apply mb-1 block text-xs font-medium text-ink-3; }
+  .segmented { @apply inline-flex max-w-full rounded-md border border-line-strong bg-surface p-0.5; }
+  .segmented > button { @apply rounded px-2.5 py-1 text-xs font-medium text-ink-3 hover:text-ink; }
+  .segmented > button[aria-pressed="true"] { @apply bg-neutral-100 text-ink; }
+
+  /* Badges */
+  .badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded border px-1.5 py-0.5 text-2xs font-semibold; }
+
+  /* Tables */
+  .tbl { @apply w-full text-sm; }
+  .tbl thead th { @apply sticky top-0 z-10 border-b border-line bg-subtle px-3 py-2 text-left text-2xs font-semibold uppercase tracking-wider text-ink-4; }
+  .tbl tbody td { @apply border-b border-line px-3 py-2.5 align-middle; }
+  .tbl tbody tr:last-child td { @apply border-b-0; }
+  .tbl .r { @apply text-right tabular-nums; }
 }
 
-@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.rise { animation: rise 0.6s cubic-bezier(.2,.7,.2,1) both; }
-@keyframes pulse-dot { 0%,100% { opacity: 1 } 50% { opacity: .35 } }
-.pulse-dot { animation: pulse-dot 1.6s ease-in-out infinite; }
-@media (prefers-reduced-motion: reduce) { .rise, .pulse-dot { animation: none; } }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

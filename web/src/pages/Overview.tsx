@@ -1,121 +1,124 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Inbox } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { api, type Tier } from "../lib/api";
 import { useAsync } from "../lib/useAsync";
-import { ErrorBox, Loading, PageHeader, Stat, TierBadge } from "../components/ui";
+import { DataTag, ErrorBox, Kpi, Loading, PageHeader, Panel, TierBadge } from "../components/ui";
+import { TIER_FILL } from "../lib/format";
 
-const TIER_COLOR: Record<Tier, string> = {
-  "Priority 1": "#4DFFAE", "Priority 2": "#5CC8FF", "Priority 3": "#FFC857", Low: "#2E3546",
-};
+const TIERS: Tier[] = ["Priority 1", "Priority 2", "Priority 3", "Low"];
 const STAGES = ["Research", "Contacted", "Replied", "Meeting", "Opportunity", "Won"];
 
 export default function OverviewPage() {
   const { data, error, loading, reload } = useAsync(api.overview);
   if (loading && !data) return <Loading label="Warming up the sandbox" />;
-  if (error || !data) return <ErrorBox message={error ?? "No data"} onRetry={reload} />;
+  if (error || !data) return <ErrorBox message={error ?? "No data returned."} onRetry={reload} />;
 
-  const total = Object.values(data.tiers).reduce((a, b) => a + b, 0) || 1;
+  const total = TIERS.reduce((sum, t) => sum + (data.tiers[t] ?? 0), 0) || 1;
   const maxStage = Math.max(...STAGES.map((s) => data.stages[s] ?? 0), 1);
+  const highPriority = (data.tiers["Priority 1"] ?? 0) + (data.tiers["Priority 2"] ?? 0);
 
   return (
-    <div>
-      <PageHeader eyebrow="Command center" title={data.product.name}>
-        <span className="chip border-ink-600 bg-ink-850 font-mono text-mist-400">LLM mode: {data.llm_mode}</span>
+    <div className="space-y-4">
+      <PageHeader eyebrow="Command center" title={data.product.name} description={data.product.description}>
+        <span className="badge border-line-strong bg-subtle font-medium text-ink-3">LLM mode: {data.llm_mode}</span>
       </PageHeader>
-      <p className="-mt-3 mb-8 max-w-3xl text-sm text-mist-400">{data.product.description}</p>
 
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Stat value={data.counts.accounts} label="Accounts scored" />
-        <Stat value={data.counts.signals} label="Verified signals" hint="each with a quoted source" />
-        <Stat value={data.tiers["Priority 1"] + data.tiers["Priority 2"]} label="High-priority accounts" hint="Priority 1 and 2" />
-        <Stat value={data.counts.won} label="Deals won" hint="from the 40-day simulation" />
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Kpi value={data.counts.accounts} label="Accounts scored" hint="out of 100 points each" />
+        <Kpi value={highPriority} label="Priority 1 and 2" hint="worth sales attention" />
+        <Kpi value={data.counts.signals} label="Verified buying signals" hint="each quotes its source" />
+        <Kpi value={data.counts.pending_drafts} label="Drafts awaiting review" hint="none sent automatically" />
       </div>
 
       {data.counts.pending_drafts > 0 && (
-        <Link to="/app/review" className="card mt-4 flex items-center gap-4 border-signal-400/30 px-5 py-4 transition hover:border-signal-400/60">
-          <Inbox className="h-5 w-5 text-signal-400" />
-          <div className="flex-1 text-sm">
-            <span className="font-semibold">{data.counts.pending_drafts} outreach drafts</span>
-            <span className="text-mist-400"> are waiting for a human to approve, edit or reject.</span>
-          </div>
-          <ArrowRight className="h-4 w-4 text-mist-400" />
+        <Link to="/app/review" className="panel flex items-center gap-3 px-4 py-3 transition-colors hover:border-accent-600">
+          <span className="h-2 w-2 shrink-0 rounded-full bg-accent-600" aria-hidden />
+          <span className="flex-1 text-ink-2">
+            <span className="font-semibold text-ink">{data.counts.pending_drafts} outreach drafts</span> are waiting for a person to approve, edit or reject.
+          </span>
+          <ArrowRight className="h-4 w-4 text-ink-4" aria-hidden />
         </Link>
       )}
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="card card-pad">
-          <div className="flex items-center justify-between">
-            <h2 className="font-display text-lg font-semibold">Top accounts</h2>
-            <Link to="/app/accounts" className="text-sm text-signal-400 hover:text-signal-300">All accounts</Link>
+      <div className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
+        <Panel title="Top-scored accounts" flush action={<Link to="/app/accounts" className="text-sm font-medium text-accent-700 hover:underline">All accounts</Link>}>
+          <div className="overflow-x-auto">
+            <table className="tbl">
+              <thead>
+                <tr><th className="w-8">#</th><th>Account</th><th className="hidden sm:table-cell">Stage</th><th>Tier</th><th className="r">Score</th></tr>
+              </thead>
+              <tbody>
+                {data.top_accounts.map((a, i) => (
+                  <tr key={a.id} className="hover:bg-subtle">
+                    <td className="num text-ink-4">{i + 1}</td>
+                    <td><Link to={`/app/accounts/${a.id}`} className="font-medium text-ink hover:text-accent-700 hover:underline">{a.name}</Link></td>
+                    <td className="hidden text-ink-3 sm:table-cell">{a.stage}</td>
+                    <td><TierBadge tier={a.tier} /></td>
+                    <td className="r font-medium">{a.total_score.toFixed(1)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <ul className="mt-4 divide-y divide-ink-800">
-            {data.top_accounts.map((a, i) => (
-              <li key={a.id}>
-                <Link to={`/app/accounts/${a.id}`} className="flex items-center gap-3 py-3 hover:text-signal-300">
-                  <span className="w-5 font-mono text-xs text-mist-500">{i + 1}</span>
-                  <span className="min-w-0 flex-1 truncate font-medium">{a.name}</span>
-                  <span className="hidden text-xs text-mist-500 sm:inline">{a.stage}</span>
-                  <TierBadge tier={a.tier} />
-                  <span className="w-12 text-right font-mono tabular-nums">{a.total_score.toFixed(1)}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+        </Panel>
 
-        <div className="card card-pad">
-          <h2 className="font-display text-lg font-semibold">Tier distribution</h2>
-          <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-ink-800">
-            {(Object.keys(data.tiers) as Tier[]).map((t) => (
-              <div key={t} style={{ width: `${(data.tiers[t] / total) * 100}%`, background: TIER_COLOR[t] }} title={`${t}: ${data.tiers[t]}`} />
-            ))}
-          </div>
-          <ul className="mt-4 space-y-2 text-sm">
-            {(Object.keys(data.tiers) as Tier[]).map((t) => (
-              <li key={t} className="flex items-center gap-2">
-                <span className="h-2.5 w-2.5 rounded-sm" style={{ background: TIER_COLOR[t] }} />
-                <span className="flex-1 text-mist-300">{t}</span>
-                <span className="font-mono tabular-nums">{data.tiers[t]}</span>
-              </li>
-            ))}
-          </ul>
-          <h2 className="mt-8 font-display text-lg font-semibold">Pipeline</h2>
-          <ul className="mt-3 space-y-2">
-            {STAGES.map((s) => (
-              <li key={s} className="grid grid-cols-[88px_1fr_32px] items-center gap-2 text-sm">
-                <span className="text-mist-400">{s}</span>
-                <div className="h-2 rounded-full bg-ink-800">
-                  <div className="h-2 rounded-full bg-signal-500/80" style={{ width: `${((data.stages[s] ?? 0) / maxStage) * 100}%` }} />
-                </div>
-                <span className="text-right font-mono tabular-nums">{data.stages[s] ?? 0}</span>
-              </li>
-            ))}
-          </ul>
+        <div className="space-y-4">
+          <Panel title="Tier distribution">
+            <div className="flex h-2.5 gap-0.5 overflow-hidden rounded-sm" role="img"
+              aria-label={TIERS.map((t) => `${t}: ${data.tiers[t] ?? 0}`).join(", ")}>
+              {TIERS.map((t) => (data.tiers[t] ?? 0) > 0 && (
+                <div key={t} style={{ width: `${((data.tiers[t] ?? 0) / total) * 100}%`, background: TIER_FILL[t] }} title={`${t}: ${data.tiers[t]}`} />
+              ))}
+            </div>
+            <table className="mt-3 w-full">
+              <tbody>
+                {TIERS.map((t) => (
+                  <tr key={t}>
+                    <td className="py-1"><span className="inline-flex items-center gap-2 text-ink-2"><span className="h-2.5 w-2.5 rounded-sm" style={{ background: TIER_FILL[t] }} aria-hidden />{t}</span></td>
+                    <td className="num py-1 text-right font-medium">{data.tiers[t] ?? 0}</td>
+                    <td className="num w-14 py-1 text-right text-ink-4">{Math.round(((data.tiers[t] ?? 0) / total) * 100)}%</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </Panel>
+
+          <Panel title="Pipeline by stage" action={<DataTag>Simulated</DataTag>}>
+            <ul className="space-y-2">
+              {STAGES.map((s) => (
+                <li key={s} className="grid grid-cols-[92px_1fr_32px] items-center gap-2">
+                  <span className="text-ink-3">{s}</span>
+                  <div className="h-2 rounded-sm bg-neutral-100">
+                    <div className="h-2 rounded-sm bg-accent-600" style={{ width: `${((data.stages[s] ?? 0) / maxStage) * 100}%` }} />
+                  </div>
+                  <span className="num text-right font-medium">{data.stages[s] ?? 0}</span>
+                </li>
+              ))}
+            </ul>
+          </Panel>
         </div>
       </div>
 
       {data.icp && (
-        <div className="card card-pad mt-4">
-          <h2 className="font-display text-lg font-semibold">Ideal customer profile</h2>
-          <p className="mt-1 text-sm text-mist-400">Generated from the product description, validated against a Pydantic schema before any engine used it.</p>
-          <div className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {[
+        <Panel title="Ideal customer profile" action={<span className="text-2xs text-ink-4">Generated, then schema-validated</span>}>
+          <dl className="grid gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-3">
+            {([
               ["Industries", data.icp.industries],
               ["Company size", [`${data.icp.company_size_min}–${data.icp.company_size_max} employees`]],
               ["Geographies", data.icp.geographies],
               ["Buyer roles", data.icp.buyer_roles],
               ["Technologies", data.icp.technologies],
               ["Exclusions", data.icp.exclusions],
-            ].map(([label, values]) => (
-              <div key={label as string}>
-                <div className="label">{label as string}</div>
-                <div className="flex flex-wrap gap-1.5">
-                  {(values as string[]).map((v) => <span key={v} className="chip border-ink-600 bg-ink-850 text-mist-300">{v}</span>)}
-                </div>
+            ] as [string, string[]][]).map(([label, values]) => (
+              <div key={label}>
+                <dt className="label">{label}</dt>
+                <dd className="flex flex-wrap gap-1">
+                  {values.map((v) => <span key={v} className="badge border-line bg-subtle font-medium text-ink-2">{v}</span>)}
+                </dd>
               </div>
             ))}
-          </div>
-        </div>
+          </dl>
+        </Panel>
       )}
     </div>
   );

@@ -3,11 +3,14 @@ import { Logo } from "../components/ui";
 
 export default function NotFound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-4 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-4 text-center">
       <Logo />
-      <h1 className="h-display text-4xl">No signal here</h1>
-      <p className="text-mist-400">That page doesn't exist.</p>
-      <Link to="/" className="btn-primary">Back to home</Link>
+      <h1 className="h-page">Page not found</h1>
+      <p className="text-ink-3">That page doesn't exist.</p>
+      <div className="flex gap-2">
+        <Link to="/" className="btn-secondary">Home</Link>
+        <Link to="/app" className="btn-primary">Open the demo</Link>
+      </div>
     </div>
   );
 }
