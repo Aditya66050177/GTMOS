@@ -10,6 +10,7 @@ import AccountDetailPage from "./pages/AccountDetail";
 import ReviewPage from "./pages/Review";
 import PipelinePage from "./pages/Pipeline";
 import PlaygroundPage from "./pages/Playground";
+import ComparePage from "./pages/Compare";
 import NotFound from "./pages/NotFound";
 import { Loading } from "./components/ui";
 
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")!).render(
           <Route index element={<OverviewPage />} />
           <Route path="accounts" element={<AccountsPage />} />
           <Route path="accounts/:id" element={<AccountDetailPage />} />
+          <Route path="compare" element={<ComparePage />} />
           <Route path="review" element={<ReviewPage />} />
           <Route path="pipeline" element={<PipelinePage />} />
           <Route path="analytics" element={<Suspense fallback={<Loading />}><AnalyticsPage /></Suspense>} />

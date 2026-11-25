@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BarChart3, FlaskConical, Github, Inbox, KanbanSquare, LayoutDashboard, Menu, RotateCcw, Users, X } from "lucide-react";
+import { BarChart3, Columns3, FlaskConical, Github, Inbox, KanbanSquare, LayoutDashboard, Menu, RotateCcw, Users, X } from "lucide-react";
 import { DataTag, Logo } from "../components/ui";
 import { api } from "../lib/api";
 import { SITE } from "../site";
@@ -11,6 +11,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/app", label: "Overview", icon: LayoutDashboard, end: true },
       { to: "/app/accounts", label: "Prioritized accounts", icon: Users },
+      { to: "/app/compare", label: "Compare accounts", icon: Columns3 },
     ],
   },
   {

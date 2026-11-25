@@ -18,7 +18,7 @@ from app.core.config import settings
 from app.core.timeutil import utc_now
 from app.db.database import get_db
 from app.models import Account, Activity, Contact, Draft, ICPProfile, Product, Score, Signal
-from app.schemas.executive import ExecutiveAnswer, ExecutiveQuestionRef
+from app.schemas.executive import ExecutiveAnswer, ExecutiveQuestionRef, PrioritizationRow
 from app.schemas.explain import AccountExplanation, ComparisonOut, FeaturedComparisonOut
 from app.services import executive_analytics
 from app.services.explainability import compare_accounts, explain_account, featured_comparisons
@@ -283,6 +283,12 @@ def featured(db: Session = Depends(get_db)) -> List[FeaturedComparisonOut]:
 # --------------------------------------------------------------------------- #
 # Executive questions (read-only, deterministic)                               #
 # --------------------------------------------------------------------------- #
+
+@router.get("/prioritization", response_model=List[PrioritizationRow])
+def prioritization(db: Session = Depends(get_db)) -> List[PrioritizationRow]:
+    """Fit (/80), intent (/20), total, tier, action and evidence status for every account."""
+    return executive_analytics.prioritization_rows(db)
+
 
 @router.get("/executive", response_model=List[ExecutiveQuestionRef])
 def executive_questions() -> List[ExecutiveQuestionRef]:

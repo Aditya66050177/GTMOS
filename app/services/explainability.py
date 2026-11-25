@@ -67,7 +67,7 @@ def _label(signal_type: Optional[str]) -> str:
 def tier_rule(total: float, tier: str) -> str:
     for name, minimum in TIER_THRESHOLDS:
         if name == tier:
-            upper = next((m for n, m in TIER_THRESHOLDS if m > minimum), None)
+            upper = min((m for _n, m in TIER_THRESHOLDS if m > minimum), default=None)
             span = f">= {minimum:g}" if upper is None else f"{minimum:g}-{upper - 0.1:g}"
             return f"total {total:.1f} is in {span} -> {tier}"
     return f"total {total:.1f} -> {tier}"

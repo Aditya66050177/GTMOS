@@ -21,7 +21,9 @@ from sqlalchemy.orm import Session
 
 from app.core.timeutil import utc_now
 from app.models import Account, Activity, ICPProfile, Product, Score, Signal
-from app.schemas.executive import AccountItem, ExecutiveAnswer, ExecutiveQuestionRef, Hypothesis, Observation
+from app.schemas.executive import (
+    AccountItem, EvidenceStatusCounts, ExecutiveAnswer, ExecutiveQuestionRef, Hypothesis, Observation, PrioritizationRow,
+)
 from app.services.recommendation_engine import RecommendationEngine
 from app.services.signal_engine import NEGATIVE_SOURCE, recency_status, signal_contributions
 
@@ -479,3 +481,32 @@ def answer(db: Session, question_id: str, now: Optional[datetime] = None) -> Opt
 
 def question_list() -> List[ExecutiveQuestionRef]:
     return [ExecutiveQuestionRef(id=q, question=t, endpoint=f"/api/web/executive/{q}") for q, (t, _f) in QUESTIONS.items()]
+
+
+def prioritization_rows(db: Session) -> List[PrioritizationRow]:
+    """Fit, intent, action and evidence status for every account, for the prioritization table.
+
+    Fit is the sum of the four stored fit components (the same numbers /explain shows),
+    not total minus intent, so the two views always agree.
+    """
+    rows: List[PrioritizationRow] = []
+    for v in load_snapshot(db).views:
+        s = v.score
+        statuses = Counter(sig["status"] for sig in v.signals)
+        evidence = EvidenceStatusCounts(
+            current=statuses.get("current", 0), aging=statuses.get("aging", 0), expired=statuses.get("expired", 0),
+            superseded=statuses.get("superseded", 0), rejected=len(v.rejected),
+        )
+        fit = None
+        if s is not None:
+            fit = round(sum(x or 0.0 for x in (s.icp_fit, s.company_fit, s.technology_fit, s.geography_score)), 1)
+        rows.append(PrioritizationRow(
+            id=v.account.id, name=v.account.name, industry=v.account.industry, country=v.account.country,
+            employee_count=v.account.employee_count, stage=v.stage, scored=s is not None,
+            fit=fit, intent=round(v.intent, 1) if v.intent is not None else None,
+            total=round(s.total_score, 1) if s is not None and s.total_score is not None else None,
+            tier=v.tier, action=v.action, rule_id=v.rule_id, evidence=evidence,
+            uses_synthetic_demo_additions="demo_addition" in v.note_datasets,
+        ))
+    rows.sort(key=lambda r: (-(r.total or -1), r.id))
+    return rows

@@ -1,21 +1,63 @@
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeft, Check, Minus } from "lucide-react";
-import { api } from "../lib/api";
+import { api, type AccountDetail, type Explanation } from "../lib/api";
 import { useAsync } from "../lib/useAsync";
-import { ActionBadge, ComponentBars, EmptyState, ErrorBox, EvidenceCard, Loading, Panel, ScoreBlock, TierBadge } from "../components/ui";
-import { shortDate } from "../lib/format";
+import { ActionBadge, DataTag, EmptyState, ErrorBox, Loading, Panel, TierBadge } from "../components/ui";
+import { EvidenceInspector, FIT_MEANING, INTENT_MEANING, RuleExplanation, ScoreTriplet } from "../components/intel";
+import { shortDate, signalLabel } from "../lib/format";
 
 const ACTIVITY_LABEL: Record<string, string> = {
-  outreach_sent: "Outreach sent", reply_received: "Reply received", meeting_held: "Meeting held",
+  outreach_sent: "Outreach logged as sent", reply_received: "Reply received", meeting_held: "Meeting held",
   opportunity_created: "Opportunity created", deal_won: "Deal won", deal_lost: "Deal lost",
   outreach_approved: "Draft approved", stage_change: "Stage changed", rejected_signal: "Claim rejected",
   research_note: "Research note ingested",
 };
+const DRAFT_STATUS: Record<string, [string, string]> = {
+  pending: ["Awaiting review", "border-warn-200 bg-warn-50 text-warn-700"],
+  approved: ["Approved, not sent", "border-accent-100 bg-accent-50 text-accent-700"],
+  sent: ["Logged as sent by a person", "border-line-strong bg-surface text-ink-2"],
+  rejected: ["Rejected", "border-neutral-200 bg-neutral-100 text-ink-4"],
+};
+
+interface Bundle { detail: AccountDetail; explain: Explanation | null }
+
+async function load(id: number): Promise<Bundle> {
+  if (!Number.isInteger(id) || id <= 0) throw new Error("That isn't a valid account id.");
+  const detail = await api.account(id);
+  let explain: Explanation | null = null;
+  try { explain = await api.explain(id); } catch { explain = null; }   // unscored accounts have no explanation
+  return { detail, explain };
+}
+
+function FitBreakdown({ e }: { e: Explanation }) {
+  return (
+    <div className="space-y-4">
+      {e.fit.components.map((c) => (
+        <div key={c.name}>
+          <div className="mb-1 flex items-baseline justify-between gap-3">
+            <span className="font-medium text-ink">{c.name}</span>
+            <span className="num">{c.score.toFixed(1)}<span className="text-ink-4"> / {c.max_score}</span></span>
+          </div>
+          <div className="h-1.5 rounded-full bg-neutral-200" aria-hidden><div className="h-1.5 rounded-full bg-accent-600" style={{ width: `${(c.score / c.max_score) * 100}%` }} /></div>
+          <ul className="mt-1.5 space-y-1">
+            {c.reasons.map((r, i) => (
+              <li key={i} className="flex gap-2 text-xs">
+                {r.met ? <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-accent-600" aria-label="Met" /> : <Minus className="mt-0.5 h-3.5 w-3.5 shrink-0 text-ink-4" aria-label="Not met" />}
+                <span className="flex-1 text-ink-2">{r.text}</span>
+                <span className={`num whitespace-nowrap ${r.points < 0 ? "text-danger-700" : "text-ink-3"}`}>{r.points >= 0 ? "+" : ""}{r.points.toFixed(1)}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export default function AccountDetailPage() {
   const id = Number(useParams().id);
-  const { data, error, loading, reload } = useAsync(() => api.account(id), [id]);
+  const { data, error, loading, reload } = useAsync(() => load(id), [id]);
   const [drafting, setDrafting] = useState(false);
   const [draftError, setDraftError] = useState<string | null>(null);
 
@@ -27,13 +69,13 @@ export default function AccountDetailPage() {
     finally { setDrafting(false); }
   }
 
-  if (loading && !data) return <Loading />;
+  if (loading && !data) return <Loading label="Loading account intelligence" />;
   if (error || !data) return <ErrorBox message={error ?? "No data returned."} onRetry={reload} />;
-  const { account, score, recommendation: rec } = data;
-  const positives = data.signals.filter((s) => !s.negative);
-  const negatives = data.signals.filter((s) => s.negative);
+  const { detail, explain: e } = data;
+  const account = detail.account;
+  const rec = e?.recommendation;
   const blocked = rec?.action === "DEPRIORITIZE";
-  const pendingDraft = data.drafts.find((d) => d.status === "pending");
+  const pendingDraft = detail.drafts.find((d) => d.status === "pending");
 
   return (
     <div className="space-y-4">
@@ -41,121 +83,132 @@ export default function AccountDetailPage() {
         <ArrowLeft className="h-4 w-4" aria-hidden /> Prioritized accounts
       </Link>
 
-      <section className="panel panel-pad">
-        <div className="flex flex-col gap-5 md:flex-row md:items-start">
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <h1 className="h-page">{account.name}</h1>
-              <TierBadge tier={account.tier} />
-              <ActionBadge action={rec?.action} />
-            </div>
-            <div className="mt-1 text-ink-3">
-              {[account.industry, account.employee_count != null ? `${account.employee_count} employees` : null, account.country, account.funding, account.domain].filter(Boolean).join(" · ")}
-            </div>
-            {account.description && <p className="mt-3 max-w-2xl text-ink-2">{account.description}</p>}
-            {account.technology_stack.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-1">
-                {account.technology_stack.map((t) => <span key={t} className="badge border-line bg-subtle font-medium text-ink-2">{t}</span>)}
-              </div>
-            )}
+      <header className="flex flex-wrap items-start justify-between gap-3">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="h-page">{account.name}</h1>
+            {e && <TierBadge tier={e.total.tier} />}
+            {rec && <ActionBadge action={rec.action} />}
+            {e?.includes_synthetic_demo_additions && <DataTag>Includes a synthetic demo note</DataTag>}
           </div>
-          <div className="flex items-start gap-6 md:border-l md:border-line md:pl-6">
-            {score && <ScoreBlock score={score.total} />}
-            <dl className="space-y-2 text-sm">
-              <div><dt className="label mb-0">Pipeline stage</dt><dd className="font-medium">{account.stage}</dd></div>
-              <div><dt className="label mb-0">Intent</dt><dd className="num font-medium">{account.intent_score.toFixed(1)} / 20</dd></div>
-            </dl>
+          <div className="mt-1 text-ink-3">
+            {[account.industry, account.employee_count != null ? `${account.employee_count} employees` : null, account.country, account.funding, account.domain].filter(Boolean).join(" · ")}
           </div>
+          {account.description && <p className="mt-2 max-w-3xl text-ink-2">{account.description}</p>}
         </div>
-      </section>
+        <div className="text-xs text-ink-3 sm:text-right">
+          <div>Stage: <span className="font-medium text-ink">{account.stage}</span> <span className="text-ink-4">(simulated pipeline)</span></div>
+          {account.technology_stack.length > 0 && <div className="mt-1">Runs {account.technology_stack.join(", ")}</div>}
+        </div>
+      </header>
 
-      <div className="grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
-        {score && (
-          <Panel title="Why this score" action={<span className="text-2xs text-ink-4">Same inputs, same result</span>}>
-            <ComponentBars components={score.components} />
-            <table className="tbl mt-5">
-              <thead><tr><th className="w-6" aria-label="Met" /><th>Rule</th><th className="r">Points</th></tr></thead>
-              <tbody>
-                {score.reasons.map((r, i) => (
-                  <tr key={`${r.rule}-${i}`}>
-                    <td>
-                      {r.met
-                        ? <Check className="h-4 w-4 text-accent-600" aria-label="Met" />
-                        : <Minus className="h-4 w-4 text-ink-4" aria-label="Not met" />}
-                    </td>
-                    <td><span className="font-medium text-ink">{r.rule}</span><div className="text-ink-3">{r.text}</div></td>
-                    <td className="r font-medium">{r.points >= 0 ? "+" : ""}{r.points.toFixed(1)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </Panel>
-        )}
-
-        <div className="space-y-4">
-          {rec && (
-            <Panel title="Recommended next action" action={<ActionBadge action={rec.action} />}>
-              <p className="text-ink-2">{rec.reason}</p>
-              <dl className="mt-3 grid grid-cols-2 gap-3 border-t border-line pt-3">
-                <div><dt className="label">Persona</dt><dd>{rec.suggested_persona ?? "—"}</dd></div>
-                <div><dt className="label">Angle</dt><dd>{rec.suggested_angle ?? "—"}</dd></div>
-              </dl>
-              <div className="mt-4">
+      {!e ? (
+        <EmptyState title="This account has no score yet">There is no fit, intent or recommendation to explain until the account is scored.</EmptyState>
+      ) : (
+        <>
+          <div className="grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="space-y-2">
+              <ScoreTriplet fit={e.fit.score} intent={e.intent.score} total={e.total.total} tier={e.total.tier} />
+              <p className="text-2xs text-ink-4 sm:hidden"><b>Fit</b>: {FIT_MEANING} <b>Intent</b>: {INTENT_MEANING}</p>
+            </div>
+            <Panel title="Recommended next action" action={<ActionBadge action={rec!.action} />}>
+              <RuleExplanation e={e} />
+              <div className="mt-4 border-t border-line pt-3">
                 {pendingDraft ? (
-                  <Link to="/app/review" className="btn-primary w-full">Review the pending draft</Link>
+                  <a href="#outreach" className="btn-primary w-full">Review the pending draft below</a>
                 ) : (
                   <button className="btn-primary w-full" disabled={blocked || drafting} onClick={generateDraft}>
-                    {drafting ? "Drafting…" : "Draft outreach from evidence"}
+                    {drafting ? "Drafting…" : "Draft outreach from this evidence"}
                   </button>
                 )}
                 {blocked && <p className="mt-2 text-xs text-ink-3">Deprioritized accounts can't get outreach drafts. The rule table blocks it, not the model.</p>}
                 {draftError && <p className="mt-2 text-xs text-danger-700" role="alert">{draftError}</p>}
               </div>
             </Panel>
-          )}
+          </div>
 
-          {data.contacts.length > 0 && (
+          <div className="grid gap-4 lg:grid-cols-[0.8fr_1.2fr]">
+            <Panel title={`Why the fit is ${e.fit.score.toFixed(1)} / 80`}>
+              <p className="mb-4 text-xs text-ink-3">{FIT_MEANING} Computed by fixed rules: the same inputs always give the same result.</p>
+              <FitBreakdown e={e} />
+            </Panel>
+            <Panel title={`Why the intent is ${e.intent.score.toFixed(1)} / 20: evidence inspector`}>
+              <p className="mb-3 text-xs text-ink-3">{INTENT_MEANING} Each signal's sentence is quoted exactly from the stored research note.</p>
+              <EvidenceInspector e={e} />
+            </Panel>
+          </div>
+        </>
+      )}
+
+      <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
+        <section id="outreach" className="scroll-mt-20">
+          <Panel title="Outreach for this account" action={<Link to="/app/review" className="text-sm font-medium text-accent-700 hover:underline">Review queue</Link>} flush>
+            {detail.drafts.length ? (
+              <ul className="divide-y divide-line">
+                {detail.drafts.map((d) => {
+                  const [label, style] = DRAFT_STATUS[d.status] ?? [d.status, ""];
+                  return (
+                    <li key={d.id} className="px-4 py-3.5 sm:px-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`badge ${style}`}>{label}</span>
+                        {d.edited && <span className="badge border-line-strong bg-surface text-ink-3">edited by reviewer</span>}
+                        <span className="text-2xs text-ink-4">Drafted {shortDate(d.created_at)}</span>
+                      </div>
+                      <pre className="mt-2 line-clamp-4 whitespace-pre-wrap font-sans text-sm text-ink-2">{d.body}</pre>
+                      <div className="mt-2 text-xs text-ink-3">
+                        <span className="font-medium">Based on:</span>{" "}
+                        {d.evidence.length ? d.evidence.map((ev) => `${signalLabel(ev.type)} (${ev.source})`).join(", ") : "profile facts only"}
+                      </div>
+                      {d.status === "pending" && <Link to="/app/review" className="mt-2 inline-block text-sm font-medium text-accent-700 hover:underline">Approve, edit or reject in the review queue</Link>}
+                    </li>
+                  );
+                })}
+              </ul>
+            ) : (
+              <div className="panel-pad"><EmptyState title="No drafts for this account">{blocked ? "The rule table blocks drafts for deprioritized accounts." : "Draft one from the recommended-action panel."}</EmptyState></div>
+            )}
+          </Panel>
+        </section>
+
+        <div className="space-y-4">
+          {detail.contacts.length > 0 && (
             <Panel title="Contacts" action={<span className="text-2xs text-ink-4">Fictional</span>} flush>
               <ul className="divide-y divide-line">
-                {data.contacts.map((c) => (
-                  <li key={c.id} className="px-4 py-2.5 sm:px-5">
-                    <div className="font-medium text-ink">{c.name}</div>
-                    <div className="text-xs text-ink-3">{c.role}</div>
+                {detail.contacts.map((c) => (
+                  <li key={c.id} className="px-4 py-2.5 sm:px-5"><div className="font-medium text-ink">{c.name}</div><div className="text-xs text-ink-3">{c.role}</div></li>
+                ))}
+              </ul>
+            </Panel>
+          )}
+          {e && e.research_notes.length > 0 && (
+            <Panel title="Research notes (provenance)" flush>
+              <ul className="divide-y divide-line">
+                {e.research_notes.map((n, i) => (
+                  <li key={i} className="px-4 py-2.5 sm:px-5">
+                    <div className="flex flex-wrap items-center gap-2 text-2xs text-ink-4">
+                      <span>{n.source} · {shortDate(n.date)}</span>
+                      {n.dataset === "demo_addition" && <span className="badge border-warn-200 bg-warn-50 text-warn-700">synthetic demo addition</span>}
+                      <span>{n.signals_extracted} signal{n.signals_extracted === 1 ? "" : "s"} extracted</span>
+                    </div>
+                    <p className="mt-1 text-xs text-ink-2">{n.raw_text}</p>
                   </li>
                 ))}
               </ul>
             </Panel>
           )}
+          <Panel title="Activity" flush>
+            {detail.activities.length ? (
+              <ol className="max-h-72 divide-y divide-line overflow-y-auto">
+                {detail.activities.map((a) => (
+                  <li key={a.id} className="flex items-baseline justify-between gap-3 px-4 py-2 sm:px-5">
+                    <span className="text-ink-2">{ACTIVITY_LABEL[a.type] ?? a.type.replace(/_/g, " ")}</span>
+                    <span className="num whitespace-nowrap text-xs text-ink-4">{shortDate(a.timestamp)}</span>
+                  </li>
+                ))}
+              </ol>
+            ) : <div className="panel-pad"><EmptyState title="No activity yet" /></div>}
+          </Panel>
         </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Panel title={`Buying signals (${positives.length})`} action={<span className="text-2xs text-ink-4">Kept only if the quote is in the source</span>}>
-          <div className="space-y-2.5">
-            {positives.length
-              ? positives.map((s) => <EvidenceCard key={s.id} signal={s} />)
-              : <EmptyState title="No verified buying signals">Nothing in this account's research notes passed the evidence check.</EmptyState>}
-          </div>
-          {negatives.length > 0 && (
-            <div className="mt-5 border-t border-line pt-4">
-              <h3 className="eyebrow mb-2">Disqualifiers</h3>
-              <div className="space-y-2.5">{negatives.map((s) => <EvidenceCard key={s.id} signal={s} />)}</div>
-            </div>
-          )}
-        </Panel>
-
-        <Panel title="Activity" flush>
-          {data.activities.length ? (
-            <ol className="divide-y divide-line">
-              {data.activities.map((a) => (
-                <li key={a.id} className="flex items-baseline justify-between gap-3 px-4 py-2.5 sm:px-5">
-                  <span className="text-ink-2">{ACTIVITY_LABEL[a.type] ?? a.type.replace(/_/g, " ")}</span>
-                  <span className="num whitespace-nowrap text-xs text-ink-4">{shortDate(a.timestamp)}</span>
-                </li>
-              ))}
-            </ol>
-          ) : <div className="panel-pad"><EmptyState title="No activity yet">This account hasn't been worked.</EmptyState></div>}
-        </Panel>
       </div>
     </div>
   );

@@ -50,3 +50,30 @@ class ExecutiveQuestionRef(BaseModel):
     id: str
     question: str
     endpoint: str
+
+
+class EvidenceStatusCounts(BaseModel):
+    current: int = 0
+    aging: int = 0
+    expired: int = 0
+    superseded: int = 0
+    rejected: int = 0
+
+
+class PrioritizationRow(BaseModel):
+    """One account in the prioritization table. Every value is read from stored scores and engine calls."""
+    id: int
+    name: str
+    industry: Optional[str]
+    country: Optional[str]
+    employee_count: Optional[int]
+    stage: str
+    scored: bool
+    fit: Optional[float] = Field(None, description="ICP + company + technology + geography fit, out of 80")
+    intent: Optional[float] = Field(None, description="Stored intent score, out of 20")
+    total: Optional[float] = None
+    tier: Optional[str] = None
+    action: Optional[str] = None
+    rule_id: Optional[str] = None
+    evidence: EvidenceStatusCounts
+    uses_synthetic_demo_additions: bool = False

@@ -4,7 +4,7 @@ import { Check, Pencil, X } from "lucide-react";
 import { api, type DraftItem } from "../lib/api";
 import { useAsync } from "../lib/useAsync";
 import { EmptyState, ErrorBox, Loading, PageHeader } from "../components/ui";
-import { signalLabel } from "../lib/format";
+import { shortDate, signalLabel } from "../lib/format";
 
 const TABS: { key: DraftItem["status"]; label: string }[] = [
   { key: "pending", label: "Pending" },
@@ -12,6 +12,13 @@ const TABS: { key: DraftItem["status"]; label: string }[] = [
   { key: "sent", label: "Logged as sent" },
   { key: "rejected", label: "Rejected" },
 ];
+
+const STATUS_LABEL: Record<DraftItem["status"], string> = {
+  pending: "awaiting review",
+  approved: "approved — not sent",
+  sent: "logged as sent by a person",
+  rejected: "rejected",
+};
 
 const STATUS_STYLE: Record<DraftItem["status"], string> = {
   pending: "border-warn-200 bg-warn-50 text-warn-700",
@@ -40,7 +47,8 @@ function DraftCard({ draft, onChange }: { draft: DraftItem; onChange: () => Prom
       <header className="panel-head">
         <div className="flex min-w-0 flex-wrap items-center gap-2">
           <Link to={`/app/accounts/${draft.account_id}`} className="font-semibold text-ink hover:text-accent-700 hover:underline">{draft.account_name}</Link>
-          <span className={`badge ${STATUS_STYLE[draft.status]}`}>{draft.status === "sent" ? "logged as sent" : draft.status}</span>
+          <span className={`badge ${STATUS_STYLE[draft.status]}`}>{STATUS_LABEL[draft.status]}</span>
+          {draft.evidence[0] && <span className="badge border-line-strong bg-surface text-ink-2">Signal: {signalLabel(draft.evidence[0].type)}</span>}
           {draft.edited && <span className="badge border-line-strong bg-surface text-ink-3">edited by reviewer</span>}
         </div>
         <span className="text-xs text-ink-4">Stage: {draft.account_stage}</span>
@@ -70,12 +78,14 @@ function DraftCard({ draft, onChange }: { draft: DraftItem; onChange: () => Prom
           <ul className="mt-2 space-y-3">
             {draft.evidence.map((e) => (
               <li key={e.id} className="border-l-[3px] border-accent-600 pl-3">
-                <div className="text-xs font-semibold text-ink-2">{signalLabel(e.type)} · {e.source}</div>
+                <div className="text-xs font-semibold text-ink-2">{signalLabel(e.type)} · {e.source}{e.detected_at ? ` · ${shortDate(e.detected_at)}` : ""}</div>
                 <div className="mt-0.5 text-ink-2">“{e.evidence}”</div>
               </li>
             ))}
             {draft.evidence.length === 0 && <li className="text-ink-3">No signals: the draft may only use profile facts.</li>}
           </ul>
+          <p className="mt-3 text-2xs text-ink-4">The fact-check refused any number not found in this evidence or the account profile.</p>
+          <Link to={`/app/accounts/${draft.account_id}`} className="mt-1 inline-block text-xs font-medium text-accent-700 hover:underline">Inspect the full evidence and scoring</Link>
         </aside>
       </div>
 

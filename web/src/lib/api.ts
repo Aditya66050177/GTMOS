@@ -115,6 +115,44 @@ export interface PipelineResp {
   stages: Record<string, { stage: string; count: number; accounts: { id: number; name: string; industry: string | null; tier: Tier; total_score: number; deal_value: number | null }[] }>;
 }
 
+export interface EvidenceCounts { current: number; aging: number; expired: number; superseded: number; rejected: number }
+export interface PrioritizationRow {
+  id: number; name: string; industry: string | null; country: string | null; employee_count: number | null;
+  stage: string; scored: boolean; fit: number | null; intent: number | null; total: number | null;
+  tier: Tier | null; action: Action | null; rule_id: string | null; evidence: EvidenceCounts;
+  uses_synthetic_demo_additions: boolean;
+}
+
+export type SignalStatus = "current" | "aging" | "expired" | "superseded" | "disqualifier" | "not_weighted";
+export interface Contribution {
+  signal_id: number; signal_type: string; label: string; status: SignalStatus; counted: boolean;
+  source: string | null; detected_at: string | null; days_old: number; quote: string | null; source_sentence: string | null;
+  weight: number; strength: number; confidence: number; decay: number; points: number; why_it_matters: string | null;
+}
+export interface RejectedEvidence {
+  sentence: string | null; category: string; reason: string | null; claimed_type: string | null;
+  source: string | null; date: string | null; dataset: string | null; points: number;
+}
+export interface Explanation {
+  account: { id: number; name: string; industry: string | null; employee_count: number | null; country: string | null; stage: string | null };
+  data_label: string;
+  fit: { score: number; max_score: number; meaning: string; components: { name: string; score: number; max_score: number; reasons: Reason[] }[] };
+  intent: {
+    score: number; max_score: number; meaning: string; raw_total: number; clamped: boolean; recomputed_score: number;
+    matches_stored_score: boolean; as_of: string; buying_signals: Contribution[]; disqualifiers: Contribution[];
+    recency_rules: { current_max_days: number; aging_max_days: number; aging_decay: number; formula: string };
+  };
+  total: { total: number; max_score: number; tier: Tier; rule: string };
+  recommendation: { action: Action; rule_id: string; rule: string; reason: string; suggested_persona: string | null; suggested_angle: string | null };
+  disqualification_reasons: string[];
+  rejected_evidence: RejectedEvidence[];
+  research_notes: { source: string | null; date: string | null; dataset: string | null; label: string | null; raw_text: string | null; signals_extracted: number }[];
+  evidence_summary: { buying_signals: number; counted: number; current: number; aging: number; expired: number; superseded: number; disqualifiers: number; rejected: number };
+  includes_synthetic_demo_additions: boolean;
+}
+export interface Comparison { accounts: Explanation[]; observations: string[] }
+export interface FeaturedComparison { title: string; selection_rule: string; account_ids: number[] }
+
 export class ApiError extends Error {}
 
 // A random, per-browser id that keeps this visitor's demo edits in a private
@@ -164,6 +202,10 @@ export const api = {
   overview: () => request<Overview>("/web/overview"),
   accounts: () => request<AccountRow[]>("/web/accounts"),
   account: (id: number) => request<AccountDetail>(`/web/accounts/${id}`),
+  explain: (id: number) => request<Explanation>(`/web/accounts/${id}/explain`),
+  compare: (ids: number[]) => request<Comparison>(`/web/compare?ids=${ids.join(",")}`),
+  featured: () => request<FeaturedComparison[]>("/web/comparisons/featured"),
+  prioritization: () => request<PrioritizationRow[]>("/web/prioritization"),
   drafts: () => request<DraftItem[]>("/web/drafts"),
   playground: (input: PlaygroundInput) => post<PlaygroundResult>("/web/playground", input),
   reset: () => post<{ status: string; had_changes: boolean }>("/web/reset"),

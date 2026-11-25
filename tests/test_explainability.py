@@ -177,6 +177,14 @@ def test_comparison_validation(full_client, ids, status):
     assert full_client.get(f"/web/compare?ids={ids}").status_code == status
 
 
+@pytest.mark.parametrize("total,tier,band", [
+    (95.0, "Priority 1", ">= 90"), (77.0, "Priority 2", "75-89.9"), (69.5, "Priority 3", "50-74.9"), (4.5, "Low", "0-49.9"),
+])
+def test_tier_rule_text_names_the_right_band(total, tier, band):
+    from app.services.explainability import tier_rule
+    assert tier_rule(total, tier) == f"total {total:.1f} is in {band} -> {tier}"
+
+
 def test_explain_unknown_account_404(full_client):
     assert full_client.get("/web/accounts/999999/explain").status_code == 404
 
