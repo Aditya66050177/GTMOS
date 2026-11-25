@@ -108,7 +108,36 @@ export interface Funnel {
 }
 
 export interface Trends { weekly_trends: { week: string; contacted: number; replies: number; meetings: number; opportunities: number; won: number }[] }
-export interface AskResponse { question: string; function_called: string; explanation: string; data: unknown }
+export interface AskResponse {
+  question: string; function_called: string; explanation: string; data: unknown;
+  observations?: string[]; hypotheses?: string[]; data_label?: string | null; generated_by?: string;
+}
+
+export interface ExecutiveAnswer {
+  question_id: string; question: string; summary: string;
+  observations: { text: string }[]; hypotheses: { text: string; label: string }[];
+  accounts: { id: number; name: string; stage: string | null; tier: Tier | null; total: number | null; fit: number | null;
+    intent: number | null; action: Action | null; rule_id: string | null; why: string[]; evidence: string | null;
+    uses_synthetic_demo_additions: boolean }[];
+  data: Record<string, unknown>; selection_rules: string[]; data_sources: string[];
+  data_provenance: Record<string, string>; data_quality: string[]; generated_by: string;
+}
+export interface ExecutiveQuestionRef { id: string; question: string; endpoint: string }
+
+export interface Methodology {
+  components: { name: string; max: number; part_of: "fit" | "intent"; rule: string }[];
+  fit_max: number; intent_max: number;
+  signal_weights: Record<string, number>; disqualifier_penalties: Record<string, number>;
+  decay: { current_max_days: number; aging_max_days: number; aging_decay: number };
+  tiers: { tier: Tier; min_total: number }[];
+  action_rules: { rule_id: string; tier: string; condition: string; action: Action }[];
+  rejection_categories: Record<string, string>;
+  evaluation: {
+    tier: { accuracy: number; correct: number; total: number; precision: Record<string, number>; recall: Record<string, number>;
+      confusion_matrix: Record<string, Record<string, number>>; method: string };
+    signals: { precision: number; recall: number; f1: number; total: number; unsupported_claim_rate: number; method: string };
+  };
+}
 
 export interface PipelineResp {
   total_accounts: number;
@@ -206,6 +235,9 @@ export const api = {
   compare: (ids: number[]) => request<Comparison>(`/web/compare?ids=${ids.join(",")}`),
   featured: () => request<FeaturedComparison[]>("/web/comparisons/featured"),
   prioritization: () => request<PrioritizationRow[]>("/web/prioritization"),
+  methodology: () => request<Methodology>("/web/methodology"),
+  executiveQuestions: () => request<ExecutiveQuestionRef[]>("/web/executive"),
+  executive: (id: string) => request<ExecutiveAnswer>(`/web/executive/${id}`),
   drafts: () => request<DraftItem[]>("/web/drafts"),
   playground: (input: PlaygroundInput) => post<PlaygroundResult>("/web/playground", input),
   reset: () => post<{ status: string; had_changes: boolean }>("/web/reset"),

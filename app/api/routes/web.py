@@ -284,6 +284,14 @@ def featured(db: Session = Depends(get_db)) -> List[FeaturedComparisonOut]:
 # Executive questions (read-only, deterministic)                               #
 # --------------------------------------------------------------------------- #
 
+@router.get("/methodology")
+def methodology() -> Dict[str, Any]:
+    """Scoring constants from the code and evaluation metrics computed live from the labelled data."""
+    from app.services.methodology import methodology as build
+
+    return build()
+
+
 @router.get("/prioritization", response_model=List[PrioritizationRow])
 def prioritization(db: Session = Depends(get_db)) -> List[PrioritizationRow]:
     """Fit (/80), intent (/20), total, tier, action and evidence status for every account."""

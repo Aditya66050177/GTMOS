@@ -21,7 +21,8 @@ function Nav() {
           <a href={SITE.repoUrl} target="_blank" rel="noreferrer" className="btn-ghost hidden px-2.5 sm:inline-flex" aria-label="Source code on GitHub">
             <Github className="h-4 w-4" aria-hidden />
           </a>
-          <Link to="/app" className="btn-primary">Open the demo</Link>
+          <Link to="/app" className="btn-secondary hidden sm:inline-flex">Explore GTMOS</Link>
+          <Link to="/demo" className="btn-primary">5-minute demo</Link>
         </div>
       </div>
     </header>
@@ -209,8 +210,8 @@ export default function Landing() {
               from explicit rules, and drafts outreach that a person approves before anything is sent.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
-              <Link to="/app" className="btn-primary px-4 py-2.5">Open the live demo <ArrowRight className="h-4 w-4" aria-hidden /></Link>
-              <Link to="/app/playground" className="btn-secondary px-4 py-2.5">Score a company</Link>
+              <Link to="/demo" className="btn-primary px-4 py-2.5">Explore the 5-minute demo <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+              <Link to="/app" className="btn-secondary px-4 py-2.5">Explore GTMOS</Link>
             </div>
             <ul className="mt-6 grid gap-2 text-ink-2 sm:grid-cols-2">
               {["Deterministic 100-point scoring", "Quoted evidence for every signal", "Rejected claims recorded, not hidden", "Human approval for all outreach"].map((t) => (
@@ -218,7 +219,8 @@ export default function Landing() {
               ))}
             </ul>
             <p className="mt-6 text-xs text-ink-4">
-              Demo data is synthetic and the pipeline is simulated. Model evaluation: 57% tier accuracy on a labelled set (see the docs).
+              Demo data is synthetic and the pipeline is simulated. Model evaluation: 57% tier accuracy on a labelled set
+              (<Link to="/app/methodology#evaluation" className="underline hover:text-ink">methodology and limitations</Link>).
             </p>
           </div>
           <LiveAccount />

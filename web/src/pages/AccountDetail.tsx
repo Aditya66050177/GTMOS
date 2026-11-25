@@ -132,10 +132,12 @@ export default function AccountDetailPage() {
               <p className="mb-4 text-xs text-ink-3">{FIT_MEANING} Computed by fixed rules: the same inputs always give the same result.</p>
               <FitBreakdown e={e} />
             </Panel>
+            <section id="evidence" className="scroll-mt-20">
             <Panel title={`Why the intent is ${e.intent.score.toFixed(1)} / 20: evidence inspector`}>
               <p className="mb-3 text-xs text-ink-3">{INTENT_MEANING} Each signal's sentence is quoted exactly from the stored research note.</p>
               <EvidenceInspector e={e} />
             </Panel>
+            </section>
           </div>
         </>
       )}

@@ -12,6 +12,9 @@ import PipelinePage from "./pages/Pipeline";
 import PlaygroundPage from "./pages/Playground";
 import ComparePage from "./pages/Compare";
 import NotFound from "./pages/NotFound";
+import DemoPage from "./pages/Demo";
+import MethodologyPage from "./pages/Methodology";
+import { DemoProvider } from "./demo/DemoContext";
 import { Loading } from "./components/ui";
 
 const AnalyticsPage = lazy(() => import("./pages/Analytics"));
@@ -19,13 +22,16 @@ const AnalyticsPage = lazy(() => import("./pages/Analytics"));
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <BrowserRouter>
+      <DemoProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/demo" element={<DemoPage />} />
         <Route path="/app" element={<AppShell />}>
           <Route index element={<OverviewPage />} />
           <Route path="accounts" element={<AccountsPage />} />
           <Route path="accounts/:id" element={<AccountDetailPage />} />
           <Route path="compare" element={<ComparePage />} />
+          <Route path="methodology" element={<MethodologyPage />} />
           <Route path="review" element={<ReviewPage />} />
           <Route path="pipeline" element={<PipelinePage />} />
           <Route path="analytics" element={<Suspense fallback={<Loading />}><AnalyticsPage /></Suspense>} />
@@ -33,6 +39,7 @@ createRoot(document.getElementById("root")!).render(
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </DemoProvider>
     </BrowserRouter>
   </StrictMode>,
 );

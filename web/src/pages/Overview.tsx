@@ -42,7 +42,7 @@ export default function OverviewPage() {
 
       <div className="grid gap-4 lg:grid-cols-[1.25fr_0.75fr]">
         <Panel title="Top-scored accounts" flush action={<Link to="/app/accounts" className="text-sm font-medium text-accent-700 hover:underline">All accounts</Link>}>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto" tabIndex={0}>
             <table className="tbl">
               <thead>
                 <tr><th className="w-8">#</th><th>Account</th><th className="hidden sm:table-cell">Stage</th><th>Tier</th><th className="r">Score</th></tr>

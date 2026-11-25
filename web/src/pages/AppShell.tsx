@@ -1,7 +1,9 @@
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { BarChart3, Columns3, FlaskConical, Github, Inbox, KanbanSquare, LayoutDashboard, Menu, RotateCcw, Users, X } from "lucide-react";
+import { BarChart3, BookOpen, Columns3, FlaskConical, PlayCircle, Github, Inbox, KanbanSquare, LayoutDashboard, Menu, RotateCcw, Users, X } from "lucide-react";
 import { DataTag, Logo } from "../components/ui";
+import DemoGuide from "../components/DemoGuide";
+import { useDemo } from "../demo/DemoContext";
 import { api } from "../lib/api";
 import { SITE } from "../site";
 
@@ -26,6 +28,7 @@ const NAV_GROUPS = [
     items: [
       { to: "/app/analytics", label: "Analytics", icon: BarChart3 },
       { to: "/app/playground", label: "Scoring playground", icon: FlaskConical },
+      { to: "/app/methodology", label: "Methodology", icon: BookOpen },
     ],
   },
 ];
@@ -36,7 +39,24 @@ export default function AppShell() {
   const [version, setVersion] = useState(0);
   const location = useLocation();
 
-  useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
+  const demo = useDemo();
+
+  // Close the mobile menu on navigation; scroll to the top, or to #anchor once the
+  // async content containing it has rendered (checked for up to ~3 s).
+  useEffect(() => {
+    setOpen(false);
+    const id = location.hash.slice(1);
+    if (!id) { window.scrollTo(0, 0); return; }
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      const el = document.getElementById(id);
+      if (el || ++tries > 20) {
+        window.clearInterval(timer);
+        el?.scrollIntoView({ block: "start" });
+      }
+    }, 150);
+    return () => window.clearInterval(timer);
+  }, [location.pathname, location.hash, location.search]);
 
   async function reset() {
     if (!window.confirm("Reset your sandbox? Every draft, approval and edit you made will be undone.")) return;
@@ -70,6 +90,9 @@ export default function AppShell() {
 
   const footer = (
     <div className="space-y-2.5 text-xs text-ink-3">
+      {!demo.active && (
+        <NavLink to="/demo" className="btn-primary w-full py-1.5 text-xs"><PlayCircle className="h-3.5 w-3.5" aria-hidden /> 5-minute guided demo</NavLink>
+      )}
       <div className="rounded-md border border-line bg-subtle p-3 leading-relaxed">
         <div className="mb-1 font-semibold text-ink-2">Public sandbox</div>
         Synthetic companies and a simulated pipeline. AI runs offline. Your edits stay in this browser's sandbox and expire after about two hours.
@@ -84,7 +107,7 @@ export default function AppShell() {
   );
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[232px_1fr]">
+    <div className={`min-h-screen lg:grid ${demo.active ? "lg:grid-cols-[232px_minmax(0,1fr)_360px]" : "lg:grid-cols-[232px_1fr]"}`}>
       <aside className="sticky top-0 hidden h-screen flex-col justify-between border-r border-line bg-surface px-3 py-4 lg:flex">
         <div className="space-y-6 overflow-y-auto">
           <div className="flex items-center justify-between px-2"><Logo /></div>
@@ -123,10 +146,11 @@ export default function AppShell() {
         <div className="hidden h-12 items-center justify-end gap-2 border-b border-line bg-surface px-6 lg:flex">
           <DataTag>Demo · synthetic data · simulated pipeline</DataTag>
         </div>
-        <div className="mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6" key={version}>
+        <div className={`mx-auto max-w-6xl px-4 py-5 sm:px-6 sm:py-6 ${demo.active ? "pb-[24rem] lg:pb-6" : ""}`} key={version}>
           <Outlet />
         </div>
       </main>
+      <DemoGuide />
     </div>
   );
 }
