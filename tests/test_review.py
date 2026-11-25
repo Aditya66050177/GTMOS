@@ -10,6 +10,7 @@ from app.db.database import SessionLocal
 from app.db.init_db import init_db
 from app.models import Draft, Account, Activity
 from app.api.main import app
+from app.core.timeutil import utc_now
 
 client = TestClient(app)
 
@@ -38,7 +39,7 @@ def _create_test_draft(db, body="Initial draft message", status="pending"):
         original_body=body,
         status=status,
         evidence_ids=[1, 2],
-        created_at=datetime.utcnow()
+        created_at=utc_now()
     )
     db.add(draft)
     db.commit()

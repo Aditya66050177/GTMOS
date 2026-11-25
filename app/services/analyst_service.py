@@ -10,6 +10,9 @@ from app.schemas.analytics import (
     AnalystAskResponse
 )
 from app.ai.llm import LLMService
+from app.ai.mock_analyst import describe
+from app.schemas.analytics import SIMULATED_PIPELINE_LABEL
+from app.services import executive_analytics
 from app.ai.prompts import ANALYST_ROUTING_PROMPT, ANALYST_EXPLAIN_PROMPT
 
 logger = logging.getLogger(__name__)
@@ -39,8 +42,24 @@ class AnalystService:
             return AnalystAskResponse(
                 question=question,
                 function_called="unknown",
-                explanation="This question cannot be mapped to our available analytics metrics. You can ask about funnel totals, stage-to-stage conversions, weekly trends, tier performance, industry breakdowns, or outreach angles.",
+                explanation="This question cannot be mapped to our available analytics metrics. You can ask about funnel totals, stage-to-stage conversions, weekly trends, tier performance, industry breakdowns, outreach angles, accounts worth pursuing, accounts to nurture, where opportunities get stuck, buying signals by tier, or which accounts to investigate next.",
                 data={}
+            )
+
+        # Executive questions: answered entirely by deterministic queries. The model
+        # only chose the function name above; it writes none of the answer.
+        if func_name in executive_analytics.ANALYST_FUNCTIONS:
+            answer = executive_analytics.answer(db, executive_analytics.ANALYST_FUNCTIONS[func_name])
+            return AnalystAskResponse(
+                question=question,
+                function_called=func_name,
+                explanation=answer.summary,
+                data=answer.model_dump(),
+                observations=[o.text for o in answer.observations],
+                hypotheses=[h.text for h in answer.hypotheses],
+                data_label=answer.data_provenance["pipeline"] if func_name == "get_stuck_opportunities"
+                else answer.data_provenance["accounts_and_signals"],
+                generated_by=answer.generated_by,
             )
 
         # Step 2: Deterministic execution of predefined function
@@ -96,5 +115,8 @@ class AnalystService:
             question=question,
             function_called=func_name,
             explanation=explanation_text,
-            data=data
+            data=data,
+            # Read off the returned data deterministically, whatever wrote `explanation`.
+            observations=[describe(func_name, data)],
+            data_label=SIMULATED_PIPELINE_LABEL,
         )

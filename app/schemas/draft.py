@@ -21,4 +21,4 @@ class DraftResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 class DraftUpdateRequest(BaseModel):
-    body: str = Field(..., description="Updated message draft body")
+    body: str = Field(..., min_length=1, max_length=2_000, description="Updated message draft body")

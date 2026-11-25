@@ -81,35 +81,37 @@ class LLMService:
             }
 
         if schema.__name__ == "SignalListSchema":
-            signals = []
-            prompt_lower = prompt.lower()
-            if "hiring" in prompt_lower or "support team" in prompt_lower:
-                signals.append({"type": "support_hiring", "description": "Hiring support staff", "strength": 0.8, "source": "MockSource", "detected_at": "2023-01-01T00:00:00Z", "confidence": 0.9, "evidence": "hiring 50 new support staff" if "hiring 50 new support staff" in prompt_lower else ("expanding their customer support team" if "expanding their customer support team" in prompt_lower else "hiring")})
-            if "funding" in prompt_lower or "raised" in prompt_lower or "series" in prompt_lower:
-                signals.append({"type": "funding", "description": "Raised funding", "strength": 0.9, "source": "MockSource", "detected_at": "2023-01-01T00:00:00Z", "confidence": 0.9, "evidence": "series a funding" if "series a funding" in prompt_lower else ("series b funding" if "series b funding" in prompt_lower else "raised")})
-            if "launch" in prompt_lower or "release" in prompt_lower:
-                signals.append({"type": "product_launch", "description": "Launched new product", "strength": 0.7, "source": "MockSource", "detected_at": "2023-01-01T00:00:00Z", "confidence": 0.8, "evidence": "launched their new ai-driven product" if "launched their new ai-driven product" in prompt_lower else ("released a major update" if "released a major update" in prompt_lower else "launch")})
-            if "expand" in prompt_lower or "europe" in prompt_lower or "asia" in prompt_lower:
-                signals.append({"type": "international_expansion", "description": "Expanding internationally", "strength": 0.8, "source": "MockSource", "detected_at": "2023-01-01T00:00:00Z", "confidence": 0.85, "evidence": "expand into europe" if "expand into europe" in prompt_lower else ("new offices in london and tokyo" if "new offices in london and tokyo" in prompt_lower else "expand")})
-
-            return {"signals": signals}
+            from app.ai.mock_signals import analyze_note, raw_text_from_prompt
+            result = analyze_note(raw_text_from_prompt(prompt))
+            return {
+                "signals": result["signals"],
+                "rejected": [
+                    {k: r[k] for k in ("sentence", "category", "reason", "claimed_type")}
+                    for r in result["rejected"]
+                ],
+            }
 
         if schema.__name__ == "PersonalizationOutputSchema":
-            account_name = "your team"
-            for line in prompt.split("\n"):
-                if line.startswith("Target Account:"):
-                    account_name = line.replace("Target Account:", "").strip()
-                    break
-
-            return {
-                "why_this_account": f"{account_name} matches our ICP profile with strong buying intent and active market growth.",
-                "message_draft": f"Hi team, noticed {account_name}'s recent momentum. As you scale operations, our AI platform helps streamline ticket resolution and automate repetitive workflows without adding headcount. Would you be open to a brief 10-minute introductory chat next week?"
-            }
+            from app.ai.mock_drafts import build_mock_draft
+            return build_mock_draft(prompt)
 
         if schema.__name__ == "AnalystQueryIntentSchema":
             q_text = prompt.lower()
             if "user question:" in q_text:
                 q_text = q_text.split("user question:", 1)[1]
+
+            if any(k in q_text for k in ["investigate", "this week", "high fit", "weak intent", "verify", "look into next"]):
+                return {"function_name": "get_investigate_next", "parameters": {}}
+            if any(k in q_text for k in ["nurture"]):
+                return {"function_name": "get_nurture_accounts", "parameters": {}}
+            if any(k in q_text for k in ["stuck", "stall", "bottleneck", "weakness", "weakest"]):
+                return {"function_name": "get_stuck_opportunities", "parameters": {}}
+            if ("signal" in q_text and any(k in q_text for k in ["tier", "priority", "appear", "across"])) or \
+                    "evidence of buying intent" in q_text or "strong evidence" in q_text:
+                return {"function_name": "get_signal_tier_matrix", "parameters": {}}
+            if any(k in q_text for k in ["worth pursuing", "pursue", "strongest accounts", "who should we contact",
+                                          "call first", "best accounts"]):
+                return {"function_name": "get_worth_pursuing", "parameters": {}}
 
             if any(k in q_text for k in ["conversion", "drop off", "stage to stage", "contacted to replied", "replied to meeting"]):
                 return {"function_name": "get_conversion_rates", "parameters": {}}
@@ -127,9 +129,8 @@ class LLMService:
                 return {"function_name": "unknown", "parameters": {}}
 
         if schema.__name__ == "AnalystExplanationSchema":
-            return {
-                "explanation": "Based on current GTM data, our pipeline demonstrates strong qualification momentum. The metrics extracted reflect verified activity counts across target accounts."
-            }
+            from app.ai.mock_analyst import build_mock_explanation
+            return build_mock_explanation(prompt)
 
         data = {}
         for field_name, field_info in schema.model_fields.items():

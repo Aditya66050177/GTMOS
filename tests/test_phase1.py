@@ -54,7 +54,7 @@ def test_research_engine_csv_ingestion(db_session):
 
     acme = db_session.query(Account).filter_by(name="Acme Technologies").first()
     assert acme is not None
-    assert acme.domain == "acme.com"
+    assert acme.domain == "acme-technologies.example"
     assert acme.employee_count == 240
     assert acme.industry == "B2B SaaS"
 
@@ -81,8 +81,14 @@ def test_scoring_engine_acme(db_session):
     se = ScoringEngine()
     result = se.score_account(db_session, acme, product)
 
-    assert result.total_score >= 75.0  # Acme is a high-fit account (Tier 1/2)
-    assert result.tier in ["Priority 1", "Priority 2"]
+    # Acme is a firmographic near-perfect fit, but its only "hiring" note is a
+    # rumour contradicted by a hiring freeze, so it must earn no intent points.
+    re = ResearchEngine()
+    re.extract_signals_from_csv(db_session)
+    result = se.score_account(db_session, acme, product)
+
+    assert result.intent_score == 0.0
+    assert result.tier == "Priority 3"
     assert result.icp_fit == 30.0
     assert result.company_fit == 20.0
     assert result.geography_score == 15.0

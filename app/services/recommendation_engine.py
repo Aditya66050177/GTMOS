@@ -20,6 +20,22 @@ class RecommendationResult:
     reason: str
     suggested_persona: Optional[str]
     suggested_angle: Optional[str]
+    rule_id: Optional[str] = None      # which row of the action table fired (see ACTION_RULES)
+
+
+# The action table, row by row: (rule id, tier, intent condition, action).
+# get_recommendation() is the implementation; this table only names its branches
+# so explanations can cite the exact rule that fired.
+ACTION_RULES = {
+    "P1_INTENT_GE_10": ("Priority 1", "intent >= 10", "CONTACT"),
+    "P1_INTENT_LT_10": ("Priority 1", "intent < 10", "RESEARCH"),
+    "P2_INTENT_GE_15": ("Priority 2", "intent >= 15", "PRIORITIZE"),
+    "P2_INTENT_5_TO_15": ("Priority 2", "5 <= intent < 15", "NURTURE"),
+    "P2_INTENT_LT_5": ("Priority 2", "intent < 5", "RESEARCH"),
+    "P3_INTENT_GE_10": ("Priority 3", "intent >= 10", "NURTURE"),
+    "P3_INTENT_LT_10": ("Priority 3", "intent < 10", "DEPRIORITIZE"),
+    "LOW_ANY": ("Low", "any intent", "DEPRIORITIZE"),
+}
 
 class RecommendationEngine:
     """
@@ -53,30 +69,30 @@ class RecommendationEngine:
         # 1. Action & Reason (Deterministic Rules)
         if tier == "Priority 1":
             if intent_score >= 10.0:
-                action = "CONTACT"
+                action, rule_id = "CONTACT", "P1_INTENT_GE_10"
                 reason = "Priority 1 account with strong intent signals detected."
             else:
-                action = "RESEARCH"
+                action, rule_id = "RESEARCH", "P1_INTENT_LT_10"
                 reason = "Priority 1 account but lacking strong intent. Research for recent triggers."
         elif tier == "Priority 2":
             if intent_score >= 15.0:
-                action = "PRIORITIZE"
+                action, rule_id = "PRIORITIZE", "P2_INTENT_GE_15"
                 reason = "Priority 2 account with very high intent. Prioritize for immediate outreach."
             elif intent_score >= 5.0:
-                action = "NURTURE"
+                action, rule_id = "NURTURE", "P2_INTENT_5_TO_15"
                 reason = "Priority 2 account with moderate intent. Nurture until strong buying triggers emerge."
             else:
-                action = "RESEARCH"
+                action, rule_id = "RESEARCH", "P2_INTENT_LT_5"
                 reason = "Priority 2 account with weak intent. Research to find active buying signals."
         elif tier == "Priority 3":
             if intent_score >= 10.0:
-                action = "NURTURE"
+                action, rule_id = "NURTURE", "P3_INTENT_GE_10"
                 reason = "Priority 3 account showing some buying signals. Add to automated nurture sequence."
             else:
-                action = "DEPRIORITIZE"
+                action, rule_id = "DEPRIORITIZE", "P3_INTENT_LT_10"
                 reason = "Priority 3 account with weak intent. Deprioritize for direct outreach."
         else: # Low tier
-            action = "DEPRIORITIZE"
+            action, rule_id = "DEPRIORITIZE", "LOW_ANY"
             reason = "Low fit account. Disqualify or deprioritize."
 
         # 2. Suggested Persona (derived from ICP buyer roles & strongest signal)
@@ -107,5 +123,6 @@ class RecommendationEngine:
             action=action,
             reason=reason,
             suggested_persona=suggested_persona,
-            suggested_angle=suggested_angle
+            suggested_angle=suggested_angle,
+            rule_id=rule_id,
         )

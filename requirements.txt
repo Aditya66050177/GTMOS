@@ -1,13 +1,12 @@
-fastapi
-uvicorn
-sqlalchemy
-pydantic
-pydantic-settings
-streamlit
-pandas
-requests
-pytest
-httpx
-python-dotenv
-pytest-cov
-google-genai
+# Runtime dependencies: everything the API (local or Vercel) needs, nothing more.
+# Vercel installs this file for the serverless function, so keep it small.
+# Local development and tests: pip install -r requirements-dev.txt
+# Versions are exact pins that the test suite passes on with Python 3.11, 3.12 and 3.13.
+fastapi==0.165.0
+uvicorn==0.54.0
+sqlalchemy==2.1.9
+pydantic==2.13.5
+pydantic-settings==2.16.3
+python-dotenv==1.2.3
+pandas==3.0.5
+google-genai==3.6.1

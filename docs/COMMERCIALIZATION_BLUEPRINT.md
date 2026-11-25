@@ -1,14 +1,24 @@
 # GTMOS Commercialization Blueprint: From Codebase to Product & Startup
 
+> **Status note (updated 2026-11-25).** This is an earlier strategy document, kept for its
+> thinking. Everything commercial in it is a **proposal**: there have been no customer
+> interviews, pilots, customers or revenue, and every price below is an untested hypothesis.
+> Labels used where it matters: **[Implemented]** means it exists in the repository today;
+> **[Proposed]** means it doesn't exist yet. For the current GTM hypotheses see
+> [GTM_STRATEGY.md](GTM_STRATEGY.md); for the current system see
+> [TECHNICAL_ARCHITECTURE.md](TECHNICAL_ARCHITECTURE.md).
+
 ## 1. Executive Summary & Value Proposition
 
-### What You Currently Have
+### What You Currently Have [Implemented]
 **GTMOS** is a deterministic, AI-augmented Go-To-Market (GTM) qualification and personalization engine:
 - **100-Point Deterministic ICP Scoring**: Explainable, rule-based qualification (scoring is deterministic code, and draft claims are checked against evidence, which reduces but does not eliminate unsupported claims).
 - **Signal Extraction & Recency Decay**: Ingests organizational signals (hiring, funding, tech stack changes) with fuzzy evidence grounding.
 - **Guardrailed Personalization**: Contextual email draft generation backed by factual verification to reduce unsupported claims.
 - **Human-in-the-Loop CRM Pipeline**: Built-in 7-stage sales funnel with strict transition rules, safety controls (preventing automated cold-spam disasters), and an AI Analyst.
-- **Automated Test Suite**: 177 unit/integration tests passing with 88% service layer coverage, running either mock or Google Gemini live.
+- **Automated Test Suite**: 357 tests passing (24 modules) with 96% line coverage of `app/services`. The suite runs in mock mode with no API key; live Gemini mode exists but is opt-in and unevaluated.
+- **React web app and guarded public demo**: landing page, a guided five-minute `/demo`, an account evidence inspector, a fit × intent map, executive analytics and a methodology page. The public API has a write allowlist, rate limits, a read-only template database, per-browser temporary sandboxes and a mock-only LLM. It is built for Vercel but **not deployed**.
+- **Internal Streamlit dashboard**: still available for local use.
 
 ### Current Evaluation Status and Known Limits
 Evaluation metrics from the latest benchmark run in `docs/evaluation.md`:
@@ -25,7 +35,9 @@ Evaluation metrics from the latest benchmark run in `docs/evaluation.md`:
 - **Known Limits**:
   - Evaluation was run in `mock` mode against synthetic CSV datasets rather than live production CRM data.
   - The scoring weights were calibrated against author-defined criteria and must be tuned against real-world customer conversion history.
-  - Signal keyword matching checks for keyword presence in raw text; nuanced or adversarial text requires ongoing validation.
+  - The signal-extraction evaluation uses a simplified keyword matcher, not the production extractor, so its 100% scores mainly show the test sentences are easy. Nuanced or adversarial text needs its own evaluation.
+  - The tier evaluation uses the scorer's proxy intent (support-team size and funding stage) because labelled accounts have no research notes; this explains the 0% Priority 2 recall.
+  - The production evidence check is partial for long quotes (it accepts a match on the first or last three words).
 
 ### The Commercial Problem It Solves
 Most B2B outbound fails for two reasons:
@@ -38,7 +50,7 @@ Most B2B outbound fails for two reasons:
 
 ---
 
-## 2. Validation Gate (Before Any Commercial Build)
+## 2. Validation Gate (Before Any Commercial Build) [Proposed — not started]
 
 Before writing production multi-tenant code, frontend rewrites, or commercial infrastructure, the product thesis must pass a strict customer validation gate. **Success thresholds are fixed before interviews start.**
 
@@ -65,6 +77,8 @@ Conduct structured 30-minute interviews with 10 target buyers (Heads of Sales, V
 ---
 
 ## 3. Competitive Positioning
+
+> Competitor descriptions are general characterisations, not researched or verified feature or pricing comparisons.
 
 | Competitor Category | Key Players | How They Work | Where GTMOS Wins (The Gap) |
 | :--- | :--- | :--- | :--- |
@@ -119,7 +133,7 @@ If operating or billing clients from India:
 
 ---
 
-## 5. Three Monetization Paths
+## 5. Three Monetization Paths [Proposed — all pricing untested]
 
 Depending on capital, network, and timeline, here are three ways to monetize:
 
@@ -164,7 +178,7 @@ graph LR
 
 ---
 
-## 6. Technical & Product Production Gaps (What's Missing)
+## 6. Technical & Product Production Gaps (What's Missing) [Proposed]
 
 To transition from an engineering prototype to a commercial system, the following technical gaps must be resolved:
 
@@ -176,7 +190,7 @@ To transition from an engineering prototype to a commercial system, the followin
   - Row-Level Security (RLS) or tenant-aware SQLAlchemy query filters to guarantee strict data segregation.
 
 ### 2. User Authentication & Role-Based Access Control (RBAC)
-- **Current State**: Open FastAPI endpoints with no authentication.
+- **Current State**: No user authentication. The full local API is open. The public demo API adds safeguards (an 8-route write allowlist, rate limits, read-only shared data and anonymous per-browser sandboxes), but these aren't authentication or tenancy.
 - **Required**:
   - Implement JWT authentication (e.g., Supabase Auth, Clerk, or FastAPI-Users).
   - User roles:
@@ -191,7 +205,7 @@ Sales reps require integration with their daily workflows:
   - Push approved outreach drafts into CRM tasks or sequence queues.
   - Two-way stage sync: reflect pipeline stage changes in both systems.
 - **Email Sending Tools (Instantly / Smartlead / Outreach)**:
-  - Once a draft is approved in GTMOS, enqueue it into an outreach sequence via API.
+  - Once a draft is approved in GTMOS, enqueue it into an outreach sequence via API. Not built: GTMOS has no sending code today, and any integration must keep the human approval gate.
 
 ### 4. Automated Signal Ingestion (Replacing CSVs)
 Currently, signals and accounts come from static CSV files:
@@ -209,11 +223,13 @@ Currently, signals and accounts come from static CSV files:
 
 ## 7. UI/UX Upgrades: Moving Beyond Streamlit
 
-While Streamlit is effective for local prototypes, commercial products require a responsive, low-latency UI:
+While Streamlit is effective for local prototypes, commercial products require a responsive, low-latency UI.
+
+> **Update:** the frontend row is now partly done. A React 18 + Vite + Tailwind web app exists in `web/` (not Next.js or shadcn/ui), and Streamlit remains as an internal tool. The database, task queue, auth and billing rows are still proposals.
 
 | Component | Current (Streamlit) | Recommended Production Stack |
 | :--- | :--- | :--- |
-| **Frontend** | Streamlit Python pages | **Next.js 14 / React + Tailwind CSS + shadcn/ui** |
+| **Frontend** | React 18 + Vite + Tailwind (`web/`) [Implemented]; Streamlit internal dashboard | Original proposal: **Next.js 14 / React + Tailwind CSS + shadcn/ui** |
 | **Backend API** | FastAPI (Already Built!) | Keep FastAPI — production-grade, fast, typed |
 | **Database** | SQLite file | **PostgreSQL (Supabase or Neon)** |
 | **Task Queue** | Synchronous loops / scripts | **Celery or Temporal + Redis** for batch scraping and scoring |
@@ -222,7 +238,7 @@ While Streamlit is effective for local prototypes, commercial products require a
 
 ---
 
-## 8. 90-Day Execution Plan
+## 8. 90-Day Execution Plan [Proposed — not started]
 
 ### Month 1: Validation & Pilot Execution (Days 1–30)
 1. **Validation Gate**: Complete 10 customer discovery interviews; secure 2 pilot partners.
@@ -247,6 +263,6 @@ While Streamlit is effective for local prototypes, commercial products require a
 *(Conditioned on passing Day 30 Decision Gate)*
 *Goal: Launch self-serve beta.*
 1. Deploy Next.js frontend with self-serve billing tiers.
-2. Publish interactive demo environment so prospects can test scoring a sample domain.
+2. Publish interactive demo environment so prospects can test scoring a sample domain. *(Partly built ahead of plan: the synthetic-data public demo and playground exist but aren't deployed, and scoring a real domain isn't supported.)*
 3. Offer a 14-day trial (limited to 50 scored accounts).
 4. Publish case study based on real pilot findings with verified metrics and attributed testimonials.

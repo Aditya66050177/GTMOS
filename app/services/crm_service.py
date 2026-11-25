@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.models import Account, Contact, Activity, Opportunity, Draft
 from app.schemas.crm import PipelineStage, FORWARD_STAGE_ORDER
+from app.core.timeutil import utc_now
 
 logger = logging.getLogger(__name__)
 
@@ -60,7 +61,7 @@ class CRMService:
             )
 
         account.stage = to_stage
-        ts = timestamp or datetime.utcnow()
+        ts = timestamp or utc_now()
 
         # If reaching Opportunity or Won, ensure Opportunity record exists
         if to_stage in [PipelineStage.OPPORTUNITY.value, PipelineStage.WON.value, PipelineStage.LOST.value]:
@@ -115,7 +116,7 @@ class CRMService:
         if not account:
             raise ValueError(f"Account {account_id} not found.")
 
-        ts = timestamp or datetime.utcnow()
+        ts = timestamp or utc_now()
 
         if draft_id:
             draft = db.query(Draft).filter_by(id=draft_id).first()

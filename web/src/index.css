@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root { color-scheme: light; }
+html, body, #root { min-height: 100%; }
+body {
+  @apply bg-canvas text-ink font-sans antialiased text-sm;
+  font-feature-settings: "cv11", "tnum";
+}
+::selection { background: #CCFBF1; }
+:focus-visible { outline: 2px solid #0F766E; outline-offset: 2px; }
+/* Grid items default to min-width:auto, which lets wide tables push a column past the
+   viewport instead of scrolling inside their own wrapper. */
+.grid > * { min-width: 0; }
+
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-6xl px-4 sm:px-6; }
+
+  /* Surfaces */
+  .panel { @apply rounded-lg border border-line bg-surface shadow-card; }
+  .panel-pad { @apply p-4 sm:p-5; }
+  .panel-head { @apply flex items-center justify-between gap-3 border-b border-line px-4 py-3 sm:px-5; }
+
+  /* Type */
+  .eyebrow { @apply text-2xs font-semibold uppercase tracking-wider text-ink-4; }
+  .h-page { @apply text-xl font-semibold tracking-tight text-ink sm:text-2xl; }
+  .h-section { @apply text-sm font-semibold text-ink; }
+  .muted { @apply text-ink-3; }
+  .num { @apply tabular-nums; }
+
+  /* Controls */
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-md px-3.5 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply btn bg-accent-600 text-white hover:bg-accent-700; }
+  .btn-secondary { @apply btn border border-line-strong bg-surface text-ink-2 hover:bg-subtle; }
+  .btn-danger { @apply btn border border-danger-200 bg-surface text-danger-700 hover:bg-danger-50; }
+  .btn-ghost { @apply btn text-ink-3 hover:bg-neutral-100 hover:text-ink; }
+  .input { @apply w-full rounded-md border border-line-input bg-surface px-3 py-2 text-sm text-ink placeholder:text-ink-4 focus:border-accent-600 focus:outline-none focus:ring-2 focus:ring-accent-100; }
+  .label { @apply mb-1 block text-xs font-medium text-ink-3; }
+  .segmented { @apply inline-flex max-w-full rounded-md border border-line-strong bg-surface p-0.5; }
+  .segmented > button { @apply rounded px-2.5 py-1 text-xs font-medium text-ink-3 hover:text-ink; }
+  .segmented > button[aria-pressed="true"] { @apply bg-neutral-100 text-ink; }
+
+  /* Badges */
+  .badge { @apply inline-flex items-center gap-1 whitespace-nowrap rounded border px-1.5 py-0.5 text-2xs font-semibold; }
+
+  /* Tables */
+  .tbl { @apply w-full text-sm; }
+  .tbl thead th { @apply sticky top-0 z-10 border-b border-line bg-subtle px-3 py-2 text-left text-2xs font-semibold uppercase tracking-wider text-ink-4; }
+  .tbl tbody td { @apply border-b border-line px-3 py-2.5 align-middle; }
+  .tbl tbody tr:last-child td { @apply border-b-0; }
+  .tbl .r { @apply text-right tabular-nums; }
+}
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }

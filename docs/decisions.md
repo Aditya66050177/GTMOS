@@ -51,3 +51,9 @@
 - **Context**: Autonomous AI cold outreach creates compliance, brand reputation, and hallucination risks if dispatched without human oversight.
 - **Decision**: Outreach drafts require explicit manual approval in the Review Queue. Furthermore, drafts can only advance accounts to `Contacted` when an SDR manually triggers `Mark as Sent`. No automated background dispatch is permitted.
 
+
+## ADR 008: Public Web App on Vercel (React + FastAPI serverless)
+- **Context**: The project needs a public, shareable demo. Streamlit cannot run on Vercel, and a portfolio piece needs a landing page as well as the tool.
+- **Decision**: A React (Vite + Tailwind) frontend in `web/` calls the existing FastAPI app, mounted under `/api` by `api/index.py` as a Vercel Python function. New read-optimised endpoints live in `app/api/routes/web.py`; every score and action still comes from the deterministic engines.
+- **Data**: The function rebuilds the synthetic demo database in `/tmp` on cold start (`app/db/demo_seed.py`), anchoring signal dates to today. The public demo is a self-resetting sandbox; `DATABASE_URL` can point at hosted Postgres for persistence.
+- **LLM**: The public demo runs in mock mode, so it costs nothing and needs no key. Mock extraction, drafting and analyst explanations are rule-based and quote their sources, so the guardrails stay meaningful offline.

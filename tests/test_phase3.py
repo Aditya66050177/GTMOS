@@ -11,6 +11,7 @@ from app.services.personalization import PersonalizationEngine
 from app.schemas.scoring import ScoreResult
 from app.schemas.draft import PersonalizationOutputSchema
 from app.api.main import app
+from app.core.timeutil import utc_now
 
 client = TestClient(app)
 
@@ -141,7 +142,7 @@ def test_personalization_draft_generation_and_persistence(db):
         source="Job Board",
         confidence=0.95,
         evidence="hiring 50 support staff",
-        detected_at=datetime.utcnow()
+        detected_at=utc_now()
     )
     db.add(sig)
     db.commit()
@@ -226,7 +227,7 @@ def test_drafts_api_workflow(db):
         body="Draft 2 body",
         original_body="Draft 2 body",
         status="pending",
-        created_at=datetime.utcnow()
+        created_at=utc_now()
     )
     db.add(draft2)
     db.commit()

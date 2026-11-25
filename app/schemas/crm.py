@@ -24,13 +24,13 @@ FORWARD_STAGE_ORDER = [
 
 class StageUpdateRequest(BaseModel):
     stage: PipelineStage = Field(..., description="Target pipeline stage")
-    notes: Optional[str] = Field(None, description="Optional reason or notes for stage transition")
+    notes: Optional[str] = Field(None, max_length=1_000, description="Optional reason or notes for stage transition")
 
 class ContactCreateRequest(BaseModel):
-    name: str = Field(..., description="Full name of contact")
-    role: Optional[str] = Field(None, description="Job title / buyer role")
-    email: Optional[str] = Field(None, description="Email address")
-    linkedin_url: Optional[str] = Field(None, description="LinkedIn profile URL")
+    name: str = Field(..., min_length=1, max_length=120, description="Full name of contact")
+    role: Optional[str] = Field(None, max_length=120, description="Job title / buyer role")
+    email: Optional[str] = Field(None, max_length=254, description="Email address")
+    linkedin_url: Optional[str] = Field(None, max_length=300, description="LinkedIn profile URL")
 
 class ContactResponse(BaseModel):
     id: int

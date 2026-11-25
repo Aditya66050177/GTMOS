@@ -20,6 +20,8 @@ Extract buying signals from the following raw research text for the account.
 HARD RULE: You MUST ONLY extract facts that are explicitly stated in the `raw_text`. 
 You MUST provide the exact supporting text from the `raw_text` in the `evidence` field for each signal. Do not hallucinate or infer beyond the text. If there is no clear signal, return an empty list.
 
+Do NOT extract a signal from a sentence that is negated ("not hiring", "hiring freeze"), hearsay ("rumors suggest", "reportedly") or speculative ("might", "looking into"). Instead list it under `rejected` with the exact sentence, a category (negated, unsupported or ambiguous), a short reason, and the signal type it seemed to claim. Sentences unrelated to buying signals need not be listed.
+
 Valid Signal Types: support_hiring, funding, product_launch, international_expansion, relevant_technology, rapid_growth, executive_change, too_small, wrong_industry, wrong_geography, no_use_case.
 
 Raw Research Text:
@@ -63,6 +65,11 @@ Available Functions:
 - `get_tier_performance`: Performance and win rates broken down by fit tier (Priority 1, 2, 3, Low).
 - `get_industry_performance`: Performance broken down by company industry.
 - `get_angle_performance`: Performance broken down by outreach angle/pitch.
+- `get_worth_pursuing`: Which accounts are worth pursuing now (CONTACT/PRIORITIZE actions), strongest accounts.
+- `get_nurture_accounts`: Which accounts should be nurtured.
+- `get_stuck_opportunities`: Where opportunities are getting stuck, stalled accounts, pipeline weaknesses or bottlenecks.
+- `get_signal_tier_matrix`: Which buying signals appear in which priority tiers; how many accounts show buying intent.
+- `get_investigate_next`: Which accounts to investigate next or this week; high fit but weak intent; claims to verify.
 - `unknown`: Use if the question cannot be answered by any of these functions.
 
 User Question: {question}

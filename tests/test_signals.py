@@ -6,6 +6,7 @@ from app.models import Product, ICPProfile, Account, Signal, Activity
 from app.services.signal_engine import SignalEngine
 from app.services.research_engine import ResearchEngine
 from app.schemas.signal import SignalListSchema
+from app.core.timeutil import utc_now
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_db():
@@ -53,7 +54,7 @@ def _make_account_product_icp(db, suffix=""):
 def test_weights_and_recency_decay(db):
     p, icp, a = _make_account_product_icp(db, "Decay")
     engine = SignalEngine()
-    now = datetime.utcnow()
+    now = utc_now()
     
     # Fresh signal (support_hiring, weight 20)
     db.add(Signal(account_id=a.id, signal_type="support_hiring", strength=1.0, confidence=1.0, detected_at=now))
@@ -79,7 +80,7 @@ def test_weights_and_recency_decay(db):
 def test_duplicate_signals_merged(db):
     p, icp, a = _make_account_product_icp(db, "Dup")
     engine = SignalEngine()
-    now = datetime.utcnow()
+    now = utc_now()
     
     # Add two signals of same type, one fresh, one older.
     db.add(Signal(account_id=a.id, signal_type="relevant_technology", strength=0.5, confidence=1.0, detected_at=now - timedelta(days=10)))
@@ -117,7 +118,7 @@ def test_intent_stays_between_0_and_20(db):
     engine = SignalEngine()
     
     # Lots of positive signals
-    now = datetime.utcnow()
+    now = utc_now()
     db.add(Signal(account_id=a.id, signal_type="support_hiring", strength=1.0, confidence=1.0, detected_at=now))
     db.add(Signal(account_id=a.id, signal_type="funding", strength=1.0, confidence=1.0, detected_at=now))
     db.add(Signal(account_id=a.id, signal_type="product_launch", strength=1.0, confidence=1.0, detected_at=now))
@@ -138,28 +139,61 @@ def test_intent_stays_between_0_and_20(db):
     assert intent2 == 0.0
 
 def test_evidence_not_in_raw_text_rejected(db):
+    """A signal whose quoted evidence is not in the source text must be rejected and logged."""
     p, icp, a = _make_account_product_icp(db, "EvidenceRejection")
-    re = ResearchEngine()
-    
-    # Text doesn't contain the mock evidence ("hiring 50 new support staff" or "hiring")
-    raw_text = "Acme is doing great."
-    # Calling extraction, mock LLM will yield "support_hiring" with "hiring..." as evidence
-    # but it won't match raw_text.
-    
-    # We clear activities first
+
+    class HallucinatingLLM:
+        def generate_structured(self, prompt, schema):
+            return SignalListSchema(signals=[{
+                "type": "support_hiring",
+                "description": "Hiring support staff",
+                "strength": 0.8,
+                "source": "TechCrunch",
+                "detected_at": "2023-01-01T00:00:00Z",
+                "confidence": 0.9,
+                "evidence": "hiring 50 new support staff",
+            }])
+
+    re = ResearchEngine(llm_service=HallucinatingLLM())
     db.query(Activity).filter_by(account_id=a.id).delete()
     db.commit()
-    
-    # Fake the prompt request triggering the mock
-    signals = re.extract_signals_from_text(db, a, "support team", "TechCrunch", "2023-01-01T00:00:00Z")
-    
-    # It should yield 0 signals because evidence is missing from "support team"
+
+    signals = re.extract_signals_from_text(db, a, "Acme is doing great.", "TechCrunch", "2023-01-01T00:00:00Z")
+
     assert len(signals) == 0
-    
-    # It should have logged an activity for rejection
     rejected = db.query(Activity).filter_by(account_id=a.id, activity_type="rejected_signal").all()
     assert len(rejected) > 0
     assert rejected[0].status == "rejected"
+
+
+def test_mock_extractor_ignores_negated_and_rumoured_text(db):
+    p, icp, a = _make_account_product_icp(db, "NegationGuard")
+    re = ResearchEngine()
+    for text in (
+        "We are not hiring right now.",
+        "Rumors suggested they were hiring for a support team expansion, but the CEO confirmed a hiring freeze.",
+        "The company focuses on its hometown market with no plans for growth.",
+    ):
+        assert re.extract_signals_from_text(db, a, text, "News", "2026-01-01T00:00:00Z") == []
+
+
+def test_mock_extractor_quotes_source_sentence(db):
+    p, icp, a = _make_account_product_icp(db, "QuoteGuard")
+    re = ResearchEngine()
+    text = "We are hiring 50 new support staff to handle our increasing customer base."
+    signals = re.extract_signals_from_text(db, a, text, "Job Board", "2026-01-01T00:00:00Z")
+    assert [s.signal_type for s in signals] == ["support_hiring"]
+    assert signals[0].evidence.lower() in text.lower()
+
+
+def test_reextracting_same_text_does_not_duplicate(db):
+    p, icp, a = _make_account_product_icp(db, "DedupGuard")
+    re = ResearchEngine()
+    text = "Announced a new Series B funding round of $50M."
+    first = re.extract_signals_from_text(db, a, text, "Press", "2026-01-01T00:00:00Z")
+    second = re.extract_signals_from_text(db, a, text, "Press", "2026-01-01T00:00:00Z")
+    assert len(first) == 1 and second == []
+    assert db.query(Signal).filter_by(account_id=a.id, signal_type="funding").count() == 1
 
 def test_no_signals_yields_safe_intent(db):
     p, icp, a = _make_account_product_icp(db, "NoSignals")

@@ -31,13 +31,27 @@ class AccountData:
     intent_score_override: Optional[float] = None
 
 
+# Tier thresholds on the 100-point total, highest first. _tier() is the implementation.
+TIER_THRESHOLDS = (("Priority 1", 90.0), ("Priority 2", 75.0), ("Priority 3", 50.0), ("Low", 0.0))
+
+# Which score component each reason rule from compute_score() belongs to.
+REASON_COMPONENT = {
+    "Industry Match": "ICP Fit",
+    "Pain Point Overlap": "ICP Fit",
+    "Company Size": "Company Fit",
+    "Exclusion Criterion": "Company Fit",
+    "Technology Stack": "Technology Fit",
+    "Signal Engine Intent": "Buying Intent",
+    "Support Team Size": "Buying Intent",
+    "Funding Stage": "Buying Intent",
+    "Geography Match": "Geography Fit",
+}
+
+
 def _tier(total: float) -> str:
-    if total >= 90.0:
-        return "Priority 1"
-    elif total >= 75.0:
-        return "Priority 2"
-    elif total >= 50.0:
-        return "Priority 3"
+    for name, minimum in TIER_THRESHOLDS:
+        if total >= minimum:
+            return name
     return "Low"
 
 

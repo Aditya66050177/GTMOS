@@ -7,9 +7,11 @@ GTMOS turns a product description into a structured ICP, scores target accounts 
 1. **Database**: Use SQLite for local development via SQLAlchemy (`DATABASE_URL` defaulting to `sqlite:///./gtmos.db`). Code must be database-agnostic (no Postgres-specific features, use generic SQLAlchemy `JSON` column type) so switching to Postgres later only requires updating `DATABASE_URL`. Skip `docker-compose.yml` requirement.
 2. **Commands & Scripts**: Use plain Python commands in Windows PowerShell format:
    - Environment setup: `python -m venv .venv` and `.venv\Scripts\activate`
-   - Dependencies: `pip install -r requirements.txt`
+   - Dependencies (local dev, tests, Streamlit): `pip install -r requirements-dev.txt`
+   - Runtime only (what Vercel installs): `requirements.txt`. Keep it free of Streamlit and test tools; pin exact tested versions in both files.
    - Database initialization: `python -m app.db.init_db`
-   - API server: `uvicorn app.api.main:app --reload`
+   - API server (full, local): `uvicorn app.api.main:app --reload`
+   - Public demo API (guarded, as deployed): `uvicorn api.index:app --reload --port 8000`
    - Streamlit dashboard: `streamlit run app/dashboard/home.py`
    - Demo execution: `python scripts/demo.py` (Never use bash-only syntax, `make`, or shell scripts).
 3. **Paths & OS**: Use `pathlib` for all file paths. Avoid Linux-only dependencies or syntax. All commands must be provided in PowerShell format.
@@ -45,8 +47,9 @@ gtmos/
   app/models/, app/schemas/, app/db/, app/ai/ (llm.py, prompts.py, evaluators.py)
   data/ (accounts.csv, contacts.csv, signals.csv)
   scripts/ (demo.py)
-  n8n/workflows/, tests/, docs/ (architecture.md, scoring.md, decisions.md)
-  .env.example, requirements.txt, README.md
+  n8n/workflows/, tests/, docs/ (architecture.md, scoring.md, decisions.md, deployment.md)
+  web/ (public React site: landing page + live demo), api/index.py (Vercel serverless entry), vercel.json
+  .env.example, requirements.txt (runtime), requirements-dev.txt (dev + tests), README.md
 
 ## WORKING STYLE
 Execute, do not over explain. After each task, list files changed, how to run it, and how to verify it. Keep functions small and typed. Write tests alongside code. Ask me only if something is truly blocking.

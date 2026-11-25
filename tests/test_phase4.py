@@ -14,6 +14,7 @@ from app.services.analytics_engine import AnalyticsEngine
 from app.services.analyst_service import AnalystService
 from app.schemas.crm import PipelineStage
 from app.api.main import app
+from app.core.timeutil import utc_now
 
 client = TestClient(app)
 
@@ -111,7 +112,7 @@ def test_mark_as_sent_moves_account_to_contacted(db):
         account_id=acc.id,
         body="Ready outreach message",
         status="approved",
-        created_at=datetime.utcnow()
+        created_at=utc_now()
     )
     db.add(draft)
     db.commit()
