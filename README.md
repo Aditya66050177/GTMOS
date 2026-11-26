@@ -1,7 +1,7 @@
 # GTMOS — AI GTM Command Center
 
-**Live demo:** not deployed yet. GTMOS is built for Vercel ([deployment guide](docs/deployment.md)),
-but no public URL exists. Run it locally with the steps below.
+**Live demo:** <https://gtmos.vercel.app> · **5-minute guided tour:** <https://gtmos.vercel.app/demo>
+· [Deployment guide](docs/deployment.md). You can also run it locally with the steps below.
 
 > GTMOS scores accounts with deterministic, explainable rules and quotes the evidence behind
 > every buying signal. It recommends a next action and drafts outreach that a person must
@@ -132,7 +132,9 @@ note reports a product launch and a planned expansion into Europe.
   per-browser sandbox copies (about 2 hours, on one server instance), and the app tells
   visitors when their edits are no longer shown.
 - **Deployment target.** `vercel.json` builds `web/dist` and runs `api/index.py` as a Python
-  function. The demo database is rebuilt in `/tmp` from the CSVs on each cold start.
+  function. The demo database is rebuilt in `/tmp` from the CSVs on each cold start. The
+  Vercel project must use the **Other** framework preset: with the FastAPI preset, Vercel
+  skips installing `requirements.txt` and routes every request to Python.
 
 Full detail, diagrams and data flow: [docs/TECHNICAL_ARCHITECTURE.md](docs/TECHNICAL_ARCHITECTURE.md).
 
@@ -267,10 +269,10 @@ public demo or the tests.
       methodology
 - [x] Public-demo safeguards: write allowlist, rate limits, read-only template database,
       per-browser sandboxes, mock-only LLM, sandbox-loss notice
+- [x] Public demo deployed on Vercel at <https://gtmos.vercel.app>
 - [x] **357 tests passing** (mock mode, isolated temporary database); 96% line coverage of `app/services`
 
 **Not done**
-- [ ] Public deployment (no live URL yet)
 - [ ] Any real users, pilots or customer interviews
 
 ## Roadmap (proposed, not built)
